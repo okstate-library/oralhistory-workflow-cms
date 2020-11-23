@@ -45,7 +45,7 @@ public class RepositoryController extends MainController {
 
 		Repository repo = null;
 
-		if (id != null && !id.isEmpty() && !id.isBlank()) {
+		if (id != null && !id.isEmpty()) {
 			repo = repositoryService.findById(Short.parseShort(id)).orElse(null);
 
 			model.addAttribute("repositorydetails", repo);

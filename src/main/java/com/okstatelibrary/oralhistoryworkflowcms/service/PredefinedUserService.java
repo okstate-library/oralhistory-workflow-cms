@@ -9,7 +9,9 @@ public interface PredefinedUserService {
 
 	List<PredefinedUser> findAll();
 	
-	Optional<PredefinedUser> findById(short Id);
+	List<PredefinedUser> findAllByType(short type);
+	
+	Optional<PredefinedUser> findById(short id);
 	
 	PredefinedUser savePredefinedUser(PredefinedUser collection);
 }

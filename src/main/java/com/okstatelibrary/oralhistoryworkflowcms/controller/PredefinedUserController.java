@@ -34,9 +34,8 @@ public class PredefinedUserController extends MainController {
 		model.addAttribute("user", user);
 
 		//@SuppressWarnings("unchecked")
-		List<PredefinedUser> interviewers = predefinedUserService.findAll().stream()
-				.filter(u -> u.getUserType() == Byte.parseByte("1")).collect(Collectors.toList());
-
+		List<PredefinedUser> interviewers = predefinedUserService.findAllByType(PredefinedUserEnum.INTERVIEWER.getCode());
+		
 		System.out.println("interviewers length " +  interviewers.size());
 		
 		model.addAttribute("interviewers", interviewers);

@@ -57,7 +57,7 @@ public class SubserieController extends MainController {
 
 		Subserie subserie = null;
 
-		if (id != null && !id.isEmpty() && !id.isBlank()) {
+		if (id != null && !id.isEmpty()) {
 			subserie = subserieService.findById(Integer.parseInt(id)).orElse(null);
 
 			model.addAttribute("subseriedetails", subserie);

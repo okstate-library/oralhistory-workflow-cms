@@ -40,6 +40,12 @@ public class TranscriptionController {
 	@Autowired
 	private SubserieService subserieService;
 
+	@Autowired
+	private PredefinedUserService predefinedUserService;
+	
+	@Autowired
+	private SubjectService subjectService;
+	
 	ObjectMapper mapper = new ObjectMapper();
 
 	private static List<TranscriptionQueueOption> queueOptions = new ArrayList<TranscriptionQueueOption>();
@@ -80,6 +86,9 @@ public class TranscriptionController {
 
 		model.addAttribute("collections", collectionService.findAll());
 		model.addAttribute("subseries", subserieService.findAll());
+		
+		model.addAttribute("interviewers", predefinedUserService.findAllByType(PredefinedUserEnum.INTERVIEWER.getCode()));
+		model.addAttribute("subjects", subjectService.findAll());
 
 		model.addAttribute("transcriptions", transcriptionService.findAll());
 
@@ -144,7 +153,7 @@ public class TranscriptionController {
 				isSecondEdit = false, isDraftSent = false, isCorrections = false, isFinalEdit = false,
 				isSsentOut = false;
 
-		if (options != null && !options.isBlank() && !options.isEmpty()) {
+		if (options != null && !options.isEmpty()) {
 
 			isPriority = options.contains("2");
 			isTranscribed = options.contains("3");

@@ -2,6 +2,7 @@ package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -29,6 +30,11 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 		return predefinedUserRepository.findAll();
 	}
 
+	@Override
+	public List<PredefinedUser> findAllByType(short type) {
+		return this.findAll().stream().filter(u -> u.getUserType() == type).collect(Collectors.toList());
+	}
+
 	@Cacheable(cacheNames = "findByPredefinedUserIdCache")
 	@Override
 	public Optional<PredefinedUser> findById(short Id) {
@@ -38,7 +44,7 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 	@Caching(evict = { @CacheEvict(value = "findAllPredefinedUserCache", allEntries = true),
 			@CacheEvict(value = "findByPredefinedUserIdCache", allEntries = true) })
 	public PredefinedUser savePredefinedUser(PredefinedUser predefinedUser) {
-		
+
 		if (predefinedUser.getId() == 0) {
 			return predefinedUserRepository.save(predefinedUser);
 		} else {
@@ -56,4 +62,5 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 			// LOG.info("Flushing cache with name: " + cacheName);
 		}
 	}
+
 }

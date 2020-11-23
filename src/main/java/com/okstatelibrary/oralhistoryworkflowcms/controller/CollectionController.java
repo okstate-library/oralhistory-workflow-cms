@@ -56,7 +56,7 @@ public class CollectionController extends MainController {
 
 		Collection collection = null;
 
-		if (id != null && !id.isEmpty() && !id.isBlank()) {
+		if (id != null && !id.isEmpty()) {
 			collection = collectionService.findById(Short.parseShort(id)).orElse(null);
 
 			model.addAttribute("collectiondetails", collection);
