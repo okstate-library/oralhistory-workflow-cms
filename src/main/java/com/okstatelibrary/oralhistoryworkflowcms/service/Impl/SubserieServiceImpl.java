@@ -1,0 +1,69 @@
+package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
+import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
+import com.okstatelibrary.oralhistoryworkflowcms.repository.SubserieRepository;
+import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
+import com.okstatelibrary.oralhistoryworkflowcms.service.SubserieService;
+
+import org.springframework.cache.annotation.*;
+
+@Service
+public class SubserieServiceImpl implements SubserieService {
+
+	@Autowired
+	private SubserieRepository subserieRepository;
+
+	@Autowired
+	CacheManager cacheManager;
+
+	@Cacheable(cacheNames = "findAllSubseriesCache")
+	@Override
+	public List<Subserie> findAll() {
+		return subserieRepository.findAll();
+	}
+
+	@Cacheable(cacheNames = "findBySubseriesIdCache")
+	@Override
+	public Optional<Subserie> findById(int Id) {
+		return subserieRepository.findById(Id);
+	}
+
+	@Caching(evict = { @CacheEvict(value = "findAllSubseriesCache", allEntries = true),
+			@CacheEvict(value = "findBySubseriesIdCache", allEntries = true) })
+	public Subserie saveSubseries(Subserie subseries) {
+		if (subseries.getId() == 0) {
+			return subserieRepository.save(subseries);
+		} else {
+			if (findById(subseries.getId()) != null) {
+				return subserieRepository.save(subseries);
+			} else {
+				return null;
+			}
+		}
+	}
+
+	@Override
+	public List<Subserie> findAllbyCollectionId(short collectionId) {
+		return subserieRepository.findAll().stream()
+				.filter(u -> u.getCollectionId() == collectionId)
+				.collect(Collectors.toList());
+	}
+	
+	public void flushCache() {
+		for (String cacheName : cacheManager.getCacheNames()) {
+			cacheManager.getCache(cacheName).clear();
+			// LOG.info("Flushing cache with name: " + cacheName);
+		}
+	}
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container my-custom-container">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">All Interviews</h1>
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-2 form-inline">
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button"
+					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">Select collections</button>
+				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+					<th:block th:each="collection : ${collections}">
+
+						<label class="dropdown-item"><input class="browseCollectionOption"
+							type="checkbox" th:id="'browseOption-' + ${collection.Id}"
+							th:value="${collection.Id}"
+							th:name="${collection.CollectionName}"
+							th:text="${collection.CollectionName}" /></label>
+					</th:block>
+				</form>
+
+
+
+			</div>
+
+		</div>
+
+		<div class="col-md-2 form-inline">
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button"
+					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">Select subseries</button>
+				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+					<th:block th:each="subserie : ${subseries}">
+
+						<label class="dropdown-item"><input
+							class="browseSubserieOption-" type="checkbox"
+							th:id="'browseSubserieOption-' + ${subserie.Id}"
+							th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
+							th:text="${subserie.SubseriesName}" /></label>
+					</th:block>
+				</form>
+
+
+
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-2 form-inline">
+
+			<p id="browseCollectionSelections"></p>
+
+		</div>
+
+		<div class="col-md-2 form-inline">
+
+			<p id="browseSubseriesSelections"></p>
+
+		</div>
+
+	</div>
+
+
+	<div class="table-responsive">
+		<table id="browseDataTable"
+			class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Interviewees</th>
+					<th>Interviewers</th>
+					<th>Project Code</th>
+					<th>Dates</th>
+					<th>Collection</th>
+					<th>Subseries</th>
+					<th>Transcribed</th>
+					<th>Online</th>
+					<th>Restriction</th>
+
+				</tr>
+			</thead>
+			<!-- <tbody>
+				<tr data-th-each="transcription : ${transcriptions}">
+					<td data-th-text="${transcription.Interviewee}">...</td>
+					<td data-th-text="${transcription.Interviewer}">...</td>
+					<td data-th-text="${transcription.ProjectCode}">...</td>
+					<td data-th-text="${transcription.InterviewDate}">...</td>
+					<td data-th-text="${transcription.CollectionId}">...</td>
+					<td><i class="fa "
+						th:classappend="${transcription.TranscriptStatus == 0} ? fa-times : fa-check"
+						aria-hidden="true"></i></td>
+
+					<td><i class="fa "
+						th:classappend="${transcription.IsOnline == 0} ? fa-times : fa-check"
+						aria-hidden="true"></i></td>
+
+					<td><i class="fa "
+						th:classappend="${transcription.IsRestriction == 0} ? fa-times : fa-check"
+						aria-hidden="true"></i></td>
+				</tr>
+			</tbody> -->
+		</table>
+	</div>
+</div>
+
+
+<div th:replace="common/header :: body-bottom-scripts" />
+<script>
+	/* $(document).ready(function() {
+		$('#example').DataTable();
+	}); */
+	
+	$(document).ready(
+			function() {
+
+				$.ajax({
+					url : '/browse/data',
+					success : function(data) {
+
+						var table = $('#browseDataTable')
+								.DataTable(
+										{
+											data : data,
+											columns : [
+
+											{
+												"data" : "interviewee"
+											}, {
+												"data" : "interviewer"
+											}, {
+												"data" : "projectCode"
+											}, {
+												"data" : "interviewDate"
+											}, {
+												"data" : "collectionId"
+											}, {
+												"data" : "subseriesId"
+											}, {
+												"data" : "transcriptStatus" , render: getBooleanImage,
+											}, {
+												"data" : "isOnline" , render: getBooleanImage,
+											}, {
+												"data" : "isRestriction" , render: getBooleanImage,
+											}, ],
+											sort : [ 0, 'desc' ],
+											"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
+													[ 10, 50, 100, 200, "All" ] ],
+											"pageLength" : 10
+										});
+					}
+				});
+
+			});
+</script>
+</body>
+</html>

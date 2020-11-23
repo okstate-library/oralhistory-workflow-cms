@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+<div class="container my-custom-container">
+	<div class="row">
+		<div class="col-lg-10">
+			<h1 class="page-header">Subseries</h1>
+		</div>
+		<div class="col-lg-2">
+			<h1 class="page-header">
+				<a class="btn  btn-info" th:href="@{/collection}">Add Subserie</a>
+			</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="table-responsive">
+			<table id="example"
+				class="table table-bordered table-hover table-striped">
+				<thead>
+					<tr>
+						<th>Subseries Name</th>
+						<th>Collection Name</th>
+						<th>Details</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-th-each="subserie : ${subseries}">
+						<td data-th-text="${subserie.SubseriesName}">...</td>
+						<td data-th-text="${subserie.collection.CollectionName}">...</td>
+						<td><a th:href="${'/subserie/' + subserie.Id}">View</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div th:replace="common/header :: body-bottom-scripts" />
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable({
+			"lengthMenu" : [ [ 10, 25, 50, -1 ], [ 10, 25, 50, "All" ] ]
+		});
+	});
+</script>
+</body>
+</html>

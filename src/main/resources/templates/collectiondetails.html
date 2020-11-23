@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header ">Collection Details</h1>
+		</div>
+	</div>
+
+	<div class="row ">
+		<div class="col-md-6">
+			<form method="post" th:action="@{/collection/update}">
+				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
+
+				<div class="form-group">
+					<label for="firstName"> Repository Name</label>
+					<div class="cols-sm-10">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user fa"
+								aria-hidden="true"></i></span> <input type="text" class="form-control"
+								th:value="*{collectiondetails?.repository.Id}"
+								id="RepositoryId" name="RepositoryId"
+								placeholder="Enter repository name" required="required" />
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="firstName"> Collection Name</label>
+					<div class="cols-sm-10">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user fa"
+								aria-hidden="true"></i></span> <input type="text" class="form-control"
+								th:value="*{collectiondetails?.CollectionName}"
+								id="CollectionName" name="CollectionName"
+								placeholder="Enter collection name" required="required" />
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="form-group ">
+					<button type="submit" class="btn btn-primary btn-block ">Submit</button>
+				</div>
+
+			</form>
+		</div>
+
+
+
+	</div>
+
+</div>
+
+
+<div th:replace="common/header :: body-bottom-scripts" />
+
+</body>
+</html>

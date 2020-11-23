@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+<body data-spy="scroll" data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container main">
+
+
+	<div class="col-md-12">
+		<img src="images/logo.png">
+	</div>
+
+
+	<div th:if="${user != null}" class="row">
+
+		<div class="col-md-6 data-entry-col">
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<a th:href="@{/transcriptionqueue}"
+						class="btn btn-lg btn-primary btn-block btn-m-b">
+						<h1>
+							<i class="fa fa-plus-square"></i> 2465
+						</h1>
+						<h6>Transcription Queue</h6>
+					</a>
+
+				</div>
+			</div>
+
+		</div>
+
+
+		<div class="col-md-6 data-entry-col">
+			<div class="row">
+				<div class="col-md-12">
+					<a th:href="@{/browse}"
+						class="btn btn-lg btn-primary btn-block btn-m-b" type="submit">
+						<h1>
+							<i class="fa fa-plus-square"></i> 2347
+						</h1>
+						<h6>All records</h6>
+					</a>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-md-12 data-entry-col">
+			<div class="table-responsive">
+				<table id="example"
+					class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+
+							<th>Project Code</th>
+							<th>Interviewees</th>
+							<th>Dates</th>
+
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-th-each="transcription : ${transcriptions}">
+							<td data-th-text="${transcription.ProjectCode}">...</td>
+							<td data-th-text="${transcription.Interviewee}">...</td>
+							<td data-th-text="${transcription.InterviewDate}">...</td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+
+
+</div>
+
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable({
+			searching : false,
+			bPaginate : false,
+			"bInfo": false,
+		});
+	});
+</script>
+</body>
+</html>
