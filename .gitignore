@@ -21,13 +21,24 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-src/main/resources/application-dev.properties
-src/main/resources/application-prod.properties
-.settings/org.eclipse.core.resources.prefs
-.project
-.DS_Store
+
+/target*
+/target/*
+
+### STS ###
+.apt_generated
 .classpath
-.settings/org.eclipse.jdt.core.prefs
-.settings/org.eclipse.wst.common.project.facet.core.xml
-src/main/.DS_Store
+.factorypath
+.project
+.settings
+.settings/
+.springBeans
+.sts4-cache
+.DS_Store
+.jks
+
+.mvn/*
 src/.DS_Store
+src/main/resources/.DS_Store
+src/main/resources/application-prod.properties
+src/main/resources/application-dev.properties
