@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -11,6 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "collections")
@@ -28,9 +34,11 @@ public class Collection {
 		this.Id = value;
 	}
 
-	@OneToMany(mappedBy="collection")
-    private Set<Subserie> subseries;
-	
+	@OneToMany(mappedBy = "collection")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private Set<Subserie> subseries;
+
+	@JsonManagedReference
 	public Set<Subserie> getSubseries() {
 		return this.subseries;
 	}
@@ -38,7 +46,7 @@ public class Collection {
 	public void setSubseries(Set<Subserie> value) {
 		this.subseries = value;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RepositoryId", insertable = false, updatable = false)
 	private Repository repository;
@@ -51,19 +59,19 @@ public class Collection {
 		this.repository = value;
 	}
 
-//	@OneToMany(mappedBy="tcollection")
-//    private Set<Transcription> transcriptions;
-//	
-//	
-//	public Set<Transcription> getTranscriptions() {
-//		return this.transcriptions;
-//	}
-//
-//	public void setTranscriptions(Set<Transcription> value) {
-//		this.transcriptions = value;
-//	}
+	@OneToMany(mappedBy = "tcollection")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<Transcription> transcriptions;
 
-	
+	@JsonManagedReference
+	public List<Transcription> getTranscriptions() {
+		return this.transcriptions;
+	}
+
+	public void setTranscriptions(List<Transcription> value) {
+		this.transcriptions = value;
+	}
+
 	private short RepositoryId;
 
 	public short getRepositoryId() {

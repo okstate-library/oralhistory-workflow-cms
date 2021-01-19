@@ -1,7 +1,7 @@
-package com.okstatelibrary.oralhistoryworkflowcms.entity;
+package com.okstatelibrary.oralhistoryworkflowcms.enums;
 
-public enum PredefinedUserEnum {
-	INTERVIEWER((short) 1);
+public enum UserRole {
+	USER((short) 0), ADMIN((short) 1), STAFF((short) 2);
 
 	/*
 	 * Important Note: Must have semicolon at the end when there is a enum field or
@@ -9,7 +9,7 @@ public enum PredefinedUserEnum {
 	 */
 	private final short shortCode;
 
-	PredefinedUserEnum(short code) {
+	UserRole(short code) {
 		this.shortCode = code;
 	}
 

@@ -52,7 +52,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public void flushCache() {
 		for (String cacheName : cacheManager.getCacheNames()) {
 			cacheManager.getCache(cacheName).clear();
-			// LOG.info("Flushing cache with name: " + cacheName);
+			System.out.print("Flushing cache with name: " + cacheName);
 		}
+	}
+
+	@Override
+	public void deleteRepository(short Id) {
+		repositoryRepository.deleteById(Id);
+		
+		flushCache() ;
 	}
 }

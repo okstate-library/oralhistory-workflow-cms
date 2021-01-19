@@ -1,18 +1,26 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
 
 public interface TranscriptionService {
 
 	List<Transcription> findRecentlyAdded(long userId);
-	
+
 	List<Transcription> findAll();
-	
+
+	List<Transcription> findAll(boolean isTranscripted);
+
 	List<Transcription> findAll(String collectionIds);
 
-	List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed, boolean isAuditCheck, boolean isFirstEdit,
-			boolean isSecondEdit, boolean isDraftSent, boolean isCorrections, boolean isFinalEdit, boolean isSsentOut);
+	List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed, boolean isAuditCheck,
+			boolean isFirstEdit, boolean isSecondEdit, boolean isDraftSent, boolean isCorrections, boolean isFinalEdit,
+			boolean isSsentOut);
+
+	Optional<Transcription> findById(int id);
+	
+	Transcription save(Transcription transcription);
 
 }

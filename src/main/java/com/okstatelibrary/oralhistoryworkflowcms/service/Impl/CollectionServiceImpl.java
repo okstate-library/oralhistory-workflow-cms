@@ -2,6 +2,7 @@ package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
+import com.okstatelibrary.oralhistoryworkflowcms.util.StringUtil;
+
 import org.springframework.cache.annotation.*;
 
 @Service
@@ -53,5 +56,11 @@ public class CollectionServiceImpl implements CollectionService {
 			cacheManager.getCache(cacheName).clear();
 			// LOG.info("Flushing cache with name: " + cacheName);
 		}
+	}
+
+	@Override
+	public List<Collection> findByRepositoryId(short RepositoryId) {
+		return collectionRepository.findAll().stream()
+				.filter(u -> u.getRepositoryId() == RepositoryId).collect(Collectors.toList());
 	}
 }

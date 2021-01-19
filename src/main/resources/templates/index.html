@@ -25,9 +25,10 @@
 					<a th:href="@{/transcriptionqueue}"
 						class="btn btn-lg btn-primary btn-block btn-m-b">
 						<h1>
-							<i class="fa fa-plus-square"></i> 2465
+							<i class="fa fa-plus-square"></i> [[${transciprtionCount}]]
 						</h1>
 						<h6>Transcription Queue</h6>
+
 					</a>
 
 				</div>
@@ -42,7 +43,7 @@
 					<a th:href="@{/browse}"
 						class="btn btn-lg btn-primary btn-block btn-m-b" type="submit">
 						<h1>
-							<i class="fa fa-plus-square"></i> 2347
+							<i class="fa fa-plus-square"></i> [[${browseCount}]]
 						</h1>
 						<h6>All records</h6>
 					</a>
@@ -69,7 +70,10 @@
 						<tr data-th-each="transcription : ${transcriptions}">
 							<td data-th-text="${transcription.ProjectCode}">...</td>
 							<td data-th-text="${transcription.Interviewee}">...</td>
-							<td data-th-text="${transcription.InterviewDate}">...</td>
+							<td data-th-text="${transcription.InterviewDates}">...</td>
+							<td><a
+								th:href="@{/modifyinterview/{id}{action}(id=${transcription.Id},action='')}"
+								target="_blank">edit</a></td>
 
 						</tr>
 					</tbody>
@@ -92,7 +96,7 @@
 		$('#example').DataTable({
 			searching : false,
 			bPaginate : false,
-			"bInfo": false,
+			"bInfo" : false,
 		});
 	});
 </script>

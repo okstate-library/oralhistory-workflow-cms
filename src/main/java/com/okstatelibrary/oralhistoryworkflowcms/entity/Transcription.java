@@ -1,13 +1,16 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
+import java.text.ParseException;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "transcriptions")
@@ -26,6 +29,7 @@ public class Transcription {
 		this.Id = value;
 	}
 
+	@NotNull(message = "Please enter a project code")
 	private String ProjectCode;
 
 	public String getProjectCode() {
@@ -76,30 +80,19 @@ public class Transcription {
 		this.CollectionId = value;
 	}
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "CollectionId", insertable = false, updatable = false)
-//	private Collection tcollection;
-//
-//	public Collection getCollection() {
-//		return this.tcollection;
-//	}
-//
-//	public void setCollection(Collection value) {
-//		this.tcollection = value;
-//	}
-	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "CollectionId", insertable = false, updatable = false)
-//	private Collection transcriptionCollection;
-//	
-//	public Collection getCollection() {
-//		return this.transcriptionCollection;
-//	}
-//
-//	public void setCollection(Collection value) {
-//		this.transcriptionCollection = value;
-//	}
-	
+	@ManyToOne
+	@JoinColumn(name = "CollectionId", insertable = false, updatable = false)
+	private Collection tcollection;
+
+	@JsonBackReference
+	public Collection getCollection() {
+		return this.tcollection;
+	}
+
+	public void setCollection(Collection value) {
+		this.tcollection = value;
+	}
+
 	private int SubseriesId;
 
 	public int getSubseriesId() {
@@ -109,6 +102,20 @@ public class Transcription {
 	public void setSubseriesId(int value) {
 		this.SubseriesId = value;
 	}
+	
+	@ManyToOne
+	@JoinColumn(name = "SubseriesId", insertable = false, updatable = false)
+	private Subserie subserie;
+
+	@JsonBackReference
+	public Subserie getsubseries() {
+		return this.subserie;
+	}
+
+	public void setSubseries(Subserie value) {
+		this.subserie = value;
+	}
+	
 
 	private String Interviewee;
 
@@ -130,34 +137,14 @@ public class Transcription {
 		this.Interviewer = value;
 	}
 
-	private String InterviewDate;
+	private String InterviewDates;
 
-	public String getInterviewDate() {
-		return this.InterviewDate;
+	public String getInterviewDates() {
+		return this.InterviewDates;
 	}
 
-	public void setInterviewDate(String value) {
-		this.InterviewDate = value;
-	}
-
-	private String InterviewDate1;
-
-	public String getInterviewDate1() {
-		return this.InterviewDate1;
-	}
-
-	public void setInterviewDate1(String value) {
-		this.InterviewDate1 = value;
-	}
-
-	private String InterviewDate2;
-
-	public String getInterviewDate2() {
-		return this.InterviewDate2;
-	}
-
-	public void setInterviewDate2(String value) {
-		this.InterviewDate2 = value;
+	public void setInterviewDates(String value) {
+		this.InterviewDates = value;
 	}
 
 	private String Title;
@@ -540,13 +527,13 @@ public class Transcription {
 		this.ThirdEditCompleted = value;
 	}
 
-	private java.sql.Date DraftSentDate;
+	private String DraftSentDate;
 
-	public java.sql.Date getDraftSentDate() {
+	public String getDraftSentDate() {
 		return this.DraftSentDate;
 	}
 
-	public void setDraftSentDate(java.sql.Date value) {
+	public void setDraftSentDate(String value) {
 		this.DraftSentDate = value;
 	}
 
@@ -570,13 +557,13 @@ public class Transcription {
 		this.FinalEditCompleted = value;
 	}
 
-	private java.sql.Date FinalSentDate;
+	private String FinalSentDate;
 
-	public java.sql.Date getFinalSentDate() {
+	public String getFinalSentDate() {
 		return this.FinalSentDate;
 	}
 
-	public void setFinalSentDate(java.sql.Date value) {
+	public void setFinalSentDate(String value) {
 		this.FinalSentDate = value;
 	}
 
@@ -670,13 +657,25 @@ public class Transcription {
 		this.IsConvertToDigital = value;
 	}
 
-	private java.sql.Date ConvertToDigitalDate;
+//	private String ConvertDigitalDate;
+//	
+//	public String getConvertDigitalDate() {
+//		return this.ConvertDigitalDate;
+//	}
+//
+//	public void setConvertDigitalDate(String value) {
+//		this.ConvertDigitalDate = value;
+//	}
 
-	public java.sql.Date getConvertToDigitalDate() {
+	private String ConvertToDigitalDate;
+
+	public String getConvertToDigitalDate() throws ParseException {
+
 		return this.ConvertToDigitalDate;
+
 	}
 
-	public void setConvertToDigitalDate(java.sql.Date value) {
+	public void setConvertToDigitalDate(String value) {
 		this.ConvertToDigitalDate = value;
 	}
 
@@ -779,9 +778,8 @@ public class Transcription {
 	public void setUpdatedDate(java.sql.Date value) {
 		this.UpdatedDate = value;
 	}
-	
-	public Transcription()
-	{
-		
+
+	public Transcription() {
+
 	}
 }

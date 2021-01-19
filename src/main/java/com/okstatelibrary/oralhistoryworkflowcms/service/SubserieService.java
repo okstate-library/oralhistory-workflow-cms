@@ -1,6 +1,5 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service;
 
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
 
 import java.util.List;

@@ -1,0 +1,59 @@
+-- **************************
+-- Equipments Alteration
+-- **************************
+
+DROP TABLE `oralcmsdb`.`audioequipmentused`;
+DROP TABLE `oralcmsdb`.`videoequipmentused`;
+
+CREATE TABLE `equipments` (
+  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `EquipmentType` tinyint(1) NOT NULL,
+  `EquipmentUsedName` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `equipments` WRITE;
+/*!40000 ALTER TABLE `equipments` DISABLE KEYS */;
+INSERT INTO `equipments` VALUES (1,1,'Marantz 661'),(2,1,'Marantz 662'),(3,1,'Marantz PMD 621'),(7,1,'Marantz 660'),(8,1,'N/A'),(9,1,'Zoom recorder'),(10,1,'Audio recorder'),(11,1,'Marantz 660, Marantz 661'),(12,1,'Zoom platform'),(13,1,'Zencastr platform'),(15,2,'Canon X20'),(16,2,'Canon XA20'),(17,2,'Canon XA26'),(18,2,'MiniDV Camera'),(19,2,'N/A'),(20,2,'Zoom platform');
+/*!40000 ALTER TABLE `equipments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+-- **************************
+-- Interview Dates alteration. 
+-- **************************
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `EquipmentNumber` `EquipmentNumber` VARCHAR(20) NULL ;
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `InterviewDate` `InterviewDates` VARCHAR(50) NOT NULL ;
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `InterviewDates` `InterviewDates` VARCHAR(50) NULL DEFAULT NULL AFTER `Interviewer`;
+
+UPDATE transcriptions SET InterviewDate1 = NULL WHERE InterviewDate1 = '';
+UPDATE transcriptions SET InterviewDate2 = NULL WHERE InterviewDate2 = '';
+
+UPDATE transcriptions
+SET InterviewDates = CONCAT_WS(',', InterviewDate, InterviewDate1, InterviewDate2)
+
+ALTER TABLE transcriptions DROP COLUMN InterviewDate;
+ALTER TABLE transcriptions DROP COLUMN InterviewDate1;
+ALTER TABLE transcriptions DROP COLUMN InterviewDate2;
+
+-- **************************
+-- Transcription date column alteration. 
+-- **************************
+
+ALTER TABLE `transcriptions`  
+CHANGE COLUMN `ConvertToDigitalDate` `ConvertToDigitalDate` VARCHAR(100) NULL DEFAULT NULL,
+CHANGE COLUMN `DraftSentDate` `DraftSentDate` VARCHAR(100) NULL DEFAULT NULL ,
+CHANGE COLUMN `FinalSentDate` `FinalSentDate` VARCHAR(100) NULL DEFAULT NULL ;
+
+UPDATE transcriptions SET ConvertToDigitalDate = DATE_FORMAT(ConvertToDigitalDate, '%m/%d/%Y');
+UPDATE transcriptions SET DraftSentDate = DATE_FORMAT(DraftSentDate, '%m/%d/%Y');
+UPDATE transcriptions SET FinalSentDate = DATE_FORMAT(FinalSentDate, '%m/%d/%Y');
+ 
+CHANGE COLUMN `ConvertToDigitalDate` `ConvertToDigitalDate` VARCHAR(10) NULL DEFAULT NULL,
+CHANGE COLUMN `DraftSentDate` `DraftSentDate` VARCHAR(10) NULL DEFAULT NULL ,
+CHANGE COLUMN `FinalSentDate` `FinalSentDate` VARCHAR(10) NULL DEFAULT NULL ;

@@ -12,4 +12,6 @@ public interface RepositoryService {
 	Optional<Repository> findById(short Id);
 	
 	Repository saveRepository(Repository repository);
+	
+	void deleteRepository(short Id);
 }

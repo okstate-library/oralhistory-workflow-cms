@@ -22,15 +22,16 @@
 				class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
-						<th>Collection Name</th>
 						<th>Repository Name</th>
+						<th>Collection Name</th>
 						<th>Details</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr data-th-each="collection : ${collections}">
+
+						<td data-th-text="${collection.getRepository().RepositoryName}">...</td>
 						<td data-th-text="${collection.CollectionName}">...</td>
-						<td data-th-text="${collection.repository.RepositoryName}">...</td>
 						<td><a th:href="${'/collection/' + collection.Id}">View</a></td>
 					</tr>
 				</tbody>

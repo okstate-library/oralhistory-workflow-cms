@@ -30,25 +30,47 @@ $(document)
 
 					var end = new Date();
 
-					$('.date').datepicker({
+					$('.dates').datepicker({
 						multidate : true
+					});
+					
+					$('.date').datepicker({
 					});
 
 					// Transcription Window Options
 
 					var options = [];
-					var optionTexts = [];
-
+					var isinitialize = false;
 					$('.transcriptQueueOption')
 							.click(
+
 									function() {
 
 										var optionValue = $(this).attr('value');
-										var optionText = $(this).attr('name');
 
-										if (this.checked) {
+										if (this.checked && optionValue == 1) {
+											for (i = 2; i < 11; i++) {
+												var element = document
+														.getElementById("transcriptionQueueOption-"
+																+ i);
+
+												element.checked = false;
+											}
+
+											options = [];
+											isinitialize = true;
+
+										} else if (this.checked) {
+
 											options.push(optionValue);
-											optionTexts.push(optionText);
+
+											var element = document
+													.getElementById("transcriptionQueueOption-" + 1);
+
+											element.checked = false;
+
+											isinitialize = false;
+
 										} else {
 											var index = options
 													.indexOf(optionValue);
@@ -57,18 +79,30 @@ $(document)
 												options.splice(index, 1);
 											}
 
-											var indexText = optionTexts
-													.indexOf(optionText);
+											isinitialize = false;
 
-											if (indexText !== -1) {
-												optionTexts
-														.splice(indexText, 1);
+											if (options.length == 0) {
+												var element = document
+														.getElementById("transcriptionQueueOption-" + 1);
+
+												element.checked = true;
+												options = [];
+												isinitialize = true;
 											}
 										}
 
-										document
-												.getElementById("transcriptQueueOptionSelections").innerHTML = '<b>Selected options : </b>'
-												+ optionTexts.toString();
+										// if (this.checked) {
+										// if (optionValue == 1) {
+										//
+										// //options = [];
+										//
+										// } else {
+										//
+										// isinitialize = true;
+										// }
+										// } else {
+										//
+										// }
 
 										$
 												.ajax({
@@ -77,7 +111,8 @@ $(document)
 													url : '/transcriptionqueue/data',
 													data : {
 														"options" : options
-																.toString()
+																.toString(),
+														"isinitialize" : isinitialize
 													},
 													success : function(data) {
 
@@ -100,7 +135,7 @@ $(document)
 																						"data" : "interviewer"
 																					},
 																					{
-																						"data" : "interviewDate"
+																						"data" : "interviewDates"
 																					},
 																					{
 																						"data" : "projectCode"
@@ -132,16 +167,19 @@ $(document)
 																					'desc' ],
 																			"lengthMenu" : [
 																					[
+																							10,
 																							50,
 																							100,
 																							200,
 																							-1 ],
 																					[
+
+																							10,
 																							50,
 																							100,
 																							200,
 																							"All" ] ],
-																			"pageLength" : 100
+																			"pageLength" : 10
 																		});
 
 													},
@@ -196,6 +234,7 @@ $(document)
 										callAjaxRequest();
 
 									});
+					
 
 					function callAjaxRequest() {
 						$
@@ -228,7 +267,7 @@ $(document)
 																		"data" : "projectCode"
 																	},
 																	{
-																		"data" : "interviewDate"
+																		"data" : "interviewDates"
 																	},
 																	{
 																		"data" : "collectionId"
@@ -251,18 +290,18 @@ $(document)
 															sort : [ 0, 'desc' ],
 															"lengthMenu" : [
 																	[
-																			10,
+																			100,
 																			50,
 																			100,
 																			200,
 																			-1 ],
 																	[
-																			10,
+																			100,
 																			50,
 																			100,
 																			200,
 																			"All" ] ],
-															"pageLength" : 10
+															"pageLength" : 100
 														});
 
 									},
@@ -284,34 +323,37 @@ function getBooleanImage(data, type, full, meta) {
 	}
 }
 
+function getLink(data, type, row) {
+	//alert(data);
+	return '<a href="modifyinterview/' + data + '" target="_blank">edit</a>'
+}
+
 function selectSebseries() {
 
 	var collectionId = document.getElementById("collectitonDropDown").value;
 
-	alert(collectionId);
 	$.ajax({
 		type : 'GET',
-		url : "getSubseries",
+		url : "subseries/getSubseries",
 		data : {
 			"collectionId" : collectionId
 		},
 		success : function(data) {
-
-			alert(data);
-			// var subseriesDropDown = $('#subseriesDropDown'), option = "";
-			//
-			// subseriesDropDown.empty();
-			//
-			// option = option
-			// + "<option value=''> Select subseries </option>";
-			//
-			// for (var i = 0; i < data.length; i++) {
-			// option = option + "<option value='"
-			// + data[i].Id + "'>"
-			// + data[i].SubseriesName + "</option>";
-			// }
-			//
-			// subseriesDropDown.append(option);
+			 
+			 var subseriesDropDown = $('#subseriesDropDown'), option = "";
+			
+			 subseriesDropDown.empty();
+			
+			 option = option
+			 + "<option value=''> Select subseries </option>";
+			
+			 for (var i = 0; i < data.length; i++) {
+			 option = option + "<option value='"
+			 + data[i].id + "'>"
+			 + data[i].subseriesName + "</option>";
+			 }
+			
+			 subseriesDropDown.append(option);
 		},
 		error : function(xhr, status, error) {
 			var err = eval("(" + xhr.responseText + ")");

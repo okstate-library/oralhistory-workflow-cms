@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.PredefinedUserType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 
 @Controller
@@ -34,7 +35,7 @@ public class PredefinedUserController extends MainController {
 		model.addAttribute("user", user);
 
 		//@SuppressWarnings("unchecked")
-		List<PredefinedUser> interviewers = predefinedUserService.findAllByType(PredefinedUserEnum.INTERVIEWER.getCode());
+		List<PredefinedUser> interviewers = predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode());
 		
 		System.out.println("interviewers length " +  interviewers.size());
 		

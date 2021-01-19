@@ -9,6 +9,8 @@ public interface CollectionService {
 
 	List<Collection> findAll();
 	
+	List<Collection> findByRepositoryId(short RepositoryId);
+	
 	Optional<Collection> findById(short Id);
 	
 	Collection saveCollection(Collection collection);

@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
+import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("subseries")
 public class SubserieController extends MainController {
 
 	@Autowired
@@ -25,31 +31,39 @@ public class SubserieController extends MainController {
 	@Autowired
 	private SubserieService subserieService;
 
-	@RequestMapping("/subseries")
+	@Autowired
+	private CollectionService collectionService;
+
+	@RequestMapping("/all")
 	public String subseries(Model model, Principal principal) throws ParseException {
 
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
 		List<Subserie> subseries = subserieService.findAll();
-		
-//		for (Collection collection: collections)
-//		{
-//			Sysstem.out.println();
-//		}
+
 		model.addAttribute("subseries", subseries);
 
-//		Collection col= null;
-//		col.getRepository().getRepositoryName();
-		
-		
-		
 		this.messageSetup(model);
 
 		return "subseries";
 	}
 
-	@RequestMapping(value = { "/subserie", "/subserie/{id}" })
+	@RequestMapping(value = { "/add" })
+	public String add(@PathVariable(required = false) String id, Principal principal, Model model) {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		Subserie subserie = new Subserie(Integer.parseInt("0"));
+
+		model.addAttribute("collections", collectionService.findAll());
+		model.addAttribute("subseriedetails", subserie);
+
+		return "subseriedetails";
+	}
+
+	@RequestMapping(value = { "/{id}" })
 	public String details(@PathVariable(required = false) String id, Principal principal, Model model) {
 
 		User user = userService.findByUsername(principal.getName());
@@ -57,51 +71,77 @@ public class SubserieController extends MainController {
 
 		Subserie subserie = null;
 
-		if (id != null && !id.isEmpty()) {
-			subserie = subserieService.findById(Integer.parseInt(id)).orElse(null);
+		subserie = subserieService.findById(Integer.parseInt(id)).orElse(null);
 
-			model.addAttribute("subseriedetails", subserie);
-		} else {
-			subserie = new Subserie(Integer.parseInt("0"));
-		}
-
+		model.addAttribute("collections", collectionService.findAll());
 		model.addAttribute("subseriedetails", subserie);
 
 		return "subseriedetails";
 	}
-//
-//	@PostMapping("/repository/update")
-//	public String update(@ModelAttribute("repository") Repository newRepository, Model model) {
-//
-//		
-////		if (newRepository.getId() > 0)
-////		{
-//			repositoryService.saveRepository(newRepository);
-////		}
-////		else
-////		{
-////			
-////		}
-//		
-//		// Repository repo =
-//		// repositoryService.findById(newRepository.getId()).orElse(null);
-//
-//		System.out.println(newRepository.getRepositoryName());
-////		
-////		User user = userService.findByUsername(newUser.getUsername());
-////		
-////		user.setUsername(newUser.getUsername());
-////		user.setFirstName(newUser.getFirstName());
-////		user.setLastName(newUser.getLastName());
-////		user.setEmail(newUser.getEmail());
-////
-////		model.addAttribute("user", user);
-////
-////		userService.saveUser(user);
-////
-//		this.message = "Repossitory details changed successfully!";
-//
-//		return "redirect:/repositories";
-//	}
 
+	@RequestMapping(value = "/getSubseries", method = RequestMethod.GET)
+	public @ResponseBody List<Subserie> getSubseries(@RequestParam(value = "collectionId") short collectionId) {
+
+		List<Subserie> list = subserieService.findAllbyCollectionId(collectionId); // .findAll();//
+
+		return list;
+	}
+
+	@PostMapping("/update")
+	public String update(@ModelAttribute("repository") Subserie subserie, Model model, Principal principal) {
+
+		User user = userService.findByUsername(principal.getName());
+
+		Subserie newSubserie = null;
+
+		if (subserie.getId() > 0) {
+
+			newSubserie = subserieService.findById(subserie.getId()).orElse(null);
+
+			newSubserie.setCollectionId(subserie.getCollectionId());
+			newSubserie.setSubseriesName(subserie.getSubseriesName());
+
+		} else {
+			newSubserie = subserie;
+
+			newSubserie.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
+			newSubserie.setCreatedDate(DateUtil.getTodaySqlDate());
+		}
+
+		newSubserie.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+		newSubserie.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+		Subserie sub = subserieService.saveSubseries(newSubserie);
+
+		if (sub != null && sub.getId() > 0) {
+
+			this.errorType = ErrorType.SUCESS;
+			this.message = "Subseries details changed successfully!";
+
+		} else {
+			this.errorType = ErrorType.ERROR;
+			this.message = "Failed to add subseries!";
+		}
+
+		return "redirect:/subseries/all";
+	}
+
+	@PostMapping("/delete")
+	public String delete(@ModelAttribute("repository") Repository newRepository, Model model) {
+
+		List<Collection> collections = collectionService.findByRepositoryId(newRepository.getId());
+
+		if (collections != null && collections.size() > 0) {
+
+			this.errorType = ErrorType.WARNING;
+			this.message = "Cannot delete repository record, due to references!";
+		} else {
+			subserieService.deleteRepository(newRepository.getId());
+
+			this.errorType = ErrorType.SUCESS;
+			this.message = "Successfully deleted repository!";
+		}
+
+		return "redirect:/repository/all";
+	}
 }

@@ -55,11 +55,22 @@ public class SubserieServiceImpl implements SubserieService {
 
 	@Override
 	public List<Subserie> findAllbyCollectionId(short collectionId) {
-		return subserieRepository.findAll().stream()
-				.filter(u -> u.getCollectionId() == collectionId)
+
+		System.out.println("Collection id " + collectionId);
+
+		List<Subserie> list = null;
+		
+		//.getCollectionId()
+
+		list = subserieRepository.findAll().stream().filter(u -> u.getCollection().getId() == collectionId)
 				.collect(Collectors.toList());
+
+		System.out.println("Collection id size" + list.size());
+
+		return list;
+
 	}
-	
+
 	public void flushCache() {
 		for (String cacheName : cacheManager.getCacheNames()) {
 			cacheManager.getCache(cacheName).clear();

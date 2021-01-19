@@ -16,6 +16,14 @@ public class DateUtil {
 		return new java.sql.Date(millis);
 	}
 
+	
+	
+	public static java.sql.Date getTodaySqlDate() {
+		long millis = System.currentTimeMillis();
+
+		return new java.sql.Date(millis);
+	}
+	
 	public static int getCurrentHour() {
 
 		Calendar rightNow = Calendar.getInstance();

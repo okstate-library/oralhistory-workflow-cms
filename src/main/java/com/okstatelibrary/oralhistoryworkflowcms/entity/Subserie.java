@@ -1,13 +1,21 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "subseries")
@@ -25,10 +33,34 @@ public class Subserie {
 		this.Id = value;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "subserie")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<Transcription> transcriptions;
+
+	@JsonManagedReference
+	public List<Transcription> getTranscriptions() {
+		return this.transcriptions;
+	}
+
+	public void setTranscriptions(List<Transcription> value) {
+		this.transcriptions = value;
+	}
+
+	private int CollectionId;
+	
+	public int getCollectionId() {
+		return CollectionId;
+	}
+
+	public void setCollectionId(int collectionId) {
+		CollectionId = collectionId;
+	}
+	
+	@ManyToOne
 	@JoinColumn(name = "CollectionId", insertable = false, updatable = false)
 	private Collection collection;
 
+	@JsonBackReference
 	public Collection getCollection() {
 		return this.collection;
 	}
@@ -36,16 +68,16 @@ public class Subserie {
 	public void setCollection(Collection value) {
 		this.collection = value;
 	}
-
-	private short CollectionId;
-
-	public short getCollectionId() {
-		return this.CollectionId;
-	}
-
-	public void setCollectionId(short value) {
-		this.CollectionId = value;
-	}
+	
+//	private short CollectionId;
+//
+//	public short getCollectionId() {
+//		return this.CollectionId;
+//	}
+//
+//	public void setCollectionId(short value) {
+//		this.CollectionId = value;
+//	}
 
 	private String SubseriesName;
 
@@ -355,44 +387,46 @@ public class Subserie {
 		this.Id = Id;
 	}
 
-	public Subserie(int Id, short CollectionId, String SubseriesName, String Number, String Dates, String Note,
-			String Subjects, String Keywords, String Description, String ScopeAndContent, String CustodialHistory,
-			String Size, String Acquisitioninfo, String Language, String PreservationNote, String Rights,
-			String AccessRestrictions, String PublicationRights, String PreferredCitation, String RelatedCollection,
-			String SeparatedMaterial, String OriginalLocation, String CopiesLocation, String PublicationNote,
-			String Creator, String Contributors, String ProcessedBy, String Sponsors, int CreatedBy,
-			java.sql.Date CreatedDate, int UpdatedBy, java.sql.Date UpdatedDate) {
-		this.Id = Id;
-		this.CollectionId = CollectionId;
-		this.SubseriesName = SubseriesName;
-		this.Number = Number;
-		this.Dates = Dates;
-		this.Note = Note;
-		this.Subjects = Subjects;
-		this.Keywords = Keywords;
-		this.Description = Description;
-		this.ScopeAndContent = ScopeAndContent;
-		this.CustodialHistory = CustodialHistory;
-		this.Size = Size;
-		this.Acquisitioninfo = Acquisitioninfo;
-		this.Language = Language;
-		this.PreservationNote = PreservationNote;
-		this.Rights = Rights;
-		this.AccessRestrictions = AccessRestrictions;
-		this.PublicationRights = PublicationRights;
-		this.PreferredCitation = PreferredCitation;
-		this.RelatedCollection = RelatedCollection;
-		this.SeparatedMaterial = SeparatedMaterial;
-		this.OriginalLocation = OriginalLocation;
-		this.CopiesLocation = CopiesLocation;
-		this.PublicationNote = PublicationNote;
-		this.Creator = Creator;
-		this.Contributors = Contributors;
-		this.ProcessedBy = ProcessedBy;
-		this.Sponsors = Sponsors;
-		this.CreatedBy = CreatedBy;
-		this.CreatedDate = CreatedDate;
-		this.UpdatedBy = UpdatedBy;
-		this.UpdatedDate = UpdatedDate;
-	}
+	
+	
+//	public Subserie(int Id, short CollectionId, String SubseriesName, String Number, String Dates, String Note,
+//			String Subjects, String Keywords, String Description, String ScopeAndContent, String CustodialHistory,
+//			String Size, String Acquisitioninfo, String Language, String PreservationNote, String Rights,
+//			String AccessRestrictions, String PublicationRights, String PreferredCitation, String RelatedCollection,
+//			String SeparatedMaterial, String OriginalLocation, String CopiesLocation, String PublicationNote,
+//			String Creator, String Contributors, String ProcessedBy, String Sponsors, int CreatedBy,
+//			java.sql.Date CreatedDate, int UpdatedBy, java.sql.Date UpdatedDate) {
+//		this.Id = Id;
+//		//this.CollectionId = CollectionId;
+//		this.SubseriesName = SubseriesName;
+//		this.Number = Number;
+//		this.Dates = Dates;
+//		this.Note = Note;
+//		this.Subjects = Subjects;
+//		this.Keywords = Keywords;
+//		this.Description = Description;
+//		this.ScopeAndContent = ScopeAndContent;
+//		this.CustodialHistory = CustodialHistory;
+//		this.Size = Size;
+//		this.Acquisitioninfo = Acquisitioninfo;
+//		this.Language = Language;
+//		this.PreservationNote = PreservationNote;
+//		this.Rights = Rights;
+//		this.AccessRestrictions = AccessRestrictions;
+//		this.PublicationRights = PublicationRights;
+//		this.PreferredCitation = PreferredCitation;
+//		this.RelatedCollection = RelatedCollection;
+//		this.SeparatedMaterial = SeparatedMaterial;
+//		this.OriginalLocation = OriginalLocation;
+//		this.CopiesLocation = CopiesLocation;
+//		this.PublicationNote = PublicationNote;
+//		this.Creator = Creator;
+//		this.Contributors = Contributors;
+//		this.ProcessedBy = ProcessedBy;
+//		this.Sponsors = Sponsors;
+//		this.CreatedBy = CreatedBy;
+//		this.CreatedDate = CreatedDate;
+//		this.UpdatedBy = UpdatedBy;
+//		this.UpdatedDate = UpdatedDate;
+//	}
 }

@@ -335,3 +335,29 @@ CREATE TABLE `videoequipmentused` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-11-22 18:38:01
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `EquipmentNumber` `EquipmentNumber` VARCHAR(20) NULL ;
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `InterviewDate` `InterviewDate` VARCHAR(50) NOT NULL ;
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `InterviewDates` `InterviewDates` VARCHAR(50) NULL DEFAULT NULL AFTER `Interviewer`;
+
+-- before run this command "SELECT  ConvertToDigitalDate,DraftSentDate,FinalSentDate FROM oralcmsdb_dev.transcriptions;"
+-- 
+ALTER TABLE `transcriptions`  
+CHANGE COLUMN `ConvertToDigitalDate` `ConvertToDigitalDate` VARCHAR(100) NULL DEFAULT NULL,
+CHANGE COLUMN `DraftSentDate` `DraftSentDate` VARCHAR(100) NULL DEFAULT NULL ,
+CHANGE COLUMN `FinalSentDate` `FinalSentDate` VARCHAR(100) NULL DEFAULT NULL ;
+
+UPDATE transcriptions SET ConvertToDigitalDate = DATE_FORMAT(ConvertToDigitalDate, '%m/%d/%Y');
+UPDATE transcriptions SET DraftSentDate = DATE_FORMAT(DraftSentDate, '%m/%d/%Y');
+UPDATE transcriptions SET FinalSentDate = DATE_FORMAT(FinalSentDate, '%m/%d/%Y');
+
+CHANGE COLUMN `ConvertToDigitalDate` `ConvertToDigitalDate` VARCHAR(10) NULL DEFAULT NULL,
+CHANGE COLUMN `DraftSentDate` `DraftSentDate` VARCHAR(10) NULL DEFAULT NULL ,
+CHANGE COLUMN `FinalSentDate` `FinalSentDate` VARCHAR(10) NULL DEFAULT NULL ;
+
+

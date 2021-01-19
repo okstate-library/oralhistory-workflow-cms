@@ -59,12 +59,14 @@
 <script>
 	setTimeout(function() {
 
-		var element = document.getElementById('aap');
+		var element = document.getElementById('message-box');
+
 		if (element != null && element.value == '') {
 			element.className = 'waa';
 		}
 
-	}, 2500);
+	}, 1000);
+
 </script>
 </head>
 <body>
@@ -81,7 +83,7 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand page-scroll" th:href="@{/index}">Home</a>
+					<a class="navbar-brand page-scroll" th:href="@{/index}">Home </a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
@@ -93,11 +95,9 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown">
-
-							<a th:href="@{/addinterview}">Add interview</a>
-
-						</li>
+						<li th:if="${user != null && user.authorized.contains(1)}"
+							class="dropdown"><a th:href="@{/addinterview}">Add
+								interview</a></li>
 
 					</ul>
 
@@ -106,11 +106,9 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown">
-
-							<a th:href="@{/transcriptionqueue}">Transcription Queue</a>
-
-						</li>
+						<li th:if="${user != null &&  user.authorized.contains(2)}"
+							class="dropdown"><a th:href="@{/transcriptionqueue}">Transcription
+								Queue</a></li>
 
 					</ul>
 
@@ -120,11 +118,8 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown">
-
-							<a th:href="@{/browse}">Browse</a>
-
-						</li>
+						<li th:if="${user != null &&  user.authorized.contains(3)}"
+							class="dropdown"><a th:href="@{/browse}">Browse</a></li>
 
 					</ul>
 
@@ -133,11 +128,8 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown">
-
-							<a th:href="@{/reports}">Reports</a>
-
-						</li>
+						<li th:if="${user != null && user.authorized.contains(4)}"
+							class="dropdown"><a th:href="@{/reports}">Reports</a></li>
 
 					</ul>
 
@@ -164,10 +156,10 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown"><a
-							href="#" class="dropdown-toggle" data-toggle="dropdown"
-							role="button" aria-haspopup="true" aria-expanded="false">Settings
-								<span class="caret"></span>
+						<li th:if="${user != null && user.authorized.contains(6)}"
+							class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">Settings <span class="caret"></span>
 						</a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/user/users}">Users</a></li>
@@ -181,17 +173,18 @@
 						<li class="hidden"><a class="page-scroll" href="#page-top"></a>
 						</li>
 
-						<li th:if="${user != null && user.roleId == 1}" class="dropdown"><a
-							href="#" class="dropdown-toggle" data-toggle="dropdown"
-							role="button" aria-haspopup="true" aria-expanded="false">Master
-								data <span class="caret"></span>
+						<li th:if="${user != null && user.authorized.contains(5)}"
+							class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">Master data <span class="caret"></span>
 						</a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/interviewers}">Interviewers</a></li>
+								<li><a th:href="@{/equipments}">Equipments</a></li>
 								<li><a th:href="@{/subjects}">Subjects</a></li>
-								<li><a th:href="@{/repositories}">Repositories</a></li>
+								<li><a th:href="@{/repository/all}">Repositories</a></li>
 								<li><a th:href="@{/collections}">Collections</a></li>
-								<li><a th:href="@{/subseries}">Subseries</a></li>
+								<li><a th:href="@{/subseries/all}">Subseries</a></li>
 
 							</ul></li>
 
@@ -209,10 +202,11 @@
 			<!-- /.container -->
 		</nav>
 
-		<div id="aap" class="p-3 mb-2 bg-success text-white"
-			th:if="${errorMessage}">
-			<h1 class="text-center" th:text="${errorMessage}"></h1>
+		<div id="message-box" class="show" th:if="${errorMessage}">
+			<h1 class="text-center" th:classappend="${errortypeclass}"
+				th:text="${errorMessage}"></h1>
 		</div>
+
 	</div>
 
 

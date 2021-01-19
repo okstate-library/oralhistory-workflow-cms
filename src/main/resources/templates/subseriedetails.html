@@ -9,36 +9,50 @@
 
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header ">Subseris Details</h1>
+			<h1 class="page-header ">Subseries Details</h1>
 		</div>
 	</div>
 
 	<div class="row ">
-		<div class="col-md-6">
-			<form method="post" th:action="@{/collection/update}">
-				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
+		<div class="col-md-12">
+			<form method="post" th:action="@{/subseries/update}">
+
+
+				<input type="hidden" id="Id" name="Id"
+					th:value="*{subseriedetails?.Id}" />
 
 				<div class="form-group">
 					<label for="firstName"> Collection Name</label>
 					<div class="cols-sm-10">
 						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
+							<select class="form-control" id="collectitonDropDown"
+								name="CollectionId">
+								<option th:value="0">Select Collection</option>
+
+								<option th:each="collection : ${collections}"
+									th:value="${collection.Id}"
+									th:text="${collection.CollectionName}"
+									th:selected="${collection.Id} == *{subseriedetails?.CollectionId}"></option>
+							</select>
+
+
+							<!-- <span class="input-group-addon"><i class="fa fa-user fa"
 								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								th:value="*{subseriedetails?.collection.Id}"
-								id="RepositoryId" name="RepositoryId"
-								placeholder="Enter repository name" required="required" />
+								th:value="*{subseriedetails?.collection.CollectionName}"
+								name="CollectionName"
+								placeholder="Enter collection name" required="required" /> -->
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="firstName"> Collection Name</label>
+					<label for="firstName"> Subseries Name</label>
 					<div class="cols-sm-10">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-user fa"
 								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								th:value="*{subseriedetails?.SubseriesName}"
-								id="SubseriesName" name="SubseriesName"
-								placeholder="Enter subserie name" required="required" />
+								th:value="*{subseriedetails?.SubseriesName}" id="SubseriesName"
+								name="SubseriesName" placeholder="Enter subserie name"
+								required="required" />
 						</div>
 					</div>
 				</div>
@@ -50,10 +64,15 @@
 				</div>
 
 			</form>
+
+			<form method="post" th:action="@{/repository/delete}"
+				th:if="${repositorydetails?.Id > 0}">
+				<input type="hidden" name="id" th:value="*{repositorydetails?.Id}" />
+				<div class="form-group ">
+					<button type="submit" class="btn btn-warning btn-block ">Delete</button>
+				</div>
+			</form>
 		</div>
-
-
-
 	</div>
 
 </div>
