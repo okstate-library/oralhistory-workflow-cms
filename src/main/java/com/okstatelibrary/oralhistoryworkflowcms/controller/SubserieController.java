@@ -130,17 +130,17 @@ public class SubserieController extends MainController {
 	public String delete(@ModelAttribute("repository") Repository newRepository, Model model) {
 
 		List<Collection> collections = collectionService.findByRepositoryId(newRepository.getId());
-
-		if (collections != null && collections.size() > 0) {
-
-			this.errorType = ErrorType.WARNING;
-			this.message = "Cannot delete repository record, due to references!";
-		} else {
-			subserieService.deleteRepository(newRepository.getId());
-
-			this.errorType = ErrorType.SUCESS;
-			this.message = "Successfully deleted repository!";
-		}
+//
+//		if (collections != null && collections.size() > 0) {
+//
+//			this.errorType = ErrorType.WARNING;
+//			this.message = "Cannot delete repository record, due to references!";
+//		} else {
+//			subserieService.deleteRepository(newRepository.getId());
+//
+//			this.errorType = ErrorType.SUCESS;
+//			this.message = "Successfully deleted repository!";
+//		}
 
 		return "redirect:/repository/all";
 	}
