@@ -13,33 +13,35 @@
 		</div>
 	</div>
 
-	<div class="row ">
+	<div class="row">
 		<div class="col-md-6">
-			<form method="post" th:action="@{/collection/update}">
+
+			<form method="post" th:action="@{/collections/update}">
 				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
 
+
 				<div class="form-group">
-					<label for="firstName"> Repository Name</label>
+					<label> Repository Name</label>
 					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								th:value="*{collectiondetails?.repository.Id}"
-								id="RepositoryId" name="RepositoryId"
-								placeholder="Enter repository name" required="required" />
-						</div>
+						<select class="form-control" name="RepositoryId" required>
+							<option value="">Select Repository</option>
+
+							<option th:each="repo : ${repositories}" th:value="${repo.Id}"
+								th:text="${repo.RepositoryName}"
+								th:selected="${repo.Id} == *{collectiondetails?.RepositoryId}"></option>
+						</select>
 					</div>
 				</div>
+
+
+
 				<div class="form-group">
 					<label for="firstName"> Collection Name</label>
 					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								th:value="*{collectiondetails?.CollectionName}"
-								id="CollectionName" name="CollectionName"
-								placeholder="Enter collection name" required="required" />
-						</div>
+						<input type="text" class="form-control"
+							th:value="*{collectiondetails?.CollectionName}"
+							name="CollectionName" required="required" />
+
 					</div>
 				</div>
 
@@ -48,18 +50,26 @@
 				<div class="form-group ">
 					<button type="submit" class="btn btn-primary btn-block ">Submit</button>
 				</div>
-
 			</form>
+
+			<form method="post" th:action="@{/collections/delete}"
+				th:if="${collectiondetails?.Id > 0}">
+				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
+				<div class="form-group ">
+					<button type="submit" class="btn btn-warning btn-block ">Delete</button>
+				</div>
+			</form>
+
+
+
 		</div>
-
-
-
 	</div>
-
 </div>
 
 
-<div th:replace="common/header :: body-bottom-scripts" />
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 
 </body>
 </html>

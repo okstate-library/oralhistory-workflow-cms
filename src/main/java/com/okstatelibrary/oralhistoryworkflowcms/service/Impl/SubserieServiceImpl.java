@@ -9,11 +9,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
-import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.SubserieRepository;
-import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
 import com.okstatelibrary.oralhistoryworkflowcms.service.SubserieService;
 
 import org.springframework.cache.annotation.*;
@@ -59,14 +56,9 @@ public class SubserieServiceImpl implements SubserieService {
 		System.out.println("Collection id " + collectionId);
 
 		List<Subserie> list = null;
-		
-		//.getCollectionId()
 
 		list = subserieRepository.findAll().stream().filter(u -> u.getCollection().getId() == collectionId)
 				.collect(Collectors.toList());
-
-		System.out.println("Collection id size" + list.size());
-
 		return list;
 
 	}
@@ -76,5 +68,24 @@ public class SubserieServiceImpl implements SubserieService {
 			cacheManager.getCache(cacheName).clear();
 			// LOG.info("Flushing cache with name: " + cacheName);
 		}
+	}
+
+	@Override
+	public void deleteSubseries(int subserieId) {
+		subserieRepository.deleteById(subserieId);
+	}
+
+	@Override
+	public Subserie findByName(short collectionId, String subseriesName) {
+
+		if (subseriesName != null && !subseriesName.isEmpty()) {
+			return findAll().stream()
+					.filter(u -> u.getSubseriesName().toLowerCase().contains(subseriesName.toLowerCase())
+							&& u.getCollectionId() == collectionId)
+					.findFirst().get();
+		} else {
+			return findAll().stream().filter(u -> u.getCollectionId() == collectionId).findFirst().get();
+		}
+
 	}
 }

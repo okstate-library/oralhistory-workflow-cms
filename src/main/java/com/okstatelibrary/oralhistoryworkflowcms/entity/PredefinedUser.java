@@ -43,6 +43,12 @@ public class PredefinedUser {
 	}
 
 	public PredefinedUser() {
+		
+	}
+	
+	public PredefinedUser(short id, byte type) {
+		this.Id = id;
+		this.UserType = type;
 	}
 
 	public PredefinedUser(short Id, byte UserType, String Name) {

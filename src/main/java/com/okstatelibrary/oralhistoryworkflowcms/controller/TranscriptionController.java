@@ -1,5 +1,12 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -7,27 +14,43 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.OriginalMediumType;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.PredefinedUserType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
+import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
 import com.okstatelibrary.oralhistoryworkflowcms.util.StringUtil;
 
 @Controller
@@ -123,12 +146,16 @@ public class TranscriptionController extends MainController {
 	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collectionoptions)
 			throws JsonProcessingException {
 
+		List<Transcription> transcriptions = null;
+
 		if (StringUtil.isNotNullOrEmpty(collectionoptions)) {
 
-			return transcriptionService.findAll(collectionoptions);
+			transcriptions = transcriptionService.findAll(collectionoptions);
 		} else {
-			return transcriptionService.findAll();
+			transcriptions = transcriptionService.findAll();
 		}
+
+		return transcriptions;
 
 		// return null;
 //
@@ -171,40 +198,17 @@ public class TranscriptionController extends MainController {
 	public @ResponseBody List<Transcription> transcriptionQueueData(@RequestParam(required = false) String options,
 			@RequestParam(required = false) String isinitialize) throws JsonProcessingException {
 
-		System.out.println("options" + options);
-
-		System.out.println("isinitialize" + isinitialize);
-
-//		boolean isPriority = false, isTranscribed = false, isAuditCheck = false, isFirstEdit = false,
-//				isSecondEdit = false, isDraftSent = false, isCorrections = false, isFinalEdit = false,
-//				isSentOut = false;
-//
-//		if (options != null && !options.isEmpty()) {
-//
-//			isPriority = options.contains("2");
-//			isTranscribed = options.contains("3");
-//			isAuditCheck = options.contains("4");
-//			isFirstEdit = options.contains("5");
-//			isSecondEdit = options.contains("6");
-//			isDraftSent = options.contains("7");
-//			isCorrections = options.contains("8");
-//			isFinalEdit = options.contains("9");
-//			isSentOut = options.contains("10");
-//		}
-
 		List<Transcription> list = null;
 
+		System.out.println("options -- " + options);
+		
 		if (isinitialize != null && !isinitialize.isEmpty() && Boolean.parseBoolean(isinitialize)) {
-
-			System.out.println("optional is null");
 
 			list = transcriptionService.findAll(false);
 
 			this.transcriptionList = list;
 
 		} else {
-
-			System.out.println("optional is not null");
 
 			list = this.transcriptionList.stream()
 					.filter(u -> u.getIsPriority() == (byte) (options.contains("2") ? 1 : u.getIsPriority()))
@@ -220,9 +224,6 @@ public class TranscriptionController extends MainController {
 					.collect(Collectors.toList());
 		}
 
-//		List<Transcription> list = transcriptionService.findAll(false, isPriority, isTranscribed, isAuditCheck,
-//				isFirstEdit, isSecondEdit, isDraftSent, isCorrections, isFinalEdit, isSsentOut);
-
 		return list;
 	}
 
@@ -235,8 +236,8 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("collections", collectionService.findAll());
 		model.addAttribute("subseries", subserieService.findAll());
 
-		model.addAttribute("audioEquipments", equipmentService.findAllAudios());
-		model.addAttribute("videoEquipments", equipmentService.findAllVideos());
+		model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
+		model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
 
 		model.addAttribute("transcribers",
 				predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
@@ -294,28 +295,20 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		// Transcription transcription = null;
-
-		// if (id != null && !id.isEmpty()) {
 		Transcription transcription = transcriptionService.findById(Integer.parseInt(id)).orElse(null);
-
-//			model.addAttribute("collectiondetails", collection);
-//		}
-
-		// System.out.println("title" + transcription.getTitle());
-		// System.out.println("getIsConvertToDigital" +
-		// transcription.getIsConvertToDigital());
 
 		// Master data for drop downs
 		model.addAttribute("collections", collectionService.findAll());
 		model.addAttribute("subseries", subserieService.findAll());
-		model.addAttribute("audioEquipments", equipmentService.findAllAudios());
-		model.addAttribute("videoEquipments", equipmentService.findAllVideos());
+		model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
+		model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
 
 		model.addAttribute("transcribers",
 				predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
 
 		model.addAttribute("interviewdetails", transcription);
+
+		this.messageSetup(model);
 
 		return "modifyinterview";
 	}
@@ -374,9 +367,7 @@ public class TranscriptionController extends MainController {
 		// TranscriptNote
 		newTranscription.setTranscriptNote(transcription.getTranscriptNote());
 
-		transcriptionService.save(newTranscription);
-
-		return "redirect:/modifyinterview/" + transcription.getId();
+		return submitTranscription(newTranscription);
 	}
 
 	@RequestMapping(value = "/modifymedia", method = RequestMethod.POST)
@@ -384,8 +375,6 @@ public class TranscriptionController extends MainController {
 			Principal principal) throws ParseException {
 
 		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
-
-		System.out.println("getConvertToDigitalDate" + transcription.getConvertToDigitalDate());
 
 		// Media
 		newTranscription.setIsAudioFormat(transcription.getIsAudioFormat());
@@ -419,9 +408,7 @@ public class TranscriptionController extends MainController {
 		newTranscription.setMasterFileLocation(transcription.getMasterFileLocation());
 		newTranscription.setAccessFileLocation(transcription.getAccessFileLocation());
 
-		transcriptionService.save(newTranscription);
-
-		return "redirect:/modifyinterview/" + transcription.getId();
+		return submitTranscription(newTranscription);
 	}
 
 	@RequestMapping(value = "/modifymetadata", method = RequestMethod.POST)
@@ -489,9 +476,7 @@ public class TranscriptionController extends MainController {
 		// FileName
 		newTranscription.setFileName(transcription.getFileName());
 
-		transcriptionService.save(newTranscription);
-
-		return "redirect:/modifyinterview/" + transcription.getId();
+		return submitTranscription(newTranscription);
 	}
 
 	@RequestMapping(value = "/modifysupplemental", method = RequestMethod.POST)
@@ -550,9 +535,18 @@ public class TranscriptionController extends MainController {
 		// General Note
 		newTranscription.setGeneralNote(transcription.getGeneralNote());
 
+		return submitTranscription(newTranscription);
+	}
+
+	private String submitTranscription(Transcription newTranscription) {
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Interview details added successfully!";
+
 		transcriptionService.save(newTranscription);
 
-		return "redirect:/modifyinterview/" + transcription.getId();
+		return "redirect:/modifyinterview/" + newTranscription.getId();
+
 	}
 
 	@RequestMapping("/reports")
@@ -561,9 +555,177 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		// model.addAttribute("transcriptions", transcriptionService.findAll(false));
+		model.addAttribute("interviewers",
+				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
 
 		return "reports";
+	}
+
+	@RequestMapping(value = "/reports", method = RequestMethod.POST)
+	@ResponseBody
+	public String reportPost(@RequestBody Report report, HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+		session.setAttribute("reportobj", report);
+
+		System.out.println("status " + report.getStatus());
+
+		System.out.println("borndigital " + report.getBornDigital());
+		System.out.println("converted " + report.getConverted());
+
+	
+		List<Transcription> transcriptions = getTranscriptions(report);
+////
+//		if (report.getAction().equals("download")) {
+//			downloadTranscriptions(transcriptions);
+//		}
+//
+//		model.addAttribute("recordcount", transcriptions.size() + " records found.");
+//
+//		model.addAttribute("interviewers",
+//				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
+
+		return "" + transcriptions.size();
+	}
+
+	@PostMapping("/downloadreports")
+	public ResponseEntity<Resource> downloadreports(HttpServletRequest request) throws IOException {
+
+		HttpSession session = request.getSession();
+		Report report = (Report) session.getAttribute("reportobj");
+		
+		
+		return downloadTranscriptions(getTranscriptions(report));
+	}
+
+	private List<Transcription> getTranscriptions(Report report) {
+		return transcriptionService.report(report.getInterviewer(), report.getLocation(), report.getBeginDate(),
+				report.getEndDate(), report.getStatus(), report.getBornDigital(), report.getConverted());
+	}
+
+	@RequestMapping("export")
+	public String export(Model model, Principal principal) throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		return "export";
+	}
+
+	@RequestMapping("/import")
+	public String importdata(Model model, Principal principal) throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		this.messageSetup(model);
+
+		return "import";
+	}
+
+	@RequestMapping(value = "download", method = RequestMethod.POST)
+	@ResponseBody
+	public FileSystemResource downloadFile() {
+		return new FileSystemResource(new File("cms_sample.xlsx"));
+	}
+
+	@PostMapping("/upload")
+	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes, Model model,
+			Principal principal) {
+
+		String UPLOAD_DIR = "uploads";
+
+		// check if file is empty
+		if (file.isEmpty()) {
+			this.errorType = ErrorType.ERROR;
+			this.message = "Please select a file to upload!";
+
+			System.out.println("not Uploaded ");
+
+			return "import";
+		}
+
+		// normalize the file path
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+		// save the file on the local file system
+		try {
+			Path path = Paths.get(UPLOAD_DIR + fileName);
+
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+			List<Transcription> transcriptions = ExcelService.getTranscriptionFromExcel(path.toString());
+
+			User user = userService.findByUsername(principal.getName());
+			model.addAttribute("user", user);
+
+			if (transcriptions != null && transcriptions.size() > 1) {
+				for (Transcription transcription : transcriptions) {
+
+					// Setup collection using collection name
+					Collection collection = collectionService.findByName(transcription.getCollectionName());
+
+					if (collection != null) {
+						transcription.setCollectionId(collection.getId());
+					} else {
+						transcription.setCollectionId((short) 1);
+					}
+
+					// Setup Subseries using suibsreis name
+					Subserie subserie = subserieService.findByName(collection.getId(),
+							transcription.getSubseriesName());
+
+					if (subserie != null) {
+						transcription.setSubseriesId(subserie.getId());
+					} else {
+						transcription.setSubseriesId((short) 1);
+					}
+
+					transcription.setCreatedDate(DateUtil.getTodaySqlDate());
+					transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+					transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
+					transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+					transcriptionService.save(transcription);
+				}
+			}
+		} catch (
+
+		IOException e) {
+			e.printStackTrace();
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "You successfully uploaded " + fileName + '!';
+
+		this.messageSetup(model);
+
+		return "import";
+	}
+
+	@PostMapping("/transactions/export")
+	public ResponseEntity<Resource> export(Model model, HttpServletResponse response) throws IOException {
+
+		return downloadTranscriptions(transcriptionService.findAll());
+
+//		String filename = "transcriptions.xlsx";
+//
+//		InputStreamResource file = new InputStreamResource(
+//				ExcelService.transcriptionToExcel());
+//
+//		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+//				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
+
+	}
+
+	private ResponseEntity<Resource> downloadTranscriptions(List<Transcription> transcriptions) {
+		String filename = "transcriptions.xlsx";
+
+		InputStreamResource file = new InputStreamResource(ExcelService.transcriptionToExcel(transcriptions));
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
 	}
 
 }

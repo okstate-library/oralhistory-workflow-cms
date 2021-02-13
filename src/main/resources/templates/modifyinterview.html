@@ -21,8 +21,8 @@
 			<div class="row">
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Title</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Title</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.Title}" />
 
 				</div>
@@ -30,8 +30,8 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Transcribed</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Transcribed</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.TranscriptStatus == 0 ? 'In progress' : 'Completed'}" />
 
 				</div>
@@ -62,8 +62,8 @@
 			<div class="row">
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Dates</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Dates</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.InterviewDates}" />
 
 				</div>
@@ -71,7 +71,7 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Project code</label> <input
+					<label class="control-label">Project code</label> <input
 						type="text" readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.ProjectCode}" />
 
@@ -82,8 +82,8 @@
 			<div class="row">
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Formats</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Formats</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.Format}" />
 
 				</div>
@@ -91,8 +91,8 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Access media
-						status</label> <input type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Access media status</label> <input
+						type="text" readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.IsAccessMediaStatus == 0 ? 'No' : 'Yes'}" />
 
 				</div>
@@ -102,8 +102,8 @@
 			<div class="row">
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Online</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Online</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.IsOnline == 0 ? 'No' : 'Yes'}" />
 
 				</div>
@@ -111,8 +111,8 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">In Rosetta</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">In Rosetta</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.IsRosetta == 0 ? 'No' : 'Yes'}" />
 
 				</div>
@@ -121,7 +121,7 @@
 			<div class="row">
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Release form</label> <input
+					<label class="control-label">Release form</label> <input
 						type="text" readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.ReleaseForm  == 0 ? 'No' : 'Yes'}" />
 
@@ -130,8 +130,8 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label  class="control-label">Restriction</label> <input
-						type="text" readonly="readonly" class="form-control"
+					<label class="control-label">Restriction</label> <input type="text"
+						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.IsRestriction == 0 ? 'No' : 'Yes'}" />
 
 				</div>
@@ -586,8 +586,8 @@
 
 
 					<div class="col-md-12 form-group">
-						<label  class="control-label">Title</label> <input
-							type="text" class="form-control" name="Title"
+						<label class="control-label">Title</label> <input type="text"
+							class="form-control" name="Title"
 							th:value="*{interviewdetails?.Title}" />
 
 					</div>
@@ -629,9 +629,8 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Digital date</label>
-						<input type="text" class="form-control date"
-							name="ConvertToDigitalDate"
+						<label class="control-label">Digital date</label> <input
+							type="text" class="form-control date" name="ConvertToDigitalDate"
 							th:value="*{interviewdetails?.ConvertToDigitalDate}" />
 
 					</div>
@@ -688,7 +687,7 @@
 				<div class="row">
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Collection</label> <select
+						<label class="control-label">Collection</label> <select
 							onchange="selectSebseries()" class="form-control"
 							id="collectitonDropDown" name="CollectionId">
 							<option th:value="0">Select Collection</option>
@@ -704,7 +703,7 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Subserie</label> <select
+						<label class="control-label">Subserie</label> <select
 							onchange="selectProvince()" class="form-control"
 							id="subseriesDropDown" th:name="member.province_id">
 							<option th:value="0">Select Subserie</option>
@@ -728,8 +727,8 @@
 				<div class="row">
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Project code</label>
-						<input type="text" class="form-control" name="ProjectCode"
+						<label class="control-label">Project code</label> <input
+							type="text" class="form-control" name="ProjectCode"
 							th:value="*{interviewdetails?.ProjectCode}" />
 
 					</div>
@@ -737,8 +736,8 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Coverage-temporal</label>
-						<input type="text" class="form-control" name="CoverageTemporal"
+						<label class="control-label">Coverage-temporal</label> <input
+							type="text" class="form-control" name="CoverageTemporal"
 							th:value="*{interviewdetails?.CoverageTemporal}" />
 
 					</div>
@@ -747,8 +746,8 @@
 				<div class="row">
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Format</label> <input
-							type="text" class="form-control" name="Format"
+						<label class="control-label">Format</label> <input type="text"
+							class="form-control" name="Format"
 							th:value="*{interviewdetails?.Format}" />
 
 					</div>
@@ -756,8 +755,8 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Language</label> <input
-							type="text" class="form-control" name="Language"
+						<label class="control-label">Language</label> <input type="text"
+							class="form-control" name="Language"
 							th:value="*{interviewdetails?.Language}" />
 
 					</div>
@@ -767,8 +766,8 @@
 				<div class="row">
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Type</label> <input
-							type="text" class="form-control" name="Type"
+						<label class="control-label">Type</label> <input type="text"
+							class="form-control" name="Type"
 							th:value="*{interviewdetails?.Type}" />
 
 					</div>
@@ -776,8 +775,8 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Transcript</label> <input
-							type="text" class="form-control" name="Transcript"
+						<label class="control-label">Transcript</label> <input type="text"
+							class="form-control" name="Transcript"
 							th:value="*{interviewdetails?.Transcript}" />
 
 					</div>
@@ -786,9 +785,8 @@
 				<div class="row">
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">Relation-is
-							part of</label> <input type="text" class="form-control"
-							name="RelationIsPartOf"
+						<label class="control-label">Relation-is part of</label> <input
+							type="text" class="form-control" name="RelationIsPartOf"
 							th:value="*{interviewdetails?.RelationIsPartOf}" />
 
 					</div>
@@ -796,8 +794,8 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label  class="control-label">File name</label> <input
-							type="text" class="form-control" name="FileName"
+						<label class="control-label">File name</label> <input type="text"
+							class="form-control" name="FileName"
 							th:value="*{interviewdetails?.FileName}" />
 
 					</div>
@@ -1073,8 +1071,10 @@
 
 	</div>
 </div>
-
-<div th:replace="common/header :: body-bottom-scripts" />
-
 </body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+
 </html>

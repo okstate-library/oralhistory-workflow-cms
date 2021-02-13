@@ -34,6 +34,10 @@ public class Subject {
 
 	public Subject() {
 	}
+	
+	public Subject(short id) {
+		this.Id = id;
+	}
 
 	public Subject(short Id, String SubjectName) {
 		this.Id = Id;

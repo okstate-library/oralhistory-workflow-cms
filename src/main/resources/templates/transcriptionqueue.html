@@ -8,43 +8,28 @@
 <div class="container my-custom-container">
 
 	<div class="row">
-		<div class="col-lg-10">
+		<div class="col-lg-12">
 			<h1 class="page-header">Transcription Queue</h1>
 		</div>
-		<div class="col-lg-2">
 
-			<form method="get" th:action="@{/headcount/stat_excel}">
-
-				<h1>
-					<a type="submit" class="btn  btn-info">Download data in Excel</a>
-				</h1>
-
-			</form>
-
-		</div>
 	</div>
 
 	<div class="row">
 
 		<div class="col-xs-1">
 			<div class="dropdown">
-				<!-- <button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select options</button> -->
-				<!-- <form class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
+
 
 				<th:block th:each="queueoption : ${queueptions}">
 
-					<label class="dropdown-item"><input
+					<label class="dropdown-item small"><input
 						class="transcriptQueueOption" type="checkbox"
 						th:id="'transcriptionQueueOption-' + ${queueoption.Id}"
 						th:value="${queueoption.Id}" th:name="${queueoption.Name}"
-						th:text="${queueoption.Name}"
+						th:text="'   ' + ${queueoption.Name}"
 						th:checked="${queueoption.IsChecked}" /></label>
+					<br />
 				</th:block>
-				<!-- </form> -->
-
-
 
 			</div>
 
@@ -68,6 +53,7 @@
 						<th>Second edit</th>
 						<th>Draft sent</th>
 						<th>Final edit</th>
+						<th>View</th>
 					</tr>
 				</thead>
 			</table>
@@ -79,61 +65,16 @@
 
 </div>
 
-
-<div th:replace="common/header :: body-bottom-scripts" />
-<script>
-	$(document).ready(
-			function() {
-
-				//transcriptQueueOption[0].check = true;
-				
-				$.ajax({
-					url : '/transcriptionqueue/data',
-					data : {
-						"isinitialize" : true
-					},
-					success : function(data) {
-
-						var table = $('#transcriptionQueueDataTable')
-								.DataTable(
-										{
-											data : data,
-											columns : [
-
-											{
-												"data" : "interviewee"
-											}, {
-												"data" : "interviewer"
-											}, {
-												"data" : "interviewDates"
-											}, {
-												"data" : "projectCode"
-											}, {
-												"data" : "transcriberAssigned"
-											}, {
-												"data" : "isPriority",
-												render : getBooleanImage,
-											}, {
-												"data" : "auditCheckCompleted"
-											}, {
-												"data" : "firstEditCompleted"
-											}, {
-												"data" : "secondEditCompleted"
-											}, {
-												"data" : "draftSentDate"
-											}, {
-												"data" : "finalEditCompleted"
-											}, ],
-											sort : [ 0, 'desc' ],
-											"lengthMenu" : [
-													[ 10, 50, 100, 200, -1 ],
-													[ 10,50, 100, 200, "All" ] ],
-											"pageLength" : 10
-										});
-					}
-				});
-
-			});
-</script>
 </body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+
+<div th:replace="common/header :: body-bottom-datatable-scripts"></div>
+
+<script>
+	callTransactionQueueAjaxRequest();
+</script>
+
 </html>

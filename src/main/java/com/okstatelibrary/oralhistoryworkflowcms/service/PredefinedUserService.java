@@ -14,4 +14,6 @@ public interface PredefinedUserService {
 	Optional<PredefinedUser> findById(short id);
 	
 	PredefinedUser savePredefinedUser(PredefinedUser collection);
+
+	void deletePredefinedUser(short id);
 }

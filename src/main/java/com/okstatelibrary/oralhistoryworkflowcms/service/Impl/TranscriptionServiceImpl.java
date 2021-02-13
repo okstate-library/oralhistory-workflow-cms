@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.TranscriptionRepository;
@@ -99,7 +101,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 			allPredicates.add(c -> c.getCollection().getId() == Short.parseShort(id));
 		}
 
-		//allPredicates.add(c -> c.getsubseries().get .getSubseriesId() == 44);
+		// allPredicates.add(c -> c.getsubseries().get .getSubseriesId() == 44);
 
 		return transcriptionRepository.findAll().stream()
 				.filter(allPredicates.stream().reduce(x -> false, Predicate::or)).collect(Collectors.toList());
@@ -119,6 +121,105 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	public Transcription save(Transcription transcription) {
 		// TODO Auto-generated method stub
 		return transcriptionRepository.save(transcription);
+	}
+
+	@Override
+	public List<Transcription> findBySubseriesId(int subseriesId) {
+
+		return transcriptionRepository.findAll().stream().filter(u -> u.getSubseriesId() == subseriesId)
+				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public List<Transcription> findByTranscriberName(String transcriberName) {
+
+		System.out.println("transcriberName - " + transcriberName);
+
+		return transcriptionRepository.findAll().stream()
+				.filter(u -> u.getTranscriberAssigned().contains(transcriberName)).collect(Collectors.toList());
+
+	}
+
+	@Override
+	public List<Transcription> findByInterviewerName(String interviewerName) {
+
+		return transcriptionRepository.findAll().stream().filter(u -> u.getInterviewer().contains(interviewerName))
+				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public List<Transcription> findBySuject(String subjectName) {
+		return transcriptionRepository.findAll().stream().filter(u -> u.getSubject().contains(subjectName))
+				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public List<Transcription> findByEquipmentName(String equipmentName) {
+
+		System.out.println("equipmentName" + equipmentName);
+
+		Stream<Transcription> stream = transcriptionRepository.findAll().stream()
+				.filter(u -> u.getSubject().contains(equipmentName));
+
+		return stream == null ? null : stream.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Transcription> report(String interviewer, String location, String beginDate, String endDate,
+			String status, String bornDigital, String converetd) {
+//
+//		System.out.println("interviewer" + StringUtils.isEmpty(interviewer));
+//		System.out.println("location" + StringUtils.isEmpty(location));
+//		System.out.println("status" + "  " + status + "  " + StringUtils.isEmpty(status));
+//		System.out.println("bornDigital" + "  " + bornDigital + "  " + StringUtils.isEmpty(bornDigital));
+//		System.out.println("converetd" + "  " + converetd + "  " + StringUtils.isEmpty(converetd));
+
+		return transcriptionRepository.findAll().stream()
+				.filter(getInterviewerPredicate(interviewer).and(getLocationPredicate(location))
+						.and(getStatusPredicate(status))
+						.and(getBornDigitalPredicate(bornDigital).and(getConveretdPredicate(converetd))))
+
+				.collect(Collectors.toList());
+
+	}
+
+	public static Predicate<Transcription> getInterviewerPredicate(String interviewer) {
+		if (!StringUtils.isEmpty(interviewer)) {
+			return u -> u.getInterviewer().toLowerCase().contains(interviewer.toLowerCase());
+		}
+		return u -> !u.getInterviewer().isEmpty();
+	}
+
+	public static Predicate<Transcription> getLocationPredicate(String location) {
+		if (!StringUtils.isEmpty(location)) {
+			return u -> !StringUtils.isEmpty(u.getTranscriptLocation())
+					&& u.getTranscriptLocation().toLowerCase().contains(location.toLowerCase());
+		}
+		return u -> u.getId() > 0;
+	}
+
+	public static Predicate<Transcription> getStatusPredicate(String status) {
+		if (!StringUtils.isEmpty(status)) {
+			return u -> u.getIsOnline() == Byte.parseByte(status);
+		}
+		return u -> u.getId() > 0;
+	}
+
+	public static Predicate<Transcription> getBornDigitalPredicate(String bornDigital) {
+		if (!StringUtils.isEmpty(bornDigital)) {
+			return u -> u.getIsBornDigital() == Byte.parseByte("1");
+		}
+		return u -> u.getId() > 0;
+	}
+
+	public static Predicate<Transcription> getConveretdPredicate(String converted) {
+		if (!StringUtils.isEmpty(converted)) {
+			return u -> u.getIsConvertToDigital() == Byte.parseByte("1");
+		}
+		return u -> u.getId() > 0;
 	}
 
 }

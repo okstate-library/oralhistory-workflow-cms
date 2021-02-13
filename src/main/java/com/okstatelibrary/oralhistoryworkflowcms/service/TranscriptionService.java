@@ -20,7 +20,20 @@ public interface TranscriptionService {
 			boolean isSsentOut);
 
 	Optional<Transcription> findById(int id);
-	
+
 	Transcription save(Transcription transcription);
+
+	List<Transcription> findBySubseriesId(int id);
+
+	List<Transcription> findByTranscriberName(String transcriberName);
+
+	List<Transcription> findByInterviewerName(String interviewerName);
+
+	List<Transcription> findBySuject(String subjectName);
+
+	List<Transcription> findByEquipmentName(String equipmentName);
+
+	List<Transcription> report(String interviewer, String location, String beginDate, String endDate, String status,
+			String bornDigital, String converetd);
 
 }

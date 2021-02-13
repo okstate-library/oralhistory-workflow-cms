@@ -1,6 +1,9 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
+import java.io.Serializable;
 import java.text.ParseException;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,13 +11,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "transcriptions")
-public class Transcription {
+public class Transcription { // implements Serializable
+
+	/**
+	 * 
+	 */
+	// private static final long serialVersionUID = -2750503608069646012L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -93,6 +102,23 @@ public class Transcription {
 		this.tcollection = value;
 	}
 
+	@Transient
+	private String CollectionName;
+
+	@Transient
+	public String getCollectionName() {
+
+		if (this.tcollection != null) {
+			CollectionName = this.tcollection.getCollectionName();
+		}
+		return CollectionName;
+	}
+
+	@Transient
+	public void setCollectionName(String value) {
+		this.CollectionName = value;
+	}
+
 	private int SubseriesId;
 
 	public int getSubseriesId() {
@@ -102,7 +128,7 @@ public class Transcription {
 	public void setSubseriesId(int value) {
 		this.SubseriesId = value;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "SubseriesId", insertable = false, updatable = false)
 	private Subserie subserie;
@@ -115,7 +141,23 @@ public class Transcription {
 	public void setSubseries(Subserie value) {
 		this.subserie = value;
 	}
-	
+
+	@Transient
+	private String SubseriesName;
+
+	@Transient
+	public String getSubseriesName() {
+
+		if (this.subserie != null) {
+			SubseriesName = this.subserie.getSubseriesName();
+		}
+		return SubseriesName;
+	}
+
+	@Transient
+	public void setSubseriesName(String value) {
+		this.SubseriesName = value;
+	}
 
 	private String Interviewee;
 

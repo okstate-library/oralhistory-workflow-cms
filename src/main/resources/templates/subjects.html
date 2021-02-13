@@ -4,13 +4,15 @@
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
-<div class="container my-custom-container">
+<div class="container">
 	<div class="row">
 		<div class="col-lg-10">
 			<h1 class="page-header">Subject</h1>
 		</div>
 		<div class="col-lg-2">
-			<h1 class="page-header"><a class="btn  btn-info" th:href="@{/subject}">Add Subject</a></h1>
+			<h1 class="page-header">
+				<a class="btn  btn-info" th:href="@{/subjects/add}">Add Subject</a>
+			</h1>
 		</div>
 	</div>
 
@@ -27,19 +29,22 @@
 				<tbody>
 					<tr data-th-each="subject : ${subjects}">
 						<td data-th-text="${subject.SubjectName}">...</td>
-						<td><a th:href="${'/subject/' + subject.Id}">View</a></td>
+						<td><a th:href="${'/subjects/' + subject.Id}">View</a></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
+</body>
 
-<div th:replace="common/header :: body-bottom-scripts" />
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 <script>
 	$(document).ready(function() {
 		$('#example').DataTable();
 	});
 </script>
-</body>
+
 </html>

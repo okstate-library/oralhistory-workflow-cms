@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +16,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "repositories")
-public class Repository {
+public class Repository implements Serializable{
 
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1932156269043123514L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private short Id;

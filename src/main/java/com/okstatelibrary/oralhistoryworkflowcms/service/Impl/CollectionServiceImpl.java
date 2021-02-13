@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
-import com.okstatelibrary.oralhistoryworkflowcms.util.StringUtil;
 
 import org.springframework.cache.annotation.*;
 
@@ -60,7 +59,27 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public List<Collection> findByRepositoryId(short RepositoryId) {
-		return collectionRepository.findAll().stream()
-				.filter(u -> u.getRepositoryId() == RepositoryId).collect(Collectors.toList());
+		return findAll().stream().filter(u -> u.getRepositoryId() == RepositoryId).collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteCollection(short Id) {
+		collectionRepository.deleteById(Id);
+
+		flushCache();
+	}
+
+	@Override
+	public Collection findByName(String collectionName) {
+
+		List<Collection> collections = findAll().stream()
+				.filter(u -> u.getCollectionName().toLowerCase().contains(collectionName.toLowerCase()))
+				.collect(Collectors.toList());
+
+		if (collections != null && collections.size() > 0) {
+			return collections.get(0);
+		}
+
+		return null;
 	}
 }

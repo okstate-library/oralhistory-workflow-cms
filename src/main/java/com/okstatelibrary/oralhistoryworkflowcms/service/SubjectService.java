@@ -12,4 +12,6 @@ public interface SubjectService {
 	Optional<Subject> findById(short id);
 	
 	Subject saveSubject(Subject subject);
+
+	void deleteSubject(short id);
 }

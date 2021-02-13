@@ -45,15 +45,17 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 			@CacheEvict(value = "findByPredefinedUserIdCache", allEntries = true) })
 	public PredefinedUser savePredefinedUser(PredefinedUser predefinedUser) {
 
-		if (predefinedUser.getId() == 0) {
-			return predefinedUserRepository.save(predefinedUser);
-		} else {
-			if (findById(predefinedUser.getId()) != null) {
-				return predefinedUserRepository.save(predefinedUser);
-			} else {
-				return null;
-			}
-		}
+		return predefinedUserRepository.save(predefinedUser);
+
+//		if (predefinedUser.getId() == 0) {
+//			
+//		} else {
+//			if (findById(predefinedUser.getId()) != null) {
+//				return predefinedUserRepository.save(predefinedUser);
+//			} else {
+//				return null;
+//			}
+//		}
 	}
 
 	public void flushCache() {
@@ -61,6 +63,11 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 			cacheManager.getCache(cacheName).clear();
 			// LOG.info("Flushing cache with name: " + cacheName);
 		}
+	}
+
+	@Override
+	public void deletePredefinedUser(short id) {
+		predefinedUserRepository.deleteById(id);
 	}
 
 }

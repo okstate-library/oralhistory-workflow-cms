@@ -4,6 +4,7 @@ import com.okstatelibrary.oralhistoryworkflowcms.entity.User;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.RoleRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.security.Role;
 import com.okstatelibrary.oralhistoryworkflowcms.service.UserService;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,8 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("")
+public class UserController extends MainController {
 
 	@Autowired
 	private UserService userService;
@@ -27,7 +28,19 @@ public class UserController {
 	@Autowired
 	private RoleRepository roleDao;
 
-	private String message = "";
+	@GetMapping("/users")
+	public String users(Principal principal, Model model) {
+		User user = userService.findByUsername(principal.getName());
+
+		List<User> users = userService.findUserList();
+
+		model.addAttribute("user", user);
+		model.addAttribute("userList", users);
+
+		messageSetup(model);
+
+		return "users";
+	}
 
 	@GetMapping("/profile")
 	public String profile(Principal principal, Model model) {
@@ -36,7 +49,7 @@ public class UserController {
 		model.addAttribute("user", user);
 
 		messageSetup(model);
-		
+
 		return "profile";
 	}
 
@@ -51,11 +64,19 @@ public class UserController {
 
 		model.addAttribute("user", user);
 
-		userService.saveUser(user);
+		User savedUser = userService.saveUser(user);
 
-		message = "User details changed successfully!";
+		if (savedUser != null && savedUser.getUserId() > 0) {
+			message = "User details changed successfully!";
 
-		return "redirect:/user/profile";
+			this.errorType = ErrorType.SUCESS;
+		} else {
+			message = "User details changed unsuccessful. Contact administrator for further info!";
+
+			this.errorType = ErrorType.ERROR;
+		}
+
+		return "redirect:/profile";
 	}
 
 	@GetMapping("/adduser")
@@ -90,8 +111,8 @@ public class UserController {
 			userService.createUser(user);
 
 			message = "User details saved successfully!";
-			
-			return "redirect:/user/users";
+
+			return "redirect:/users";
 		}
 	}
 
@@ -99,7 +120,7 @@ public class UserController {
 	public String update(@ModelAttribute("user") User newUser, Model model) {
 
 		User user = userService.findByUsername(newUser.getUsername());
-		
+
 		user.setUsername(newUser.getUsername());
 		user.setFirstName(newUser.getFirstName());
 		user.setLastName(newUser.getLastName());
@@ -109,26 +130,12 @@ public class UserController {
 
 		userService.saveUser(user);
 
-		message = "User details changed successfullyss!";
-		
-		return "redirect:/user/details/" + user.getUsername();
-	}
-	
-	@GetMapping("/users")
-	public String users(Principal principal, Model model) {
-		User user = userService.findByUsername(principal.getName());
+		message = "User details changed successfully!";
 
-		List<User> users = userService.findUserList();
-
-		model.addAttribute("user", user);
-		model.addAttribute("userList", users);
-
-		messageSetup(model);
-		
-		return "users";
+		return "redirect:/users";
 	}
 
-	@RequestMapping("details/{username}")
+	@RequestMapping("user/{username}")
 	public String details(@PathVariable String username, Principal principal, Model model) {
 
 		User user = userService.findByUsername(principal.getName());
@@ -138,11 +145,11 @@ public class UserController {
 		model.addAttribute("userdetails", detailUser);
 
 		messageSetup(model);
-		
+
 		return "userdetails";
 	}
 
-	@PostMapping("/updatestatus")
+	@PostMapping("/updateuserstatus")
 	public String updatestatus(@ModelAttribute("user") User newUser, Model model) {
 
 		User user = userService.findByUsername(newUser.getUsername());
@@ -164,8 +171,8 @@ public class UserController {
 		updatePassword(username, newUser.getPassword());
 
 		message = "Password changed successfully!";
-		
-		return "redirect:/user/profile";
+
+		return "redirect:/profile";
 	}
 
 	@PostMapping("/resetpassword")
@@ -193,15 +200,6 @@ public class UserController {
 		message = "Delete user successfully!";
 
 		return "redirect:/user/users";
-	}
-
-	private void messageSetup(Model model) {
-		if (!message.equals(null) || !message.equals("")) {
-
-			model.addAttribute("errorMessage", message);
-
-			message = "";
-		}
 	}
 
 	private void updatePassword(String username, String newPassword) {

@@ -14,4 +14,8 @@ public interface CollectionService {
 	Optional<Collection> findById(short Id);
 	
 	Collection saveCollection(Collection collection);
+	
+	void deleteCollection(short Id);
+
+	Collection findByName(String collectionName);
 }

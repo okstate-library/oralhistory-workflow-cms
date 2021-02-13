@@ -56,4 +56,9 @@ public class SubjectServiceImpl implements SubjectService {
 		}
 	}
 
+	@Override
+	public void deleteSubject(short id) {
+		subjectRepository.deleteById(id);
+	}
+
 }

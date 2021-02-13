@@ -14,4 +14,8 @@ public interface SubserieService {
 	Optional<Subserie> findById(int Id);
 	
 	Subserie saveSubseries(Subserie subserie);
+
+	void deleteSubseries(int subserieId);
+
+	Subserie findByName(short collectionId, String subseriesName);
 }

@@ -17,7 +17,7 @@
 		<div class="col-md-6">
 			<h2 class="title">User Profile</h2>
 			<hr />
-			<form method="post" th:action="@{/user/updateuser}">
+			<form method="post" th:action="@{/updateuser}">
 				<input type="hidden" name="id" th:value="${userdetails.userId}" />
 
 				<div class="form-group">
@@ -103,7 +103,7 @@
 		<div class="col-md-6">
 			<h2 class="title">Settings</h2>
 			<hr />
-			<form method="post" th:action="@{/user/updatestatus}">
+			<form method="post" th:action="@{/updateuserstatus}">
 
 				<input type="hidden" name="username" id="username_status"
 					th:value="${userdetails.username}" />
@@ -114,7 +114,7 @@
 
 			</form>
 
-			<form method="post" th:action="@{/user/resetpassword}">
+			<form method="post" th:action="@{/resetpassword}">
 
 				<input type="hidden" name="username" id="username_resetpassword"
 					th:value="${userdetails.username}" />
@@ -126,7 +126,7 @@
 
 			</form>
 
-			<form method="post" th:action="@{/user/deleteuser}">
+			<form method="post" th:action="@{/deleteuser}">
 
 				<input type="hidden" name="username" id="username_resetpassword"
 					th:value="${userdetails.username}" />
@@ -144,8 +144,9 @@
 
 </div>
 
-
-<div th:replace="common/header :: body-bottom-scripts" />
-
 </body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 </html>

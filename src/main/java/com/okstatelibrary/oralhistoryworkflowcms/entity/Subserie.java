@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "subseries")
 public class Subserie {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int Id;
@@ -68,16 +68,6 @@ public class Subserie {
 	public void setCollection(Collection value) {
 		this.collection = value;
 	}
-	
-//	private short CollectionId;
-//
-//	public short getCollectionId() {
-//		return this.CollectionId;
-//	}
-//
-//	public void setCollectionId(short value) {
-//		this.CollectionId = value;
-//	}
 
 	private String SubseriesName;
 

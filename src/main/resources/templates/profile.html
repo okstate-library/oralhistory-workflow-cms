@@ -18,7 +18,7 @@
 		<div class="col-md-6">
 			<h2 class="title">My Profile</h2>
 			<hr />
-			<form method="post" th:action="@{/user/profile}">
+			<form method="post" th:action="@{/profile}">
 				<input type="hidden" name="id" th:value="${user.userId}" />
 
 				<div class="form-group">
@@ -80,7 +80,7 @@
 
 				<div class="form-group ">
 					<button type="submit" class="btn btn-primary btn-block ">Change
-						Settings</button>
+						Details</button>
 				</div>
 
 			</form>
@@ -90,7 +90,7 @@
 			<hr />
 
 
-			<form method="post" th:action="@{/user/resetpasswordbyuser}">
+			<form method="post" th:action="@{/resetpasswordbyuser}">
 
 				<input type="hidden" name="username" id="username_resetpassword"
 					th:value="${user.username}" />
@@ -125,7 +125,9 @@
 </div>
 
 
-<div th:replace="common/header :: body-bottom-scripts" />
-
 </body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 </html>

@@ -11,7 +11,10 @@
 			<h1 class="page-header">Repository</h1>
 		</div>
 		<div class="col-lg-2">
-			<h1 class="page-header"><a class="btn  btn-info" th:href="@{/repository/add}">Add Repository</a></h1>
+			<h1 class="page-header">
+				<a class="btn  btn-info" th:href="@{/repositories/add}">Add
+					Repository</a>
+			</h1>
 		</div>
 	</div>
 
@@ -28,7 +31,7 @@
 				<tbody>
 					<tr data-th-each="repository : ${repositories}">
 						<td data-th-text="${repository.RepositoryName}">...</td>
-						<td><a th:href="${'/repository/' + repository.Id}">View</a></td>
+						<td><a th:href="${'/repositories/' + repository.Id}">View</a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -36,11 +39,14 @@
 	</div>
 </div>
 
-<div th:replace="common/header :: body-bottom-scripts" />
+</body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 <script>
 	$(document).ready(function() {
 		$('#example').DataTable();
 	});
 </script>
-</body>
 </html>

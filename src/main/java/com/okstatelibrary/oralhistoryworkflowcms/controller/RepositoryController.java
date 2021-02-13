@@ -16,7 +16,7 @@ import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 
 @Controller
-@RequestMapping("repository")
+@RequestMapping("repositories")
 public class RepositoryController extends MainController {
 
 	@Autowired
@@ -28,7 +28,7 @@ public class RepositoryController extends MainController {
 	@Autowired
 	private CollectionService collectionService;
 
-	@RequestMapping("/all")
+	@RequestMapping("")
 	public String all(Model model, Principal principal) throws ParseException {
 
 		User user = userService.findByUsername(principal.getName());
@@ -82,7 +82,7 @@ public class RepositoryController extends MainController {
 			this.message = "Failed to add repository details!";
 		}
 
-		return "redirect:/repository/all";
+		return "redirect:/repositories";
 	}
 
 	@PostMapping("/delete")
@@ -101,7 +101,7 @@ public class RepositoryController extends MainController {
 			this.message = "Successfully deleted repository!";
 		}
 
-		return "redirect:/repository/all";
+		return "redirect:/repositories";
 	}
 
 }

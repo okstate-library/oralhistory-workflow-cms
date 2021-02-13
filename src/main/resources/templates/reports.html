@@ -11,115 +11,131 @@
 		</div>
 	</div>
 
+
+	<!-- <form class="form-horizontal" method="post" th:object="${report}"
+		th:action="@{/reports}"> -->
+
+	<!-- <form class="form-horizontal"> -->
+
 	<div class="row">
-		<form class="form-horizontal" method="post"
-			th:action="@{/addinterview}">
 
-			<div class="col-md-5">
-				<div class="form-group">
-					<label for="lastName" class="cols-sm-2 control-label">Interviewer</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								id="lastName" name="lastName" roleId="lastName"
-								placeholder="Enter your last name" required="required" />
-						</div>
-					</div>
-				</div>
+		<div class="col-md-5 form-group">
+			<label class="control-label">Interviewer(s)</label> <select
+				id="interviewer" class="form-control" th:name="interviewer">
+				<option value="">Select Interviewer(s)</option>
 
+				<option th:each="interviewer : ${interviewers}"
+					th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
+			</select>
 
-				<div class="form-group">
-					<label for="email" class="cols-sm-2 control-label">Begin
-						Date</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i
-								class="fa fa-envelope fa" aria-hidden="true"></i></span> <input
-								id="dateAdd" type="text" class="form-control date" />
-						</div>
-					</div>
-				</div>
+		</div>
 
+		<div class="col-md-2"></div>
 
-				<div class="form-group">
-					<label for="password" class="cols-sm-2 control-label">Status</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span> <input id="favoriteFrameworks1"
-								name="favoriteFrameworks" type="checkbox" value="Spring MVC"
-								checked="checked" /> <label for="favoriteFrameworks1">Online</label>
-							</span> <span> <input id="favoriteFrameworks2"
-								name="favoriteFrameworks" type="checkbox" value="Struts 1" /> <label
-								for="favoriteFrameworks2">Off line</label>
-							</span>
-						</div>
+		<div class="col-md-5 form-group">
 
-					</div>
-				</div>
+			<label class="control-label">Location</label> <input type="text"
+				id="location" class="form-control" />
+		</div>
+	</div>
 
-				<div class="form-group ">
-					<button type="submit"
-						class="btn btn-primary btn-lg btn-block login-button">Submit</button>
-				</div>
+	<div class="row">
 
-				<hr />
-			</div>
+		<div class="col-md-5 form-group">
 
-			<div class="col-md-2"></div>
-
-			<div class="col-md-5">
-
-				<div class="form-group">
-					<label for="firstName" class="cols-sm-2 control-label">Location</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								id="firstName" name="firstName" roleId="firstname"
-								placeholder="Enter your first name" required="required" />
-						</div>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="email" class="cols-sm-2 control-label">End Date</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i
-								class="fa fa-envelope fa" aria-hidden="true"></i></span> <input
-								id="dateAdd" type="text" class="form-control date" />
-						</div>
-					</div>
-				</div>
+			<label class="control-label">Begin date</label> <input type="text"
+				class="form-control" name="begindate" />
 
 
-				<div class="form-group">
-					<label for="password" class="cols-sm-2 control-label">Media</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span> <input id="favoriteFrameworks1"
-								name="favoriteFrameworks" type="checkbox" value="Spring MVC"
-								checked="checked" /> <label for="favoriteFrameworks1">Born
-									digital</label>
-							</span> <span> <input id="favoriteFrameworks2"
-								name="favoriteFrameworks" type="checkbox" value="Struts 1" /> <label
-								for="favoriteFrameworks2">Converted</label>
-							</span>
-						</div>
+		</div>
 
-					</div>
-				</div>
+		<div class="col-md-2"></div>
 
-			</div>
-		</form>
+		<div class="col-md-5 form-group">
+			<label class="control-label">End date</label> <input type="text"
+				class="form-control" name="enddate" />
+
+		</div>
 
 	</div>
+
+
+
+	<div class="row">
+		<div class="col-md-5 form-group">
+			<label for="password" class="cols-sm-2 control-label">Status</label>
+			<div class="cols-sm-10">
+				<div class="input-group">
+					<span> <input name="statusRadioButton" type="radio"
+						value="1" /> <label>Online</label>
+					</span> <span> <input name="statusRadioButton" type="radio"
+						value="0" /> <label>Offline</label>
+					</span>
+				</div>
+
+			</div>
+		</div>
+		<div class="col-md-2"></div>
+		<div class="col-md-5 form-group">
+			<label for="password" class="cols-sm-2 control-label">Media</label>
+			<div class="cols-sm-10">
+				<div class="input-group">
+					<span> <input id="bornDigitalCheckboxButton"
+						type="checkbox" /> <label>Born digital</label>
+					</span> <span> <input id="convertedCheckboxButton"
+						type="checkbox"/> <label>Converted</label>
+					</span>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-5 form-group">
+
+			<button type="submit" id="submitreport"
+				class="btn btn-primary btn-lg btn-block">Submit</button>
+		</div>
+		<div class="col-md-2"></div>
+		<div class="col-md-5 form-group">
+			<button type="reset" class="btn btn-primary btn-lg btn-block">Reset</button>
+		</div>
+	</div>
+	<!-- </form> -->
+	<form class="form-horizontal" method="post" id="reportDownloadForm"
+		th:action="@{/downloadreports}">
+
+		<div class="row">
+			<div class="c form-group">
+				<h1 class="page-header">Search result</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-5">
+				<h3 class="page-header" id="recordCount"></h3>
+
+			</div>
+			<div class="col-md-2"></div>
+			<div class="col-md-5">
+				<button type="submit" id="downloadReportButton"
+					class="btn btn-success btn-md btn-block" style="visibility:hidden;" name="action"
+					value="download">Download records</button>
+			</div>
+		</div>
+
+	</form>
 
 </div>
 
 
-<div th:replace="common/header :: body-bottom-scripts" />
 
 </body>
+<script>
+
+</script>
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 </html>

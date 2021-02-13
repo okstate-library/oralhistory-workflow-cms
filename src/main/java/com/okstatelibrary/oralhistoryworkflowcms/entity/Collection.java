@@ -386,8 +386,8 @@ public class Collection {
 
 	}
 
-	public Collection(short Id) {
-		this.Id = Id;
+	public Collection(short id) {
+		this.Id = id;
 	}
 
 	public Collection(short Id, short RepositoryId, String CollectionName, String Number, String Dates, String Note,

@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "equipments")
@@ -25,11 +26,12 @@ public class Equipments {
 	private byte EquipmentType;
 
 	public byte getEquipmentType() {
+
 		return this.EquipmentType;
 	}
 
 	public void setEquipmentType(byte value) {
-		this.EquipmentType = value;
+		this.EquipmentType = (byte)value;
 	}
 
 	private String EquipmentUsedName;
@@ -42,7 +44,18 @@ public class Equipments {
 		this.EquipmentUsedName = value;
 	}
 
-	
+	@Transient
+	private String EquipmentTypeName;
+
+	@Transient
+	public String getEquipmentTypeName() {
+		if (this.EquipmentType == com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType.AUDIO.getCode()) {
+			return "Audio";
+		} else {
+			return "Video";
+		}
+	}
+
 	public Equipments() {
 	}
 
@@ -51,4 +64,9 @@ public class Equipments {
 		this.EquipmentType = EquipmentType;
 		this.EquipmentUsedName = EquipmentUsedName;
 	}
+
+	public Equipments(short id) {
+		this.Id = id;
+	}
+
 }

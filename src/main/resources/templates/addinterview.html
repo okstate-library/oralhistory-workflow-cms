@@ -24,22 +24,6 @@
 				<label class="control-label">Project Code</label> <input type="text"
 					class="form-control" name="ProjectCode" required="required" />
 
-
-				<!-- <label>Project Code</label>
-				<div
-					th:classappend="${#fields.hasErrors('ProjectCode')} ? 'input-icon right' : ''">
-					<i th:if="${#fields.hasErrors('ProjectCode')}"
-						class="fa fa-exclamation tooltips"
-						data-original-title="please enter a valid project code"
-						data-container="body"></i> <input type="text" class="form-control"
-						maxlength="32" th:field="*{ProjectCode}"
-						placeholder="project code" /> <span
-						th:if="${#fields.hasErrors('ProjectCode')}" class="help-block"
-						th:errors="*{ProjectCode}"></span>
-				</div> -->
-
-
-
 			</div>
 
 			<div class="col-md-2"></div>
@@ -73,10 +57,6 @@
 						th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
 				</select>
 
-				<!-- 	<label class="control-label">Interviewer(s)</label> <input
-					type="text" class="form-control" name="Interviewer" /> -->
-
-
 			</div>
 
 		</div>
@@ -91,9 +71,6 @@
 					required="required" />
 
 			</div>
-
-
-
 
 		</div>
 
@@ -256,7 +233,9 @@
 </div>
 
 
-<div th:replace="common/header :: body-bottom-scripts" />
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 
 
 </body>

@@ -4,14 +4,14 @@
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
-<div class="container my-custom-container">
+<div class="container">
 	<div class="row">
 		<div class="col-lg-10">
 			<h1 class="page-header">Equipments</h1>
 		</div>
 		<div class="col-lg-2">
 			<h1 class="page-header">
-				<a class="btn  btn-info" th:href="@{/interviewer}">Add Equipment</a>
+				<a class="btn  btn-info" th:href="@{/equipments/add}">Add Equipment</a>
 			</h1>
 		</div>
 	</div>
@@ -29,17 +29,21 @@
 				</thead>
 				<tbody>
 					<tr data-th-each="equipment : ${equipments}">
-						<td data-th-text="${equipment.EquipmentType}">...</td>
+						<td data-th-text="${equipment.EquipmentTypeName}">...</td>
 						<td data-th-text="${equipment.EquipmentUsedName}">...</td>
-						<td><a th:href="${'/equipment/' + equipment.Id}">View</a></td>
+						<td><a th:href="${'/equipments/' + equipment.Id}">View</a></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
+</body>
 
-<div th:replace="common/header :: body-bottom-scripts" />
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+
 <script>
 	$(document).ready(function() {
 		$('#example').DataTable({
@@ -47,5 +51,5 @@
 		});
 	});
 </script>
-</body>
+
 </html>

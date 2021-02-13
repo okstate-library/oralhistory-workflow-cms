@@ -4,14 +4,16 @@
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
-<div class="container my-custom-container">
+<div class="container">
 	<div class="row">
 		<div class="col-lg-10">
-			<h1 class="page-header">Interviewer</h1>
+			<h1 class="page-header" th:text="${usertype}">...</h1>
 		</div>
 		<div class="col-lg-2">
 			<h1 class="page-header">
-				<a class="btn  btn-info" th:href="@{/interviewer}">Add Interviewer</a>
+				<a class="btn  btn-info"
+					th:href="@{/predefineuser/add/} + ${usertypeid}"
+					th:text="Add + ' ' +  ${usertype}">...</a>
 			</h1>
 		</div>
 	</div>
@@ -22,22 +24,26 @@
 				class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
-						<th>Interviewer Name</th>
+						<th th:text="${usertype}">...</th>
+
 						<th>Details</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr data-th-each="interviewer : ${interviewers}">
-						<td data-th-text="${interviewer.Name}">...</td>
-						<td><a th:href="${'/interviewer/' + interviewer.Id}">View</a></td>
+					<tr data-th-each="predefineuser : ${predefineusers}">
+						<td data-th-text="${predefineuser.Name}">...</td>
+						<td><a th:href="${'/predefineuser/' + predefineuser.Id}">View</a></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
+</body>
 
-<div th:replace="common/header :: body-bottom-scripts" />
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 <script>
 	$(document).ready(function() {
 		$('#example').DataTable({
@@ -45,5 +51,4 @@
 		});
 	});
 </script>
-</body>
 </html>

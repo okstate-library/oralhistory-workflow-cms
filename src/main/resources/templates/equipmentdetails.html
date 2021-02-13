@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Equipment Details</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<form method="post" th:action="@{/equipments/update}" >
+				<input type="hidden" name="id" th:value="*{equipmentdetails?.Id}" />
+
+				<div class="form-group">
+					<label>Type</label>
+					<div class="cols-sm-10">
+
+
+						<select class="form-control" name="EquipmentType" required>
+							<option value="">Select Type</option>
+							<option
+								th:each="type : ${T(com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType).values()}"
+								th:value="${type.ShortCode}" th:text="${type}"
+								th:selected="${type.ShortCode} == *{equipmentdetails?.EquipmentType}"></option>
+
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="firstName"> Equipment Name</label>
+					<div class="cols-sm-10">
+						<input type="text" class="form-control"
+							th:value="*{equipmentdetails?.EquipmentUsedName}"
+							id="EquipmentUsedName" name="EquipmentUsedName"
+							required="required" />
+
+					</div>
+				</div>
+
+				<div class="form-group ">
+					<button type="submit" class="btn btn-primary btn-block ">Submit</button>
+				</div>
+
+			</form>
+
+			<form method="post" th:action="@{/equipments/delete}"
+				th:if="${equipmentdetails?.Id > 0}">
+				<input type="hidden" name="id" th:value="*{equipmentdetails?.Id}" />
+				<input type="hidden" name=EquipmentUsedName th:value="*{equipmentdetails?.EquipmentUsedName}" />
+				<div class="form-group ">
+					<button type="submit" class="btn btn-warning btn-block ">Delete</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+
+
+</body>
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</html>

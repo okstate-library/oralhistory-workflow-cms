@@ -1,11 +1,18 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +27,7 @@ import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
+import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
 
 @Controller
 @RequestMapping("subseries")
@@ -34,7 +42,10 @@ public class SubserieController extends MainController {
 	@Autowired
 	private CollectionService collectionService;
 
-	@RequestMapping("/all")
+	@Autowired
+	private TranscriptionService transcriptionService;
+
+	@RequestMapping("")
 	public String subseries(Model model, Principal principal) throws ParseException {
 
 		User user = userService.findByUsername(principal.getName());
@@ -82,13 +93,12 @@ public class SubserieController extends MainController {
 	@RequestMapping(value = "/getSubseries", method = RequestMethod.GET)
 	public @ResponseBody List<Subserie> getSubseries(@RequestParam(value = "collectionId") short collectionId) {
 
-		List<Subserie> list = subserieService.findAllbyCollectionId(collectionId); // .findAll();//
+		return subserieService.findAllbyCollectionId(collectionId); // .findAll();//
 
-		return list;
 	}
 
 	@PostMapping("/update")
-	public String update(@ModelAttribute("repository") Subserie subserie, Model model, Principal principal) {
+	public String update(@ModelAttribute("subserie") Subserie subserie, Model model, Principal principal) {
 
 		User user = userService.findByUsername(principal.getName());
 
@@ -123,25 +133,38 @@ public class SubserieController extends MainController {
 			this.message = "Failed to add subseries!";
 		}
 
-		return "redirect:/subseries/all";
+		return "redirect:/subseries";
 	}
 
 	@PostMapping("/delete")
-	public String delete(@ModelAttribute("repository") Repository newRepository, Model model) {
+	public String delete(@ModelAttribute("subserie") Subserie subserie, Model model) {
 
-		List<Collection> collections = collectionService.findByRepositoryId(newRepository.getId());
-//
-//		if (collections != null && collections.size() > 0) {
-//
-//			this.errorType = ErrorType.WARNING;
-//			this.message = "Cannot delete repository record, due to references!";
-//		} else {
-//			subserieService.deleteRepository(newRepository.getId());
-//
-//			this.errorType = ErrorType.SUCESS;
-//			this.message = "Successfully deleted repository!";
-//		}
+		List<Transcription> transcriptions = transcriptionService.findBySubseriesId(subserie.getId());
 
-		return "redirect:/repository/all";
+		if (transcriptions != null && transcriptions.size() > 0) {
+
+			this.errorType = ErrorType.WARNING;
+			this.message = "Cannot delete subseries record, due to references!";
+		} else {
+
+			subserieService.deleteSubseries(subserie.getId());
+
+			this.errorType = ErrorType.SUCESS;
+			this.message = "Successfully deleted subseries!";
+		}
+
+		return "redirect:/subseries";
+	}
+
+	@PostMapping("/export")
+	public ResponseEntity<Resource> export(Model model, HttpServletResponse response) throws IOException {
+
+		String filename = "subseries.xlsx";
+
+		InputStreamResource file = new InputStreamResource(ExcelService.subseriesToExcel(subserieService.findAll()));
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
+
 	}
 }

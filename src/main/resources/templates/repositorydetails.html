@@ -14,24 +14,19 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-12">
-			<form method="post" th:action="@{/repository/update}">
+		<div class="col-md-6">
+			<form method="post" th:action="@{/repositories/update}">
 				<input type="hidden" name="id" th:value="*{repositorydetails?.Id}" />
 
 				<div class="form-group">
 					<label for="firstName"> Repository Name</label>
 					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								th:value="*{repositorydetails?.RepositoryName}"
-								id="RepositoryName" name="RepositoryName"
-								placeholder="Enter repository name" required="required" />
-						</div>
+						<input type="text" class="form-control"
+							th:value="*{repositorydetails?.RepositoryName}"
+							id="RepositoryName" name="RepositoryName" required="required" />
+
 					</div>
 				</div>
-
-
 
 				<div class="form-group ">
 					<button type="submit" class="btn btn-primary btn-block ">Submit</button>
@@ -39,7 +34,7 @@
 
 			</form>
 
-			<form method="post" th:action="@{/repository/delete}"
+			<form method="post" th:action="@{/repositories/delete}"
 				th:if="${repositorydetails?.Id > 0}">
 				<input type="hidden" name="id" th:value="*{repositorydetails?.Id}" />
 				<div class="form-group ">
@@ -47,15 +42,13 @@
 				</div>
 			</form>
 		</div>
-
-
-
 	</div>
 
 </div>
 
-
-<div th:replace="common/header :: body-bottom-scripts" />
-
 </body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
 </html>

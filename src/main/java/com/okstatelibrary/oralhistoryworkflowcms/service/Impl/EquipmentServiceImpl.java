@@ -1,6 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,24 @@ public class EquipmentServiceImpl implements EquipmentService {
 	}
 
 	@Override
-	public List<Equipments> findAllAudios() {
-		return this.findAll().stream().filter(e -> e.getEquipmentType() == (byte) 1).collect(Collectors.toList());
+	public List<Equipments> findAllByType(byte type) {
+		return this.findAll().stream().filter(e -> e.getEquipmentType() == type).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Equipments> findAllVideos() {
-		// TODO Auto-generated method stub
-		return this.findAll().stream().filter(e -> e.getEquipmentType() == (byte) 2).collect(Collectors.toList());
+	public Equipments saveEquipment(Equipments equipment) {
+		return equipmentUsedRepository.save(equipment);
 	}
+
+	@Override
+	public Optional<Equipments> findById(short Id) {
+		return equipmentUsedRepository.findById(Id);
+	}
+
+	@Override
+	public void deleteEquipment(short id) {
+		equipmentUsedRepository.deleteById(id);
+
+	}
+
 }
