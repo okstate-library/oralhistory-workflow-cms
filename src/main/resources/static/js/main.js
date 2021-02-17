@@ -119,19 +119,22 @@ function selectSebseries() {
 
 	$.ajax({
 		type : 'GET',
-		url : "subseries/getSubseries",
+		url : "../subseries/getSubseries",
 		data : {
 			"collectionId" : collectionId
 		},
 		success : function(data) {
 
-			// console.log(data);
-
 			var subseriesDropDown = $('#subseriesDropDown'), option = "";
 
 			subseriesDropDown.empty();
 
-			option = option + "<option value=''> Select subseries </option>";
+			if (data.length > 1) {
+
+				option = option
+						+ "<option value=''> Select Subseries </option>";
+
+			}
 
 			for (var i = 0; i < data.length; i++) {
 				option = option + "<option value='" + data[i].id + "'>"

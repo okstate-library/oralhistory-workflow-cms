@@ -128,7 +128,7 @@ public class CollectionController extends MainController {
 	@PostMapping("/delete")
 	public String delete(@ModelAttribute("collection") Collection collection, Model model) {
 
-		List<Transcription> transcriptions = trancriptionService.findAll(collection.getId() + "");
+		List<Transcription> transcriptions = trancriptionService.findByCollectinoId(collection.getId());
 
 		if (transcriptions != null && transcriptions.size() > 0) {
 

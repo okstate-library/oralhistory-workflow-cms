@@ -4,8 +4,23 @@
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
-<div class="container">
-	<h2 th:text="*{interviewdetails?.Title}">...</h2>
+<div class="container" th:if="${interviewdetails != null}">
+
+	<div class="row">
+
+		<div class="col-md-10 form-group">
+			<h2 th:text="*{interviewdetails?.Title}">...</h2>
+		</div>
+		<div class="col-md-2">
+
+			<form method="post" th:action="@{/delete}"
+				th:if="${user != null && user.authorized.contains(7)}">
+				<input type="hidden" id="Id" name="Id"
+					th:value="*{interviewdetails?.Id}" />
+				<button type="submit" class="btn btn-danger btn-sm btn-block">Delete</button>
+			</form>
+		</div>
+	</div>
 
 	<ul class="nav nav-tabs">
 		<li class="active"><a data-toggle="tab" href="#general">General</a></li>
@@ -1070,6 +1085,21 @@
 		</div>
 
 	</div>
+
+</div>
+
+<div class="container" th:if="${interviewdetails == null}">
+	<div class="row">
+		<div class="col-md-10 form-group">
+			<h3>
+				<a href="javascript:window.open('','_self').close();"> Close
+					this window</a>
+			</h3>
+
+		</div>
+	</div>
+
+
 </div>
 </body>
 

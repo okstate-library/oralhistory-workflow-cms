@@ -72,46 +72,6 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findAll(String collectionIds) {
-
-		// return transcriptionRepository.findAll().stream().filter(u ->
-		// u.getCollectionId() == 21)
-		// .collect(Collectors.toList());
-
-		List<Predicate<Transcription>> allPredicates = new ArrayList<Predicate<Transcription>>();
-//
-//		allPredicates.add(c -> c.getCollectionId() == 1);
-//		allPredicates.add(c -> c.getCollectionId() == 2);
-//		
-//		return transcriptionRepository.findAll().stream()
-//				.filter(allPredicates.stream().reduce(x -> false, Predicate::or)).collect(Collectors.toList());
-
-		System.out.println("collectionIds---" + collectionIds);
-
-		String[] collections = collectionIds.split(",");
-
-		System.out.println("collections.length" + collections.length);
-
-		// if (collections.length > 1) {
-		for (String id : collections) {
-
-			System.out.println("id" + id);
-
-			// .getCollectionId() //c.getCollection().getId()
-			allPredicates.add(c -> c.getCollection().getId() == Short.parseShort(id));
-		}
-
-		// allPredicates.add(c -> c.getsubseries().get .getSubseriesId() == 44);
-
-		return transcriptionRepository.findAll().stream()
-				.filter(allPredicates.stream().reduce(x -> false, Predicate::or)).collect(Collectors.toList());
-//		} else {
-//			return transcriptionRepository.findAll();
-//		}
-
-	}
-
-	@Override
 	public Optional<Transcription> findById(int id) {
 
 		return transcriptionRepository.findById(id);
@@ -170,12 +130,6 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	@Override
 	public List<Transcription> report(String interviewer, String location, String beginDate, String endDate,
 			String status, String bornDigital, String converetd) {
-//
-//		System.out.println("interviewer" + StringUtils.isEmpty(interviewer));
-//		System.out.println("location" + StringUtils.isEmpty(location));
-//		System.out.println("status" + "  " + status + "  " + StringUtils.isEmpty(status));
-//		System.out.println("bornDigital" + "  " + bornDigital + "  " + StringUtils.isEmpty(bornDigital));
-//		System.out.println("converetd" + "  " + converetd + "  " + StringUtils.isEmpty(converetd));
 
 		return transcriptionRepository.findAll().stream()
 				.filter(getInterviewerPredicate(interviewer).and(getLocationPredicate(location))
@@ -186,14 +140,22 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 	}
 
-	public static Predicate<Transcription> getInterviewerPredicate(String interviewer) {
+	@Override
+	public void delete(int id) {
+
+		Transcription transcription = findById(id).orElse(null);
+
+		transcriptionRepository.delete(transcription);
+	}
+
+	private static Predicate<Transcription> getInterviewerPredicate(String interviewer) {
 		if (!StringUtils.isEmpty(interviewer)) {
 			return u -> u.getInterviewer().toLowerCase().contains(interviewer.toLowerCase());
 		}
 		return u -> !u.getInterviewer().isEmpty();
 	}
 
-	public static Predicate<Transcription> getLocationPredicate(String location) {
+	private static Predicate<Transcription> getLocationPredicate(String location) {
 		if (!StringUtils.isEmpty(location)) {
 			return u -> !StringUtils.isEmpty(u.getTranscriptLocation())
 					&& u.getTranscriptLocation().toLowerCase().contains(location.toLowerCase());
@@ -201,25 +163,93 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 		return u -> u.getId() > 0;
 	}
 
-	public static Predicate<Transcription> getStatusPredicate(String status) {
+	private static Predicate<Transcription> getStatusPredicate(String status) {
 		if (!StringUtils.isEmpty(status)) {
 			return u -> u.getIsOnline() == Byte.parseByte(status);
 		}
 		return u -> u.getId() > 0;
 	}
 
-	public static Predicate<Transcription> getBornDigitalPredicate(String bornDigital) {
+	private static Predicate<Transcription> getBornDigitalPredicate(String bornDigital) {
 		if (!StringUtils.isEmpty(bornDigital)) {
 			return u -> u.getIsBornDigital() == Byte.parseByte("1");
 		}
 		return u -> u.getId() > 0;
 	}
 
-	public static Predicate<Transcription> getConveretdPredicate(String converted) {
+	private static Predicate<Transcription> getConveretdPredicate(String converted) {
 		if (!StringUtils.isEmpty(converted)) {
 			return u -> u.getIsConvertToDigital() == Byte.parseByte("1");
 		}
 		return u -> u.getId() > 0;
 	}
 
+	@Override
+	public List<Transcription> findAll(String collectionIds, String subseriesIds) {
+
+		// return transcriptionRepository.findAll().stream().filter(u ->
+		// u.getCollectionId() == 21)
+		// .collect(Collectors.toList());
+
+		List<Predicate<Transcription>> collectionPredicates = new ArrayList<Predicate<Transcription>>();
+//
+//		allPredicates.add(c -> c.getCollectionId() == 1);
+//		allPredicates.add(c -> c.getCollectionId() == 2);
+//		
+//		return transcriptionRepository.findAll().stream()
+//				.filter(allPredicates.stream().reduce(x -> false, Predicate::or)).collect(Collectors.toList());
+
+		// System.out.println("collectionIds---" + collectionIds);
+
+		if (collectionIds != null && !collectionIds.trim().isEmpty()) {
+
+			String[] collections = collectionIds.split(",");
+
+			for (String id : collections) {
+
+				collectionPredicates.add(c -> c.getCollection().getId() == Short.parseShort(id));
+			}
+		}
+
+		List<Predicate<Transcription>> subseriesPredicates = new ArrayList<Predicate<Transcription>>();
+
+		if (subseriesIds != null && !subseriesIds.trim().isEmpty()) {
+
+			String[] subseries = subseriesIds.split(",");
+
+			for (String id : subseries) {
+
+				subseriesPredicates.add(c -> c.getSubseriesId() == Short.parseShort(id));
+			}
+		}
+		// allPredicates.add(c -> c.getsubseries().get .getSubseriesId() == 44);
+
+		return transcriptionRepository.findAll().stream()
+				.filter(collectionPredicates.stream().reduce(x -> false, Predicate::or))
+				// .filter(subseriesPredicates.stream().reduce(x -> false, Predicate::or))
+				.collect(Collectors.toList());
+//		} else {
+//			return transcriptionRepository.findAll();
+//		}
+
+	}
+
+	@Override
+	public List<Transcription> findByCollectinoId(short collectionId) {
+
+		return transcriptionRepository.findAll().stream().filter(t -> t.getCollectionId() == collectionId)
+				.collect(Collectors.toList());
+	}
+
+//	private static Predicate<Transcription> getCollectionPredicate(String collectionIds) {
+//		if (collectionIds != null && !collectionIds.trim().isEmpty()) {
+//
+//			String[] collections = collectionIds.split(",");
+//
+//			for (String id : collections) {
+//
+//				collectionPredicates.add(c -> c.getCollection().getId() == Short.parseShort(id));
+//			}
+//		}
+//	}
 }

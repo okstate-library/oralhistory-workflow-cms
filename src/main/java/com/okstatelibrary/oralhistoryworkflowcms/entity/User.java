@@ -168,6 +168,14 @@ public class User implements UserDetails {
 
 		List<Integer> authorizedList = new ArrayList<Integer>();
 
+		// 1 - Add new
+		// 2 - Transcription Queue
+		// 3 - Browse
+		// 4 - Reports
+		// 5 - Master Data
+		// 6 - Settings
+		// 7 - Delete Interview records
+		
 		if (this.roleId == 0) // USER
 		{
 			Integer[] sourceArray = { 1, 2, 3 };

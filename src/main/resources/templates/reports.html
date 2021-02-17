@@ -11,12 +11,6 @@
 		</div>
 	</div>
 
-
-	<!-- <form class="form-horizontal" method="post" th:object="${report}"
-		th:action="@{/reports}"> -->
-
-	<!-- <form class="form-horizontal"> -->
-
 	<div class="row">
 
 		<div class="col-md-5 form-group">
@@ -80,10 +74,10 @@
 			<label for="password" class="cols-sm-2 control-label">Media</label>
 			<div class="cols-sm-10">
 				<div class="input-group">
-					<span> <input id="bornDigitalCheckboxButton"
-						type="checkbox" /> <label>Born digital</label>
-					</span> <span> <input id="convertedCheckboxButton"
-						type="checkbox"/> <label>Converted</label>
+					<span> <input id="bornDigitalCheckboxButton" type="checkbox" />
+						<label>Born digital</label>
+					</span> <span> <input id="convertedCheckboxButton" type="checkbox" />
+						<label>Converted</label>
 					</span>
 				</div>
 
@@ -96,33 +90,32 @@
 		<div class="col-md-5 form-group">
 
 			<button type="submit" id="submitreport"
-				class="btn btn-primary btn-lg btn-block">Submit</button>
+				class="btn btn-primary btn-md btn-block">Submit</button>
 		</div>
-		<div class="col-md-2"></div>
-		<div class="col-md-5 form-group">
-			<button type="reset" class="btn btn-primary btn-lg btn-block">Reset</button>
-		</div>
+
 	</div>
-	<!-- </form> -->
-	<form class="form-horizontal" method="post" id="reportDownloadForm"
+
+	<form method="post" id="reportDownloadForm"
 		th:action="@{/downloadreports}">
 
 		<div class="row">
-			<div class="c form-group">
+			<div class="col-md-12 form-group">
 				<h1 class="page-header">Search result</h1>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-5">
-				<h3 class="page-header" id="recordCount"></h3>
-
+			<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<h3 id="recordCount"></h3>
 			</div>
 			<div class="col-md-2"></div>
-			<div class="col-md-5">
+			<div class="col-md-3">
 				<button type="submit" id="downloadReportButton"
-					class="btn btn-success btn-md btn-block" style="visibility:hidden;" name="action"
-					value="download">Download records</button>
+					class="btn btn-success btn-md btn-block"
+					style="visibility: hidden;" name="action" value="download">Download
+					records</button>
 			</div>
+			<div class="col-md-2"></div>
 		</div>
 
 	</form>
@@ -133,7 +126,7 @@
 
 </body>
 <script>
-
+	
 </script>
 <div th:replace="common/footer :: footer"></div>
 

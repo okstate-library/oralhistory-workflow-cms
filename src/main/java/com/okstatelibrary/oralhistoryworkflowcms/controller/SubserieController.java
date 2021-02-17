@@ -93,7 +93,12 @@ public class SubserieController extends MainController {
 	@RequestMapping(value = "/getSubseries", method = RequestMethod.GET)
 	public @ResponseBody List<Subserie> getSubseries(@RequestParam(value = "collectionId") short collectionId) {
 
-		return subserieService.findAllbyCollectionId(collectionId); // .findAll();//
+		if (collectionId == 0) {
+			return subserieService.findAll();//
+
+		} else {
+			return subserieService.findAllbyCollectionId(collectionId); // .findAll();//
+		}
 
 	}
 

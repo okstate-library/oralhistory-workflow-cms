@@ -114,7 +114,7 @@ public class TranscriptionController extends MainController {
 
 		model.addAttribute("user", user);
 
-		model.addAttribute("transciprtionCount", transcriptionService.findAll(true).size());
+		model.addAttribute("transciprtionCount", transcriptionService.findAll(false).size());
 		// .filter(u->u.getTranscriptStatus() == 1)
 		// .collect(Collectors.toList());
 
@@ -139,18 +139,20 @@ public class TranscriptionController extends MainController {
 
 		model.addAttribute("transcriptions", transcriptionService.findAll());
 
+		this.messageSetup(model);
+
 		return "browse";
 	}
 
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
-	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collectionoptions)
-			throws JsonProcessingException {
+	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collectionoptions,
+			@RequestParam(required = false) String subseriesoptions) throws JsonProcessingException {
 
 		List<Transcription> transcriptions = null;
 
 		if (StringUtil.isNotNullOrEmpty(collectionoptions)) {
 
-			transcriptions = transcriptionService.findAll(collectionoptions);
+			transcriptions = transcriptionService.findAll(collectionoptions, subseriesoptions);
 		} else {
 			transcriptions = transcriptionService.findAll();
 		}
@@ -200,15 +202,20 @@ public class TranscriptionController extends MainController {
 
 		List<Transcription> list = null;
 
+		System.out.println("isinitialize -- " + isinitialize);
 		System.out.println("options -- " + options);
-		
+
 		if (isinitialize != null && !isinitialize.isEmpty() && Boolean.parseBoolean(isinitialize)) {
+
+			System.out.println("isinitialize  true");
 
 			list = transcriptionService.findAll(false);
 
 			this.transcriptionList = list;
 
 		} else {
+
+			System.out.println("isinitialize is false");
 
 			list = this.transcriptionList.stream()
 					.filter(u -> u.getIsPriority() == (byte) (options.contains("2") ? 1 : u.getIsPriority()))
@@ -264,7 +271,7 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		transcription.setTitle("Oral history interview with" + transcription.getInterviewee());
+		transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
 
 		transcription.setCreatedDate(DateUtil.getTodaySqlDate());
 		transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
@@ -287,6 +294,20 @@ public class TranscriptionController extends MainController {
 		return "redirect:/addinterview";
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteinterview(@Valid Transcription transcription, BindingResult bindingResult, Model model,
+			Principal principal) throws ParseException {
+
+		transcriptionService.delete(transcription.getId());
+
+		System.out.print(transcription.getId());
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Interview details deleted successfully!";
+
+		return "redirect:/browse";
+	}
+
 	@RequestMapping(value = { "/modifyinterview/{id}" })
 	public String modifyinterview(@PathVariable(required = false) String id, Principal principal, Model model) {
 
@@ -297,16 +318,21 @@ public class TranscriptionController extends MainController {
 
 		Transcription transcription = transcriptionService.findById(Integer.parseInt(id)).orElse(null);
 
-		// Master data for drop downs
-		model.addAttribute("collections", collectionService.findAll());
-		model.addAttribute("subseries", subserieService.findAll());
-		model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
-		model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
+		if (transcription != null) {
+			// Master data for drop downs
+			model.addAttribute("collections", collectionService.findAll());
+			model.addAttribute("subseries", subserieService.findAll());
+			model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
+			model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
 
-		model.addAttribute("transcribers",
-				predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
+			model.addAttribute("transcribers",
+					predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
 
-		model.addAttribute("interviewdetails", transcription);
+			model.addAttribute("interviewdetails", transcription);
+		} else {
+			this.errorType = ErrorType.ERROR;
+			this.message = "Relevent interview record cannot find in the system. Please refresh the 'Browse' or 'Transcription queue' page and look for the record.";
+		}
 
 		this.messageSetup(model);
 
@@ -568,22 +594,7 @@ public class TranscriptionController extends MainController {
 		HttpSession session = request.getSession();
 		session.setAttribute("reportobj", report);
 
-		System.out.println("status " + report.getStatus());
-
-		System.out.println("borndigital " + report.getBornDigital());
-		System.out.println("converted " + report.getConverted());
-
-	
 		List<Transcription> transcriptions = getTranscriptions(report);
-////
-//		if (report.getAction().equals("download")) {
-//			downloadTranscriptions(transcriptions);
-//		}
-//
-//		model.addAttribute("recordcount", transcriptions.size() + " records found.");
-//
-//		model.addAttribute("interviewers",
-//				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
 
 		return "" + transcriptions.size();
 	}
@@ -593,8 +604,7 @@ public class TranscriptionController extends MainController {
 
 		HttpSession session = request.getSession();
 		Report report = (Report) session.getAttribute("reportobj");
-		
-		
+
 		return downloadTranscriptions(getTranscriptions(report));
 	}
 
@@ -639,8 +649,6 @@ public class TranscriptionController extends MainController {
 		if (file.isEmpty()) {
 			this.errorType = ErrorType.ERROR;
 			this.message = "Please select a file to upload!";
-
-			System.out.println("not Uploaded ");
 
 			return "import";
 		}

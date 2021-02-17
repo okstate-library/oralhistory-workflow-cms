@@ -7,7 +7,7 @@ $(document).ready(function() {
 });
 
 var options = [];
-var isinitialize = false;
+var isinitialize = true;
 
 function callTransactionQueueRequest() {
 
@@ -83,22 +83,26 @@ function callTransactionQueueAjaxRequest() {
 					{
 						dom : 'Bfrtip',
 						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
+						dom: 'Blfrtip',
 						data : data,
 						columns : [
 
 						{
-							"data" : "interviewee"
+							"data" : "interviewee",
+							'render' : getLink
 						}, {
 							"data" : "interviewer"
 						}, {
 							"data" : "interviewDates"
 						}, {
-							"data" : "projectCode"
+							"data" : "projectCode",class: 'text-center' 
 						}, {
 							"data" : "transcriberAssigned"
 						}, {
 							"data" : "isPriority",
 							render : getBooleanImage,
+							class  : 'text-center' ,
+							'sortable': false,
 						}, {
 							"data" : "auditCheckCompleted"
 						}, {
@@ -109,15 +113,24 @@ function callTransactionQueueAjaxRequest() {
 							"data" : "draftSentDate"
 						}, {
 							"data" : "finalEditCompleted"
-						}, {
-							"data" : "id",
-							render : getLink,
 						}, ],
 						sort : [ 0, 'desc' ],
 						"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
 								[ 10, 50, 100, 200, "All" ] ],
 						"pageLength" : 10
 					});
+
+			$('#transcriptionQueueDataTable').on(
+					'click',
+					'tbody td',
+					function() {
+
+						var obj = $(this).closest('tr').find('td:eq(0) a')
+								.attr('href');
+
+						window.open(obj, '_blank');
+					});
+
 		}
 	});
 
@@ -127,6 +140,9 @@ function callTransactionQueueAjaxRequest() {
 
 var browseCollectionOptions = [];
 var browseCollectionOptionTexts = [];
+
+var browseSubserieOptions = [];
+var browseSubserieOptionTexts = [];
 
 function callBrowseRequest() {
 
@@ -157,12 +173,54 @@ function callBrowseRequest() {
 							}
 						}
 
-						document.getElementById("browseCollectionSelections").innerHTML = '<b>Selected options : </b>'
-								+ browseCollectionOptionTexts.toString();
+						setupSelections();
 
 						callBrowseAjaxRequest();
 
 					});
+	
+	$('.browseSubserieOption')
+	.click(
+			function() {
+
+				var optionValue = $(this).attr('value');
+				var optionText = $(this).attr('name');
+
+				if (this.checked) {
+					browseSubserieOptions.push(optionValue);
+					browseSubserieOptionTexts.push(optionText);
+				} else {
+					var index = browseSubserieOptions
+							.indexOf(optionValue);
+
+					if (index !== -1) {
+						browseSubserieOptions.splice(index, 1);
+					}
+
+					var indexText = browseSubserieOptionTexts
+							.indexOf(optionText);
+
+					if (indexText !== -1) {
+						browseSubserieOptionTexts
+								.splice(indexText, 1);
+					}
+				}
+
+				setupSelections();
+
+				callBrowseAjaxRequest();
+
+			});
+}
+
+function setupSelections()
+{
+	document.getElementById("browseSelections").innerHTML = "";
+	
+	
+	document.getElementById("browseSelections").innerHTML = "(Collections)" + browseCollectionOptionTexts.toString()
+	
+	+ "(Subseries)" + browseSubserieOptionTexts.toString();
 }
 
 function callBrowseAjaxRequest() {
@@ -171,7 +229,8 @@ function callBrowseAjaxRequest() {
 		cache : false,
 		url : '/browse/data',
 		data : {
-			"collectionoptions" : browseCollectionOptions.toString()
+			"collectionoptions" : browseCollectionOptions.toString(),
+			"subseriesoptions" : browseSubserieOptions.toString(),
 		},
 		success : function(data) {
 
@@ -181,11 +240,13 @@ function callBrowseAjaxRequest() {
 					{
 						dom : 'Bfrtip',
 						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
+						dom: 'Blfrtip',
 						data : data,
 						columns : [
 
 						{
-							"data" : "interviewee"
+							"data" : "interviewee",
+							'render' : getLink
 						}, {
 							"data" : "interviewer"
 						}, {
@@ -199,20 +260,37 @@ function callBrowseAjaxRequest() {
 						}, {
 							"data" : "transcriptStatus",
 							render : getBooleanImage,
+							class  : 'text-center' ,
+							'sortable': false,
+							width : '5px'
 						}, {
 							"data" : "isOnline",
 							render : getBooleanImage,
+							class  : 'text-center' ,
+							'sortable': false,
+							width : '5px'
 						}, {
 							"data" : "isRestriction",
 							render : getBooleanImage,
-						}, {
-							"data" : "id",
-							render : getLink,
+							class  : 'text-center' ,
+							'sortable': false,
+							width : '5px'
 						}, ],
 						sort : [ 0, 'desc' ],
 						"lengthMenu" : [ [ 10, 100, 50, 100, 200, -1 ],
 								[ 10, 100, 50, 100, 200, "All" ] ],
 						"pageLength" : 10
+					});
+
+			$('#browseDataTable').on(
+					'click',
+					'tbody td',
+					function() {
+
+						var obj = $(this).closest('tr').find('td:eq(0) a')
+								.attr('href');
+
+						window.open(obj, '_blank');
 					});
 
 		},
@@ -232,8 +310,10 @@ function getBooleanImage(data, type, full, meta) {
 	}
 }
 
-function getLink(data, type, row) {
-	return '<a href="modifyinterview/' + data + '" target="_blank">edit</a>'
+function getLink(index, row, data) {
+
+	return '<a style="text-decoration:none;" href="modifyinterview/' + data.id
+			+ '" target="_blank">' + data.interviewee + '</a>'
 }
 
 var expanded = false;

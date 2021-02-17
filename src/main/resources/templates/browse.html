@@ -5,7 +5,7 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container-fluid">
+<div class="container my-custom-container">
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -13,59 +13,145 @@
 		</div>
 	</div>
 
+
 	<div class="row">
-
-		<div class="col-md-2 span8">
-			<div class="row">
-				<!-- <div class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button"
-						id="dropdownMenuButton" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false">Select
-						collections</button> -->
-				<!-- <form class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
-
-				<th:block th:each="collection : ${collections}" heigth="100px">
-
-					<label class="dropdown-item"><input
-						class="browseCollectionOption" type="checkbox"
-						th:id="'browseOption-' + ${collection.Id}"
-						th:value="${collection.Id}" th:name="${collection.CollectionName}"
-						th:text="${collection.CollectionName}" /></label>
-				</th:block>
-				<!-- </form> -->
-				<!-- </div> -->
-			</div>
-			<div class="row">
-
-
-
-				<div class="col-md-2 form-inline">
-					<div class="dropdown">
-						<button class="btn btn-primary dropdown-toggle" type="button"
-							id="dropdownMenuButton" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false">Select
-							subseries</button>
-						<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-							<th:block th:each="subserie : ${subseries}">
-
-								<label class="dropdown-item"><input
-									class="browseSubserieOption-" type="checkbox"
-									th:id="'browseSubserieOption-' + ${subserie.Id}"
-									th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
-									th:text="${subserie.SubseriesName}" /></label>
-							</th:block>
-						</form>
-
-
-
+		<div class="col-md-2">
+			<p>Selected Options</p>
+			<p id="browseSelections"></p>
+			<div id="accordion">
+				<div class="card">
+					<div class="card-header" id="headingOne">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse"
+								data-target="#collapseOne" aria-expanded="true"
+								aria-controls="collapseOne">Select Collection</button>
+						</h5>
 					</div>
 
+					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+						data-parent="#accordion">
+						<div class="card-body">
+							<th:block th:each="collection : ${collections}" heigth="100px">
+
+								<label class="dropdown-item small"><input
+									class="browseCollectionOption" type="checkbox"
+									th:id="'browseOption-' + ${collection.Id}"
+									th:value="${collection.Id}"
+									th:name="${collection.CollectionName}"
+									th:text="'   ' + ${collection.CollectionName}" /></label>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="headingTwo">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseTwo" aria-expanded="false"
+								aria-controls="collapseTwo">Select Subseries</button>
+						</h5>
+					</div>
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+						data-parent="#accordion">
+						<div class="card-body">
+							<th:block th:each="subserie : ${subseries}">
+
+								<label class="dropdown-item small"><input
+									class="browseSubserieOption" type="checkbox"
+									th:id="'browseSubserieOption-' + ${subserie.Id}"
+									th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
+									th:text="'   ' + ${subserie.SubseriesName}" /></label>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="headingThree">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseThree" aria-expanded="false"
+								aria-controls="collapseThree">Select Interviewers</button>
+						</h5>
+					</div>
+					<div id="collapseThree" class="collapse"
+						aria-labelledby="headingThree" data-parent="#accordion">
+						<div class="card-body">
+							<th:block th:each="interviewer : ${interviewers}">
+
+								<label class="dropdown-item"><input
+									class="browseInterviewerOption-" type="checkbox"
+									th:id="'browseInterviewerOption-' + ${interviewer.Id}"
+									th:value="${interviewer.Id}" th:name="${interviewer.Name}"
+									th:text="${interviewer.Name}" /></label>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="headingThree">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseFour" aria-expanded="false"
+								aria-controls="collapseFour">Select Subjects</button>
+						</h5>
+					</div>
+					<div id="collapseFour" class="collapse"
+						aria-labelledby="headingThree" data-parent="#accordion">
+						<div class="card-body">
+							<th:block th:each="subject : ${subjects}">
+
+								<label class="dropdown-item"><input
+									class="browseSubjectOption-" type="checkbox"
+									th:id="'browseSubjectOption-' + ${subject.Id}"
+									th:value="${subject.Id}" th:name="${subject.SubjectName}"
+									th:text="${subject.SubjectName}" /></label>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="headingThree">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseFive" aria-expanded="false"
+								aria-controls="collapseFive">Online/Offline</button>
+						</h5>
+					</div>
+					<div id="collapseFive" class="collapse"
+						aria-labelledby="headingThree" data-parent="#accordion">
+						<div class="card-body">
+							<th:block>
+
+								<label class="dropdown-item"> <input type="checkbox"
+									name="active" /> Online
+								</label>
+							</th:block>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" id="headingThree">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse"
+								data-target="#collapseSix" aria-expanded="false"
+								aria-controls="collapseSix">Select Dark Archive</button>
+						</h5>
+					</div>
+					<div id="collapseSix" class="collapse"
+						aria-labelledby="headingThree" data-parent="#accordion">
+						<div class="card-body">
+							<th:block>
+
+								<label class="dropdown-item"> <input type="checkbox"
+									name="active" /> Dark Archive
+								</label>
+							</th:block>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-		<div class="col-md-110 span4">
+		<div class="col-md-10">
 
 			<div class="table-responsive">
 				<table id="browseDataTable"
@@ -81,168 +167,17 @@
 							<th>Transcribed</th>
 							<th>Online</th>
 							<th>Restriction</th>
-							<th>View</th>
 
 						</tr>
 					</thead>
-					<!-- <tbody>
-				<tr data-th-each="transcription : ${transcriptions}">
-					<td data-th-text="${transcription.Interviewee}">...</td>
-					<td data-th-text="${transcription.Interviewer}">...</td>
-					<td data-th-text="${transcription.ProjectCode}">...</td>
-					<td data-th-text="${transcription.InterviewDate}">...</td>
-					<td data-th-text="${transcription.CollectionId}">...</td>
-					<td><i class="fa "
-						th:classappend="${transcription.TranscriptStatus == 0} ? fa-times : fa-check"
-						aria-hidden="true"></i></td>
 
-					<td><i class="fa "
-						th:classappend="${transcription.IsOnline == 0} ? fa-times : fa-check"
-						aria-hidden="true"></i></td>
-
-					<td><i class="fa "
-						th:classappend="${transcription.IsRestriction == 0} ? fa-times : fa-check"
-						aria-hidden="true"></i></td>
-				</tr>
-			</tbody> -->
 				</table>
 			</div>
 		</div>
-
 	</div>
 
-	<div class="row">
 
 
-
-		<div class="col-md-2 form-inline">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select subseries</button>
-				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-					<th:block th:each="subserie : ${subseries}">
-
-						<label class="dropdown-item"><input
-							class="browseSubserieOption-" type="checkbox"
-							th:id="'browseSubserieOption-' + ${subserie.Id}"
-							th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
-							th:text="${subserie.SubseriesName}" /></label>
-					</th:block>
-				</form>
-
-
-
-			</div>
-
-		</div>
-
-		<div class="col-md-2 form-inline">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select interviewers</button>
-				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-					<th:block th:each="interviewer : ${interviewers}">
-
-						<label class="dropdown-item"><input
-							class="browseInterviewerOption-" type="checkbox"
-							th:id="'browseInterviewerOption-' + ${interviewer.Id}"
-							th:value="${interviewer.Id}" th:name="${interviewer.Name}"
-							th:text="${interviewer.Name}" /></label>
-					</th:block>
-				</form>
-
-
-
-			</div>
-
-		</div>
-
-		<div class="col-md-2 form-inline">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select subjects</button>
-				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-					<th:block th:each="subject : ${subjects}">
-
-						<label class="dropdown-item"><input
-							class="browseSubjectOption-" type="checkbox"
-							th:id="'browseSubjectOption-' + ${subject.Id}"
-							th:value="${subject.Id}" th:name="${subject.SubjectName}"
-							th:text="${subject.SubjectName}" /></label>
-					</th:block>
-				</form>
-
-
-
-			</div>
-
-		</div>
-
-		<div class="col-md-2 form-inline">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select online/offline</button>
-				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-					<th:block>
-
-						<label class="dropdown-item"> <input type="checkbox"
-							name="active" /> Online
-						</label>
-					</th:block>
-				</form>
-
-
-
-			</div>
-
-		</div>
-
-		<div class="col-md-2 form-inline">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button"
-					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">Select dark archive</button>
-				<form class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-					<th:block>
-
-						<label class="dropdown-item"> <input type="checkbox"
-							name="active" /> Dark Archive
-						</label>
-					</th:block>
-				</form>
-
-
-
-			</div>
-
-		</div>
-
-	</div>
-
-	<div class="row">
-
-		<div class="col-md-2 form-inline">
-
-			<p id="browseCollectionSelections"></p>
-
-		</div>
-
-		<div class="col-md-2 form-inline">
-
-			<p id="browseSubseriesSelections"></p>
-
-		</div>
-
-	</div>
 
 
 

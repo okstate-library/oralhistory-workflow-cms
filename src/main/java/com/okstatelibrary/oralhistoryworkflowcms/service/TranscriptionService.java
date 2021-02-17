@@ -13,7 +13,7 @@ public interface TranscriptionService {
 
 	List<Transcription> findAll(boolean isTranscripted);
 
-	List<Transcription> findAll(String collectionIds);
+	List<Transcription> findAll(String collectionIds, String subseriesoptions);
 
 	List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed, boolean isAuditCheck,
 			boolean isFirstEdit, boolean isSecondEdit, boolean isDraftSent, boolean isCorrections, boolean isFinalEdit,
@@ -22,6 +22,8 @@ public interface TranscriptionService {
 	Optional<Transcription> findById(int id);
 
 	Transcription save(Transcription transcription);
+
+	List<Transcription> findByCollectinoId(short collectionId);
 
 	List<Transcription> findBySubseriesId(int id);
 
@@ -35,5 +37,7 @@ public interface TranscriptionService {
 
 	List<Transcription> report(String interviewer, String location, String beginDate, String endDate, String status,
 			String bornDigital, String converetd);
+
+	void delete(int id);
 
 }
