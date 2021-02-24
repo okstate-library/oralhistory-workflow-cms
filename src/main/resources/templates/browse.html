@@ -16,11 +16,15 @@
 
 	<div class="row">
 		<div class="col-md-2">
-			<p>Selected Options</p>
+			<p>
+				<u><b>Selected Options</b></u>
+			</p>
 			<p id="browseSelections"></p>
+			<br />
+
 			<div id="accordion">
-				<div class="card">
-					<div class="card-header" id="headingOne">
+				<div class="card" style="background: #f2f2f2;">
+					<div class="accordion-header" id="headingOne">
 						<h5 class="mb-0">
 							<button class="btn btn-link" data-toggle="collapse"
 								data-target="#collapseOne" aria-expanded="true"
@@ -31,15 +35,22 @@
 					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
 						data-parent="#accordion">
 						<div class="card-body">
-							<th:block th:each="collection : ${collections}" heigth="100px">
+
+							<th:block id="browseCollection">
+							</th:block>
+
+							<!-- <th:block th:each="collection : ${collections}">
 
 								<label class="dropdown-item small"><input
 									class="browseCollectionOption" type="checkbox"
 									th:id="'browseOption-' + ${collection.Id}"
 									th:value="${collection.Id}"
 									th:name="${collection.CollectionName}"
-									th:text="'   ' + ${collection.CollectionName}" /></label>
-							</th:block>
+									th:text="'   ' + ${#strings.abbreviate(collection.CollectionName,30)}" />
+								</label>
+								<br />
+							</th:block> -->
+
 						</div>
 					</div>
 				</div>
@@ -60,12 +71,14 @@
 									class="browseSubserieOption" type="checkbox"
 									th:id="'browseSubserieOption-' + ${subserie.Id}"
 									th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
-									th:text="'   ' + ${subserie.SubseriesName}" /></label>
+									th:text="'   ' + ${#strings.abbreviate(subserie.SubseriesName,30)}" />
+								</label>
+								<br />
 							</th:block>
 						</div>
 					</div>
 				</div>
-				<div class="card">
+				<div class="card" style="background: #f2f2f2;">
 					<div class="card-header" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
@@ -78,11 +91,13 @@
 						<div class="card-body">
 							<th:block th:each="interviewer : ${interviewers}">
 
-								<label class="dropdown-item"><input
-									class="browseInterviewerOption-" type="checkbox"
+								<label class="dropdown-item small"><input
+									class="browseInterviewerOption" type="checkbox"
 									th:id="'browseInterviewerOption-' + ${interviewer.Id}"
 									th:value="${interviewer.Id}" th:name="${interviewer.Name}"
-									th:text="${interviewer.Name}" /></label>
+									th:text="'   ' + ${#strings.abbreviate(interviewer.Name,30)}" />
+								</label>
+								<br />
 							</th:block>
 						</div>
 					</div>
@@ -100,21 +115,23 @@
 						<div class="card-body">
 							<th:block th:each="subject : ${subjects}">
 
-								<label class="dropdown-item"><input
-									class="browseSubjectOption-" type="checkbox"
+								<label class="dropdown-item small"><input
+									class="browseSubjectOption" type="checkbox"
 									th:id="'browseSubjectOption-' + ${subject.Id}"
 									th:value="${subject.Id}" th:name="${subject.SubjectName}"
-									th:text="${subject.SubjectName}" /></label>
+									th:text="'   ' + ${#strings.abbreviate(subject.SubjectName,30)}" />
+								</label>
+								<br />
 							</th:block>
 						</div>
 					</div>
 				</div>
-				<div class="card">
+				<div class="card" style="background: #f2f2f2;">
 					<div class="card-header" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseFive" aria-expanded="false"
-								aria-controls="collapseFive">Online/Offline</button>
+								aria-controls="collapseFive">Select Online Status</button>
 						</h5>
 					</div>
 					<div id="collapseFive" class="collapse"
@@ -122,14 +139,24 @@
 						<div class="card-body">
 							<th:block>
 
-								<label class="dropdown-item"> <input type="checkbox"
-									name="active" /> Online
+								<label class="dropdown-item small"> <input
+									id="browseIsOnlineOption" type="checkbox" name="online"
+									th:text="' ' + Online" />
+
 								</label>
+								<br />
+								<label class="dropdown-item small"> <input
+									id="browseIsOfflineOption" type="checkbox" name="offline"
+									th:text="' ' + Offline" />
+
+								</label>
+
 							</th:block>
 						</div>
 					</div>
 				</div>
-				<div class="card">
+				<div class="card"
+					th:if="${user != null && user.authorized.contains(8)}">
 					<div class="card-header" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
@@ -142,8 +169,9 @@
 						<div class="card-body">
 							<th:block>
 
-								<label class="dropdown-item"> <input type="checkbox"
-									name="active" /> Dark Archive
+								<label class="dropdown-item small"> <input
+									id="browseDarkArchiveOption" type="checkbox" name="true"
+									th:text="' ' + 'Dark ' + 'Archive'" />
 								</label>
 							</th:block>
 						</div>
@@ -158,15 +186,17 @@
 					class="table table-bordered table-hover table-striped">
 					<thead>
 						<tr>
-							<th>Interviewees</th>
-							<th>Interviewers</th>
-							<th>Project Code</th>
-							<th>Dates</th>
-							<th>Collection</th>
-							<th>Subseries</th>
-							<th>Transcribed</th>
-							<th>Online</th>
-							<th>Restriction</th>
+							<th title="Interviewees">Interviewees</th>
+							<th title="Interviewees">Interviewees</th>
+							<th title="Project Code">Code</th>
+							<th title="Dates">Dates</th>
+							<th title="Collection">Collection</th>
+							<th title="Subseries">Subseries</th>
+							<th style="font-size: 9px; text-align: center;"
+								title="Transcribed">Transcribed</th>
+							<th title="Online/Offline">Online</th>
+							<th style="font-size: 9px; text-align: center;"
+								title="Restriction">Restriction</th>
 
 						</tr>
 					</thead>
@@ -175,11 +205,6 @@
 			</div>
 		</div>
 	</div>
-
-
-
-
-
 
 </div>
 

@@ -175,6 +175,7 @@ public class User implements UserDetails {
 		// 5 - Master Data
 		// 6 - Settings
 		// 7 - Delete Interview records
+		// 8 - Dark archive in browse page
 		
 		if (this.roleId == 0) // USER
 		{
@@ -183,7 +184,7 @@ public class User implements UserDetails {
 
 		} else if (this.roleId == 1) // ADMIN
 		{
-			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6 };
+			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6 , 7, 8 };
 			authorizedList = Arrays.asList(sourceArray);
 
 		} else if (this.roleId == 2) // STAFF

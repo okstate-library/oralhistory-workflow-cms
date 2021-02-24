@@ -526,3 +526,21 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 .collapsible-link[aria-expanded='true']::before {
     content: '\f106';
 }
+
+
+
+.card-header .fa {
+  transition: .3s transform ease-in-out;
+}
+.card-header .collapsed .fa {
+  transform: rotate(90deg);
+}
+
+table{
+  margin: 0 auto;
+  width: 100%;
+  clear: both;
+  border-collapse: collapse;
+  table-layout: fixed; // ***********add this
+  word-wrap:break-word; // ***********and this
+}

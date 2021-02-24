@@ -13,7 +13,8 @@ public interface TranscriptionService {
 
 	List<Transcription> findAll(boolean isTranscripted);
 
-	List<Transcription> findAll(String collectionIds, String subseriesoptions);
+	List<Transcription> findAll(String collectionIds, String subseriesoptions, String intervieweroptions,
+			String subjects, String darkarchive, String onlineoffline);
 
 	List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed, boolean isAuditCheck,
 			boolean isFirstEdit, boolean isSecondEdit, boolean isDraftSent, boolean isCorrections, boolean isFinalEdit,

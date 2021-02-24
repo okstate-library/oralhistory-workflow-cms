@@ -2,6 +2,7 @@ package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.function.Predicate;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,7 +15,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 
 @Entity
 @Table(name = "transcriptions")
@@ -182,7 +186,7 @@ public class Transcription { // implements Serializable
 	private String InterviewDates;
 
 	public String getInterviewDates() {
-		return this.InterviewDates;
+		return InterviewDates;
 	}
 
 	public void setInterviewDates(String value) {
@@ -823,5 +827,10 @@ public class Transcription { // implements Serializable
 
 	public Transcription() {
 
+	}
+
+	@Override
+	public String toString() {
+		return "Person [id=" + Id + "CollectionId " + CollectionId + " collection name=" + CollectionName + "]";
 	}
 }

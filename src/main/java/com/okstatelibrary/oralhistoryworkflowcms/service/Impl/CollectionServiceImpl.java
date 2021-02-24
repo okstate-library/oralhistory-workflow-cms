@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
 
@@ -28,6 +30,18 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public List<Collection> findAll() {
 		return collectionRepository.findAll();
+	}
+
+	@Override
+	public List<Collection> findAll(short[] ids) {
+
+		List<Collection> collections = new ArrayList<Collection>();
+
+		for (Short id : ids) {
+			collections.add(findById(id).orElse(null));
+		}
+
+		return collections;
 	}
 
 	@Cacheable(cacheNames = "findByCollectionIdCache")
@@ -82,4 +96,5 @@ public class CollectionServiceImpl implements CollectionService {
 
 		return null;
 	}
+
 }

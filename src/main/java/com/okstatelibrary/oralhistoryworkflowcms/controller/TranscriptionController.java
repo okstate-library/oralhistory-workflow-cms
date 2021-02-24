@@ -1,7 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +9,13 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +30,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -137,51 +141,55 @@ public class TranscriptionController extends MainController {
 
 		model.addAttribute("subjects", subjectService.findAll());
 
-		model.addAttribute("transcriptions", transcriptionService.findAll());
-
 		this.messageSetup(model);
 
 		return "browse";
 	}
 
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
-	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collectionoptions,
-			@RequestParam(required = false) String subseriesoptions) throws JsonProcessingException {
+	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collections,
+			@RequestParam(required = false) String subseries, @RequestParam(required = false) String interviewers,
+			@RequestParam(required = false) String subjects, @RequestParam(required = false) String onlineoffline,
+			@RequestParam(required = false) String darkarchive, Model model) throws JsonProcessingException {
 
 		List<Transcription> transcriptions = null;
 
-		if (StringUtil.isNotNullOrEmpty(collectionoptions)) {
+		if (StringUtil.isNotNullOrEmpty(collections) || StringUtil.isNotNullOrEmpty(subseries)
+				|| StringUtil.isNotNullOrEmpty(interviewers) || StringUtil.isNotNullOrEmpty(subjects)
+				|| StringUtil.isNotNullOrEmpty(darkarchive) || StringUtil.isNotNullOrEmpty(onlineoffline)) {
 
-			transcriptions = transcriptionService.findAll(collectionoptions, subseriesoptions);
+			transcriptions = transcriptionService.findAll(collections, subseries, interviewers, subjects, darkarchive,
+					onlineoffline);
+
+//			List<Sho> distinctElements = transcriptions.stream().filter(distinctByKey(p -> p.getCollectionId()))
+//					.collect(Collectors.toList());
+//
+//			// Let's verify distinct elements
+//			System.out.println(distinctElements);
+
+			short[] ids = { 1, 2, 3, 4 };
+
+			model.addAttribute("collections", collectionService.findAll(ids));
+
 		} else {
 			transcriptions = transcriptionService.findAll();
 		}
 
 		return transcriptions;
+	}
 
-		// return null;
-//
-//		boolean isPriority = false, isTranscribed = false, isAuditCheck = false, isFirstEdit = false,
-//				isSecondEdit = false, isDraftSent = false, isCorrections = false, isFinalEdit = false,
-//				isSsentOut = false;
-//
-//		if (options != null && !options.isBlank() && !options.isEmpty()) {
-//
-//			isPriority = options.contains("2");
-//			isTranscribed = options.contains("3");
-//			isAuditCheck = options.contains("4");
-//			isFirstEdit = options.contains("5");
-//			isSecondEdit = options.contains("6");
-//			isDraftSent = options.contains("7");
-//			isCorrections = options.contains("8");
-//			isFinalEdit = options.contains("9");
-//			isSsentOut = options.contains("10");
-//		}
-//
-//		List<Transcription> list = transcriptionService.findAll(false, isPriority, isTranscribed, isAuditCheck,
-//				isFirstEdit, isSecondEdit, isDraftSent, isCorrections, isFinalEdit, isSsentOut);
+	@RequestMapping(value = "/browse/collection", method = RequestMethod.GET)
+	public @ResponseBody List<Collection> browseCollecttion() throws JsonProcessingException {
 
-		// s.subList(0, 1);
+		short[] ids = { 1, 2, 3, 4 };
+
+		return collectionService.findAll(ids);
+	}
+
+	// Utility function
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
 
 	@RequestMapping(value = "/transcriptionqueue", method = RequestMethod.GET)
@@ -590,6 +598,8 @@ public class TranscriptionController extends MainController {
 	@RequestMapping(value = "/reports", method = RequestMethod.POST)
 	@ResponseBody
 	public String reportPost(@RequestBody Report report, HttpServletRequest request) {
+
+		System.out.println("beginDate-" + report.getBeginDate());
 
 		HttpSession session = request.getSession();
 		session.setAttribute("reportobj", report);
