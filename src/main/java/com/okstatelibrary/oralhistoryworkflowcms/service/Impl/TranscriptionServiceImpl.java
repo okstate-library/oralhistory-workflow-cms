@@ -277,12 +277,12 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	public List<Transcription> findAll(String collectionIds, String subseriesIds, String interviewes, String subjects,
 			String darkarchive, String onlineoffline) {
 
-		System.out.println("collectionIds -- " + collectionIds);
-		System.out.println("subseriesIds -- " + subseriesIds);
-		System.out.println("intervieweroptions -- " + interviewes);
-		System.out.println("subjects -- " + subjects);
-		System.out.println("darkarchive -- " + darkarchive);
-		System.out.println("onlineoffline -- " + onlineoffline);
+//		System.out.println("collectionIds -- " + collectionIds);
+//		System.out.println("subseriesIds -- " + subseriesIds);
+//		System.out.println("intervieweroptions -- " + interviewes);
+//		System.out.println("subjects -- " + subjects);
+//		System.out.println("darkarchive -- " + darkarchive);
+//		System.out.println("onlineoffline -- " + onlineoffline);
 
 		List<Predicate<Transcription>> collectionPredicates = null;
 

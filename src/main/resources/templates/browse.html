@@ -5,7 +5,8 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container my-custom-container">
+<div class="container">
+	<!--  my-custom-container -->
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -16,6 +17,7 @@
 
 	<div class="row">
 		<div class="col-md-2">
+			<div style="background: blue;"></div>
 			<p>
 				<u><b>Selected Options</b></u>
 			</p>
@@ -36,10 +38,7 @@
 						data-parent="#accordion">
 						<div class="card-body">
 
-							<th:block id="browseCollection">
-							</th:block>
-
-							<!-- <th:block th:each="collection : ${collections}">
+							<th:block th:each="collection : ${collections}">
 
 								<label class="dropdown-item small"><input
 									class="browseCollectionOption" type="checkbox"
@@ -49,7 +48,7 @@
 									th:text="'   ' + ${#strings.abbreviate(collection.CollectionName,30)}" />
 								</label>
 								<br />
-							</th:block> -->
+							</th:block>
 
 						</div>
 					</div>
@@ -65,6 +64,10 @@
 					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion">
 						<div class="card-body">
+
+							<div id="browseSubseries"></div>
+
+
 							<th:block th:each="subserie : ${subseries}">
 
 								<label class="dropdown-item small"><input
@@ -216,7 +219,15 @@
 <div th:replace="common/header :: body-bottom-datatable-scripts"></div>
 
 <script>
+	//attachCheckboxHandlers()
+
 	callBrowseAjaxRequest();
+
+	//selectBrowseSubseries();
+
+	//countChecked();
+
+	//$("#browseSubseries input[type=checkbox]").on("click", countChecked);
 </script>
 </body>
 </html>

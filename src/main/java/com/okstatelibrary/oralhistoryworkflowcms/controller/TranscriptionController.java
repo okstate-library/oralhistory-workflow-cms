@@ -146,44 +146,67 @@ public class TranscriptionController extends MainController {
 		return "browse";
 	}
 
+	boolean isInitialSerach = true;
+	List<Transcription> brwoseTranscriptions = null;
+
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
 	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collections,
 			@RequestParam(required = false) String subseries, @RequestParam(required = false) String interviewers,
 			@RequestParam(required = false) String subjects, @RequestParam(required = false) String onlineoffline,
 			@RequestParam(required = false) String darkarchive, Model model) throws JsonProcessingException {
 
-		List<Transcription> transcriptions = null;
+		System.out.println("1111--get browse list" + isInitialSerach);
 
 		if (StringUtil.isNotNullOrEmpty(collections) || StringUtil.isNotNullOrEmpty(subseries)
 				|| StringUtil.isNotNullOrEmpty(interviewers) || StringUtil.isNotNullOrEmpty(subjects)
 				|| StringUtil.isNotNullOrEmpty(darkarchive) || StringUtil.isNotNullOrEmpty(onlineoffline)) {
 
-			transcriptions = transcriptionService.findAll(collections, subseries, interviewers, subjects, darkarchive,
-					onlineoffline);
+			brwoseTranscriptions = transcriptionService.findAll(collections, subseries, interviewers, subjects,
+					darkarchive, onlineoffline);
 
 //			List<Sho> distinctElements = transcriptions.stream().filter(distinctByKey(p -> p.getCollectionId()))
 //					.collect(Collectors.toList());
 //
 //			// Let's verify distinct elements
 //			System.out.println(distinctElements);
+			isInitialSerach = false;
 
 			short[] ids = { 1, 2, 3, 4 };
 
 			model.addAttribute("collections", collectionService.findAll(ids));
 
 		} else {
-			transcriptions = transcriptionService.findAll();
+			isInitialSerach = true;
+			brwoseTranscriptions = transcriptionService.findAll();
 		}
-
-		return transcriptions;
+		
+		
+		System.out.println("22222 -- get browse list" + isInitialSerach);
+		
+		
+		return brwoseTranscriptions;
 	}
 
-	@RequestMapping(value = "/browse/collection", method = RequestMethod.GET)
+	@RequestMapping(value = "/browse/collections", method = RequestMethod.GET)
 	public @ResponseBody List<Collection> browseCollecttion() throws JsonProcessingException {
 
 		short[] ids = { 1, 2, 3, 4 };
 
-		return collectionService.findAll(ids);
+		return collectionService.findAll();
+	}
+
+	@RequestMapping(value = "/browse/subseries", method = RequestMethod.GET)
+	public @ResponseBody List<Subserie> browseSubseries() throws JsonProcessingException {
+
+		System.out.println("Get Subseries." + isInitialSerach);
+
+		if (isInitialSerach) {
+			short[] ids = { 1, 2, 3, 4 };
+			return subserieService.findAll(ids);
+		} else {
+			short[] ids = { 1, 2 };
+			return subserieService.findAll(ids);
+		}
 	}
 
 	// Utility function

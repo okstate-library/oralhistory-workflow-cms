@@ -1,12 +1,9 @@
 
 $(document).ready(function() {
-
-	//selectBrowseCollection();
 	
 	callTransactionQueueRequest();
 
 	callBrowseRequest();
-
 });
 
 // Transaction Queue page options
@@ -158,37 +155,26 @@ function callTransactionQueueAjaxRequest() {
 
 function selectBrowseCollection() {
 
-	
-// c
-// <input
-// class="browseCollectionOption" type="checkbox"
-// th:id="'browseOption-' + ${collection.Id}"
-// th:value="${collection.Id}"
-// th:name="${collection.CollectionName}"
-// th:text="' ' + ${#strings.abbreviate(collection.CollectionName,30)}" />
-// </label>
-// <br />
-	
 	$.ajax({
 		type : 'GET',
 		url : "/browse/collections",
 		success : function(data) {
 
-			var checkBoxList = $('#browseCollection'), option = "";
-
-			checkBoxList.empty();
-
-			for (var i = 0; i < data.length; i++) {
-				option = option + "<label class='dropdown-item small'> <input" +
-						"class='browseCollectionOption' type='checkbox' " 
-								+ "th:id=browseOption-" + data[i].Id + "
-								+ "th:value=" + data[i].Id  
-								+ "th:name=" + data[i].CollectionName 
-								+ "th:text=' ' " + data[i].CollectionName + 
-								+ " /> </label> <br />"
-			}
-
-			checkBoxList.append(option);
+			// alert(data);
+// var checkBoxList = $('#browseCollection'), option = "";
+//
+// checkBoxList.empty();
+//
+// for (var i = 0; i < data.length; i++) {
+// option = option + "<label class='dropdown-item small'> <input" +
+// "class='browseCollectionOption' type='checkbox' "
+// + "th:value=" + data[i].Id
+// + "th:name=" + data[i].CollectionName
+// + "th:text=' ' " + data[i].CollectionName +
+// + " /> </label> <br />"
+// }
+//
+// checkBoxList.append(option);
 		},
 		error : function(xhr, status, error) {
 			var err = eval("(" + xhr.responseText + ")");
@@ -198,6 +184,62 @@ function selectBrowseCollection() {
 	});
 
 }
+
+function selectBrowseSubseries()
+{
+	$
+	.ajax({
+		type : 'GET',
+		url : "/browse/subseries",
+		success : function(data) {
+
+			// alert(data);
+			// var checkBoxList = $('#browseSubseries'), option = "";
+
+			$('#browseSubseries').empty();
+
+			for (var i = 0; i < data.length; i++) {
+				// alert(data[i].subseriesName);
+				option = "<label class='dropdown-item small'> <input class='browseSubserieOption' type='checkbox'" +
+	"name='" + data[i].subseriesName +  "'" +
+	"value='" + data[i].id +  "'" +
+	"id='browseSubserieOption-" + data[i].id +  "'>"
+						+ data[i].subseriesName + " </label> <br /> ";
+				// "class='browseSubserieOption' type='checkbox' "
+				// + "value=" + data[i].id
+				// + "name=" + data[i].subseriesName
+				// + "text=' ' " + data[i].subseriesName +
+				// + " /> </label> <br />";
+				//								
+				$('#browseSubseries').append(option);
+
+				// var li = $('<li><input class="browseSubserieOption"
+				// type="checkbox" name="' +
+// data[i].subseriesName + '" value="' + data[i].id + '"
+// id=browseSubserieOption-"' + data[i].id + '"/>' +
+				// '<label for="' + data[i].subseriesName + '"></label></li>');
+				// li.find('label').text(data[i].subseriesName);
+				// $('#browseSubseries').append(li);
+			}
+
+		},
+		error : function(xhr, status, error) {
+			var err = eval("(" + xhr.responseText + ")");
+			alert(err.Message);
+		}
+
+	});
+}
+
+var countChecked = function() {
+// var n = $("#browseSubseries input:checked").length;
+// alert(n + (n === 1 ? " is" : " are") + " checked!");
+	// console.log(A);
+	alert($(this).attr('name'));
+};
+
+
+
 
 var browseCollectionOptions = [];
 var browseCollectionOptionTexts = [];
@@ -213,9 +255,10 @@ var browseOnlineOfflineOptionTexts = "";
 
 var browseDarkArchiveOptionTexts = "";
 
+
+
 function callBrowseRequest() {
 
-	
 	// Collection Section
 	$('.browseCollectionOption')
 			.click(
@@ -254,11 +297,14 @@ function callBrowseRequest() {
 	
 	$('.browseSubserieOption')
 	.click(
+			
+			
 			function() {
 				
 				var optionValue = $(this).attr('value');
 				var optionText = $(this).attr('name');
 
+				
 				if (this.checked) {
 					browseSubserieOptions.push(optionValue);
 					browseSubserieOptionTexts.push(optionText);
@@ -282,6 +328,8 @@ function callBrowseRequest() {
 				setupSelections();
 
 				callBrowseAjaxRequest();
+				
+				selectBrowseSubseries();
 
 			});
 	

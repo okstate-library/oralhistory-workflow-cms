@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.SubserieRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.SubserieService;
@@ -30,6 +32,17 @@ public class SubserieServiceImpl implements SubserieService {
 		return subserieRepository.findAll();
 	}
 
+	@Override
+	public List<Subserie> findAll(short[] ids) {
+		List<Subserie> subseriesList = new ArrayList<Subserie>();
+
+		for (Short id : ids) {
+			subseriesList.add(findById(id).orElse(null));
+		}
+
+		return subseriesList;
+	}
+	
 	@Cacheable(cacheNames = "findBySubseriesIdCache")
 	@Override
 	public Optional<Subserie> findById(int Id) {
@@ -88,4 +101,6 @@ public class SubserieServiceImpl implements SubserieService {
 		}
 
 	}
+
+	
 }

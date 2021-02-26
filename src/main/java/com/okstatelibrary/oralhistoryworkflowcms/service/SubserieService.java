@@ -18,4 +18,6 @@ public interface SubserieService {
 	void deleteSubseries(int subserieId);
 
 	Subserie findByName(short collectionId, String subseriesName);
+
+	List<Subserie> findAll(short[] ids);
 }
