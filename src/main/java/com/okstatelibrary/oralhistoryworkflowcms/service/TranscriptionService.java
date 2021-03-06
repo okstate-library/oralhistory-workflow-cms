@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.FindReplaceOption;
 
 public interface TranscriptionService {
 
@@ -40,5 +41,7 @@ public interface TranscriptionService {
 			String bornDigital, String converetd);
 
 	void delete(int id);
+
+	int findreplace(FindReplaceOption option, String find, String replace);
 
 }

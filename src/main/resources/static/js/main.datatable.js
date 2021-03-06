@@ -3,7 +3,7 @@ $(document).ready(function() {
 	
 	callTransactionQueueRequest();
 
-	callBrowseRequest();
+	// callBrowseRequest();
 });
 
 // Transaction Queue page options
@@ -77,6 +77,11 @@ function callTransactionQueueAjaxRequest() {
 			"options" : options.toString(),
 			"isinitialize" : isinitialize,
 		},
+		 beforeSend: function () { // Before we send the request, remove the
+									// .hidden class from the spinner and
+									// default to inline-block.
+             $('#loader').removeClass('hidden')
+         },
 		success : function(data) {
 
 			$('#transcriptionQueueDataTable').dataTable().fnDestroy();
@@ -146,100 +151,16 @@ function callTransactionQueueAjaxRequest() {
 						window.open(obj, '_blank');
 					});
 
-		}
+		},
+        complete: function () { // Set our complete callback, adding the .hidden
+								// class and hiding the spinner.
+            $('#loader').addClass('hidden')
+        },
 	});
 
 }
 
 // Browse page options
-
-function selectBrowseCollection() {
-
-	$.ajax({
-		type : 'GET',
-		url : "/browse/collections",
-		success : function(data) {
-
-			// alert(data);
-// var checkBoxList = $('#browseCollection'), option = "";
-//
-// checkBoxList.empty();
-//
-// for (var i = 0; i < data.length; i++) {
-// option = option + "<label class='dropdown-item small'> <input" +
-// "class='browseCollectionOption' type='checkbox' "
-// + "th:value=" + data[i].Id
-// + "th:name=" + data[i].CollectionName
-// + "th:text=' ' " + data[i].CollectionName +
-// + " /> </label> <br />"
-// }
-//
-// checkBoxList.append(option);
-		},
-		error : function(xhr, status, error) {
-			var err = eval("(" + xhr.responseText + ")");
-			alert(err.Message);
-		}
-
-	});
-
-}
-
-function selectBrowseSubseries()
-{
-	$
-	.ajax({
-		type : 'GET',
-		url : "/browse/subseries",
-		success : function(data) {
-
-			// alert(data);
-			// var checkBoxList = $('#browseSubseries'), option = "";
-
-			$('#browseSubseries').empty();
-
-			for (var i = 0; i < data.length; i++) {
-				// alert(data[i].subseriesName);
-				option = "<label class='dropdown-item small'> <input class='browseSubserieOption' type='checkbox'" +
-	"name='" + data[i].subseriesName +  "'" +
-	"value='" + data[i].id +  "'" +
-	"id='browseSubserieOption-" + data[i].id +  "'>"
-						+ data[i].subseriesName + " </label> <br /> ";
-				// "class='browseSubserieOption' type='checkbox' "
-				// + "value=" + data[i].id
-				// + "name=" + data[i].subseriesName
-				// + "text=' ' " + data[i].subseriesName +
-				// + " /> </label> <br />";
-				//								
-				$('#browseSubseries').append(option);
-
-				// var li = $('<li><input class="browseSubserieOption"
-				// type="checkbox" name="' +
-// data[i].subseriesName + '" value="' + data[i].id + '"
-// id=browseSubserieOption-"' + data[i].id + '"/>' +
-				// '<label for="' + data[i].subseriesName + '"></label></li>');
-				// li.find('label').text(data[i].subseriesName);
-				// $('#browseSubseries').append(li);
-			}
-
-		},
-		error : function(xhr, status, error) {
-			var err = eval("(" + xhr.responseText + ")");
-			alert(err.Message);
-		}
-
-	});
-}
-
-var countChecked = function() {
-// var n = $("#browseSubseries input:checked").length;
-// alert(n + (n === 1 ? " is" : " are") + " checked!");
-	// console.log(A);
-	alert($(this).attr('name'));
-};
-
-
-
 
 var browseCollectionOptions = [];
 var browseCollectionOptionTexts = [];
@@ -256,17 +177,46 @@ var browseOnlineOfflineOptionTexts = "";
 var browseDarkArchiveOptionTexts = "";
 
 
+$("#reset_selection").click(function(){
+	
+	browseCollectionOptions = [];
+	browseCollectionOptionTexts = [];
+	
+	browseSubserieOptions = [];
+	browseSubserieOptionTexts = [];
+	
+	browseInterviewerOptionTexts = [];
+	
+	browseSubjectOptionTexts = [];
+	
+	browseOnlineOfflineOptionTexts = "";
+	
+	browseDarkArchiveOptionTexts = "";
+	
+	setupSelections();
+	 
+	callBrowseAjaxRequest();
+	
+	document.getElementById("reset_selection").style.display = "none";
+	
+});
+
 
 function callBrowseRequest() {
 
+	alert('callBrowseRequest');
+	
 	// Collection Section
 	$('.browseCollectionOption')
 			.click(
 					function() {
-
+						
 						var optionValue = $(this).attr('value');
 						var optionText = $(this).attr('name');
 
+
+						alert('browse Collaetion called' + optionValue);
+						
 						if (this.checked) {
 							browseCollectionOptions.push(optionValue);
 							browseCollectionOptionTexts.push(optionText);
@@ -298,12 +248,14 @@ function callBrowseRequest() {
 	$('.browseSubserieOption')
 	.click(
 			
-			
 			function() {
+				
+				
 				
 				var optionValue = $(this).attr('value');
 				var optionText = $(this).attr('name');
 
+				alert('browseSubserieOption called' + optionValue);
 				
 				if (this.checked) {
 					browseSubserieOptions.push(optionValue);
@@ -329,7 +281,7 @@ function callBrowseRequest() {
 
 				callBrowseAjaxRequest();
 				
-				selectBrowseSubseries();
+				// selectBrowseSubseries();
 
 			});
 	
@@ -391,12 +343,14 @@ function callBrowseRequest() {
 	
 	$('#browseIsOnlineOption').change(function() {
 		
+		alert('browse online called');
+		
 		browseOnlineOfflineOptionTexts = "";
 		
         if(this.checked) {
         	 
         	browseOnlineOfflineOptionTexts = "online";
-        	$('#browseIsOfflineOption').prop('checked', false);
+        	// $('#browseIsOfflineOption').prop('checked', false);
         }
         
         setupSelections();
@@ -409,11 +363,13 @@ function callBrowseRequest() {
 	
 	$('#browseIsOfflineOption').change(function() {
 		
+	c
+		
 		browseOnlineOfflineOptionTexts = "";
 		
         if(this.checked) {
         	browseOnlineOfflineOptionTexts = "offline";
-        	$('#browseIsOnlineOption').prop('checked', false);
+        	// $('#browseIsOnlineOption').prop('checked', false);
         }
         
         setupSelections();
@@ -426,6 +382,8 @@ function callBrowseRequest() {
 	
 	 $('#browseDarkArchiveOption').change(function() {
 		
+			alert('browse dark archieve called');
+			
 		 browseDarkArchiveOptionTexts= "";
 		 
 	        if(this.checked) {
@@ -439,10 +397,10 @@ function callBrowseRequest() {
 	              
 	    });
 	
+	// callBrowseAjaxRequest();
 }
 
 function callBrowseAjaxRequest() {
-	
 	$.ajax({
 		type : "GET",
 		cache : false,
@@ -456,8 +414,14 @@ function callBrowseAjaxRequest() {
 			"darkarchive" :browseDarkArchiveOptionTexts,
 			
 		},
-		success : function(data) {
+		 beforeSend: function () { // Before we send the request, remove the
+				// .hidden class from the spinner and
+				// default to inline-block.
+			$('#loader').removeClass('hidden')
+			},
+		 success : function(data) {
 
+			
 			$('#browseDataTable').dataTable().fnDestroy();
 
 			var table = $('#browseDataTable').DataTable(
@@ -466,7 +430,7 @@ function callBrowseAjaxRequest() {
 						dom : 'Bfrtip',
 						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
 						dom: 'Blfrtip',
-						data : data,
+						data : data.transcriptions,
 						"columnDefs": [
 						      {  "width": "90px", "targets": 0 },
 						      { "width": "90px", "targets": 1 },
@@ -527,10 +491,106 @@ function callBrowseAjaxRequest() {
 
 						window.open(obj, '_blank');
 					});
+			
+			
+			
+			// Collections
+			
+			 $('#browseCollections').empty();
+			
+			 for (var i = 0; i < data.collections.length; i++) {
+					
+					var collection = data.collections[i];
+					
+					
+							
+							option = "<label class='dropdown-item small'> " +
+							"<input class='browseCollectionOption' type='checkbox'" +
+							"name='" + collection.name +  "'" +
+							"value='" + collection.id +  "'" +
+							"id='browseCollectionOption-" + collection.id +  "'>"
+							+ " " +collection.name + " </label> <br /> ";
+							
+									
+					$('#browseCollections').append(option);
+				}
+			
+			// Subseries
+			$('#browseSubseries').empty();
 
+			for (var i = 0; i < data.subseries.length; i++) {
+				
+				var subseries = data.subseries[i];
+				
+				
+						option = "<label class='dropdown-item small'> " +
+						"<input class='browseSubserieOption' type='checkbox'" +
+						"name='" + subseries.name +  "'" +
+						"value='" + subseries.id +  "'" +
+						"id='browseSubserieOption-" + subseries.id +  "'>"
+						+ " " +subseries.name + " </label> <br /> ";
+						
+								
+				$('#browseSubseries').append(option);
+			}
+
+			// Interviewers
+			
+			$('#browseInterviewers').empty();
+
+			for (var i = 0; i < data.interviewers.length; i++) {
+				
+				var interviewer = data.interviewers[i];
+				
+				
+					option = "<label class='dropdown-item small'> " +
+					"<input class='browseInterviewerOption' type='checkbox'" +
+					"name='" + interviewer.name +  "'" +
+					"value='" + interviewer.id +  "'" +
+					"id='browseInterviewerOption-" + interviewer.id +  "'>"
+					+ " " + interviewer.name + "</label> <br /> ";
+				
+				$('#browseInterviewers').append(option);
+			}
+			
+			// Online offline
+			$('#browseStatusOnline').empty();
+
+			for (var i = 0; i < data.statusOnline.length; i++) {
+				
+				var status = data.statusOnline[i];
+				
+				
+					option = "<label class='dropdown-item small'> " +
+					"<input type='checkbox'" +
+					"name='" + status.name +  "'" +
+					"id='" + status.identification +  "'>"
+					+ " " + status.name + "</label> <br /> ";
+				
+				$('#browseStatusOnline').append(option);
+			}
+			
+			// Dark Archieve
+			$('#browseDarkArchieve').empty();
+
+			for (var i = 0; i < data.darkArchieve.length; i++) {
+				
+				var dark = data.darkArchieve[i];
+				
+				
+					option = "<label class='dropdown-item small'> " +
+					"<input type='checkbox'" +
+					"name='" + dark.name +  "'" +
+					"id='" + dark.identification +  "'>"
+					+ " " + dark.name + "</label> <br /> ";
+				
+				$('#browseDarkArchieve').append(option);
+			}
+			
+			$('#loader').addClass('hidden');
 		},
 		error : function() {
-			elert(error);
+			alert(error);
 		},
 		complete : function() {
 		}

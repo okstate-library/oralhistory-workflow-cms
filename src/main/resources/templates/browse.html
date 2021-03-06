@@ -5,7 +5,7 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container">
+<div class="container my-custom-container">
 	<!--  my-custom-container -->
 
 	<div class="row">
@@ -19,7 +19,9 @@
 		<div class="col-md-2">
 			<div style="background: blue;"></div>
 			<p>
-				<u><b>Selected Options</b></u>
+				<u><b>Selected Options</b></u> <input type="button" value="Reset"
+					id="reset_selection" />
+
 			</p>
 			<p id="browseSelections"></p>
 			<br />
@@ -38,7 +40,9 @@
 						data-parent="#accordion">
 						<div class="card-body">
 
-							<th:block th:each="collection : ${collections}">
+							<div id="browseCollections"></div>
+
+							<!-- <th:block th:each="collection : ${collections}">
 
 								<label class="dropdown-item small"><input
 									class="browseCollectionOption" type="checkbox"
@@ -48,7 +52,7 @@
 									th:text="'   ' + ${#strings.abbreviate(collection.CollectionName,30)}" />
 								</label>
 								<br />
-							</th:block>
+							</th:block> -->
 
 						</div>
 					</div>
@@ -92,7 +96,10 @@
 					<div id="collapseThree" class="collapse"
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
-							<th:block th:each="interviewer : ${interviewers}">
+
+							<div id="browseInterviewers"></div>
+
+							<!-- <th:block th:each="interviewer : ${interviewers}">
 
 								<label class="dropdown-item small"><input
 									class="browseInterviewerOption" type="checkbox"
@@ -101,7 +108,7 @@
 									th:text="'   ' + ${#strings.abbreviate(interviewer.Name,30)}" />
 								</label>
 								<br />
-							</th:block>
+							</th:block> -->
 						</div>
 					</div>
 				</div>
@@ -140,7 +147,10 @@
 					<div id="collapseFive" class="collapse"
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
-							<th:block>
+
+							<div id="browseStatusOnline"></div>
+
+							<!-- <th:block>
 
 								<label class="dropdown-item small"> <input
 									id="browseIsOnlineOption" type="checkbox" name="online"
@@ -154,7 +164,7 @@
 
 								</label>
 
-							</th:block>
+							</th:block> -->
 						</div>
 					</div>
 				</div>
@@ -170,13 +180,16 @@
 					<div id="collapseSix" class="collapse"
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
-							<th:block>
+							
+							<div id="browseDarkArchieve"></div>
+							
+							<!-- <th:block>
 
 								<label class="dropdown-item small"> <input
 									id="browseDarkArchiveOption" type="checkbox" name="true"
 									th:text="' ' + 'Dark ' + 'Archive'" />
 								</label>
-							</th:block>
+							</th:block> -->
 						</div>
 					</div>
 				</div>
@@ -190,7 +203,7 @@
 					<thead>
 						<tr>
 							<th title="Interviewees">Interviewees</th>
-							<th title="Interviewees">Interviewees</th>
+							<th title="Interviewers">Interviewers</th>
 							<th title="Project Code">Code</th>
 							<th title="Dates">Dates</th>
 							<th title="Collection">Collection</th>
@@ -219,15 +232,65 @@
 <div th:replace="common/header :: body-bottom-datatable-scripts"></div>
 
 <script>
-	//attachCheckboxHandlers()
+
+$("#browseCollections").on("click",function(event) {
+    
+	callBrowseRequest();
+	
+});
+
+$("#browseSubseries").on("click",function(event) {
+    
+	callBrowseRequest();
+	 //alert('browseSubseries')
+	 
+//var target = $(event.target);
+//if (target.is('input:checkbox')) return;
+//
+//var checkbox = $(this).find("input[type='checkbox']");
+//
+//if( !checkbox.prop("checked") ){
+//checkbox.prop("checked",true);
+//} else {
+//checkbox.prop("checked",false);
+//}
+	});
+
+$("#browseInterviewers").on("click",function(event) {
+	    
+	callBrowseRequest();
+	 //alert('browseInterviewers')
+	 
+//var target = $(event.target);
+//if (target.is('input:checkbox')) return;
+//
+//var checkbox = $(this).find("input[type='checkbox']");
+//
+//if( !checkbox.prop("checked") ){
+//checkbox.prop("checked",true);
+//} else {
+//checkbox.prop("checked",false);
+//}
+	});
+
+$("#browseStatusOnline").on("click",function(event) {
+    
+	callBrowseRequest();
+});
+
+$("#browseDarkArchieve").on("click",function(event) {
+    
+	callBrowseRequest();
+});
 
 	callBrowseAjaxRequest();
 
+	
 	//selectBrowseSubseries();
 
-	//countChecked();
+	/* countChecked();
 
-	//$("#browseSubseries input[type=checkbox]").on("click", countChecked);
+	$("#browseSubseries input[type=checkbox]").on("click", countChecked); */
 </script>
 </body>
 </html>

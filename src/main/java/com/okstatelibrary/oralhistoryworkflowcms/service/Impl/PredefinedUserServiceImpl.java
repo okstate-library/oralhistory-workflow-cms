@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.PredefinedUser;
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.PredefineRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.PredefinedUserService;
 
@@ -68,6 +70,19 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 	@Override
 	public void deletePredefinedUser(short id) {
 		predefinedUserRepository.deleteById(id);
+	}
+
+	@Override
+	public List<PredefinedUser> findAllByType(short[] ids) {
+		
+		List<PredefinedUser> predefineUsers =  new ArrayList<PredefinedUser>();
+	
+		for (Short id : ids) {
+			predefineUsers.add(findById(id).orElse(null));
+		}
+		
+		return predefineUsers;
+	
 	}
 
 }

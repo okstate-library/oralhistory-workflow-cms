@@ -8,11 +8,13 @@ import java.util.Optional;
 public interface PredefinedUserService {
 
 	List<PredefinedUser> findAll();
-	
+
+	List<PredefinedUser> findAllByType(short[] ids);
+
 	List<PredefinedUser> findAllByType(short type);
-	
+
 	Optional<PredefinedUser> findById(short id);
-	
+
 	PredefinedUser savePredefinedUser(PredefinedUser collection);
 
 	void deletePredefinedUser(short id);

@@ -348,7 +348,6 @@ div.waa {
 	margin-bottom: 2rem;
 }
 
-
 /*  #footer {
   position: absolute;
   bottom: 0;
@@ -357,9 +356,7 @@ div.waa {
   font-size: 0.7em;
   text-align: center;
 } */
-
-
- #footer {
+#footer {
 	border-top: 1px solid #e5e5e5;
 	color: #696969;
 	font-size: 0.7em;
@@ -373,7 +370,6 @@ div.waa {
 	overflow: hidden;
 }
 
- 
 ul.footer-note {
 	list-style-type: none;
 	margin: 0 0 10px;
@@ -384,7 +380,6 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 	color: green;
 }
 
- 
 .social-grid {
 	background: grey;
 }
@@ -432,69 +427,73 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 	color: black;
 }
 
-#mydiv{
-    width: 100px;
-    height: 100px;
-    background: #000;
-    color: #fff;
-    text-align: center;
-    z-index: -1;
+#mydiv {
+	width: 100px;
+	height: 100px;
+	background: #000;
+	color: #fff;
+	text-align: center;
+	z-index: -1;
 }
 
 #hideMe {
-    -moz-animation: cssAnimation 0s ease-in 3s forwards;
-    /* Firefox */
-    -webkit-animation: cssAnimation 0s ease-in 3s forwards;
-    /* Safari and Chrome */
-    -o-animation: cssAnimation 0s ease-in 3s forwards;
-    /* Opera */
-    animation: cssAnimation 0s ease-in 3s forwards;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
+	-moz-animation: cssAnimation 0s ease-in 3s forwards;
+	/* Firefox */
+	-webkit-animation: cssAnimation 0s ease-in 3s forwards;
+	/* Safari and Chrome */
+	-o-animation: cssAnimation 0s ease-in 3s forwards;
+	/* Opera */
+	animation: cssAnimation 0s ease-in 3s forwards;
+	-webkit-animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
 }
 
-@keyframes cssAnimation {
-    to {
-        width:0;
-        height:0;
-        overflow:hidden;
-    }
-}
-@-webkit-keyframes cssAnimation {
-    to {
-        width:0;
-        height:0;
-        visibility:hidden;
-    }
+@
+keyframes cssAnimation {to { width:0;
+	height: 0;
+	overflow: hidden;
 }
 
+}
+@
+-webkit-keyframes cssAnimation {to { width:0;
+	height: 0;
+	visibility: hidden;
+}
 
-.divTable{
+}
+.divTable {
 	display: table;
 	width: 100%;
 }
+
 .divTableRow {
 	display: table-row;
 }
+
 .divTableHeading {
 	background-color: #EEE;
 	display: table-header-group;
 }
+
 .divTableCell, .divTableHead {
 	border: 1px solid #999999;
 	display: table-cell;
 	padding: 3px 10px;
 }
+
 .divTableHeading {
 	background-color: #EEE;
 	display: table-header-group;
 	font-weight: bold;
 }
+
 .divTableFoot {
 	background-color: #EEE;
 	display: table-footer-group;
 	font-weight: bold;
 }
+
 .divTableBody {
 	display: table-row-group;
 }
@@ -507,41 +506,89 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 *
 */
 .collapsible-link {
-    width: 100%;
-    position: relative;
-    text-align: left;
+	width: 100%;
+	position: relative;
+	text-align: left;
 }
 
 .collapsible-link::before {
-    content: '\f107';
-    position: absolute;
-    top: 50%;
-    right: 0.8rem;
-    transform: translateY(-50%);
-    display: block;
-    font-family: 'FontAwesome';
-    font-size: 1.1rem;
+	content: '\f107';
+	position: absolute;
+	top: 50%;
+	right: 0.8rem;
+	transform: translateY(-50%);
+	display: block;
+	font-family: 'FontAwesome';
+	font-size: 1.1rem;
 }
 
 .collapsible-link[aria-expanded='true']::before {
-    content: '\f106';
+	content: '\f106';
 }
-
-
 
 .card-header .fa {
-  transition: .3s transform ease-in-out;
+	transition: .3s transform ease-in-out;
 }
+
 .card-header .collapsed .fa {
-  transform: rotate(90deg);
+	transform: rotate(90deg);
 }
 
-table{
-  margin: 0 auto;
-  width: 100%;
-  clear: both;
-  border-collapse: collapse;
-  table-layout: fixed; // ***********add this
-  word-wrap:break-word; // ***********and this
+table {
+	margin: 0 auto;
+	width: 100%;
+	clear: both;
+	border-collapse: collapse;
+	table-layout: fixed;
+	//
+	**********
+	*add
+	this
+	word-wrap
+	:
+	break-word;
+	//
+	**********
+	*and
+	this
 }
 
+/* .lds-dual-ring.hidden {
+        display: none;
+    } */
+    
+/*Add an overlay to the entire page blocking any further presses to buttons or other elements.*/
+.overlay {
+/* 	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .8);
+	z-index: 999;
+	opacity: 1;
+	transition: all 0.5s; */
+	 
+position:absolute;
+    top:30%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    color: orange; background: rgb(254, 92, 0); opacity: 2;
+    z-index: 1000;
+}
+
+/*Spinner Styles*/
+.lds-dual-ring {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #000000; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

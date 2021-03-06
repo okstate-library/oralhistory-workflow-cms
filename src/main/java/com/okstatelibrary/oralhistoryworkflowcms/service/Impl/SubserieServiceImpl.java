@@ -33,7 +33,7 @@ public class SubserieServiceImpl implements SubserieService {
 	}
 
 	@Override
-	public List<Subserie> findAll(short[] ids) {
+	public List<Subserie> findAll(List<Short> ids) {
 		List<Subserie> subseriesList = new ArrayList<Subserie>();
 
 		for (Short id : ids) {

@@ -148,7 +148,7 @@
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"><i class="fa fa-user-cog"></i> <span
-								th:text="${user.roleId} == 1 ? ${user.firstName} + ' (Admin)' : ${user.firstName} + ' (User)' "></span>
+								th:text="${user.firstName} + ' (' + ${user.roleName} +')' "></span>
 								<span class="caret" /></span></a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/profile}">Profile</a></li>
@@ -171,6 +171,7 @@
 						</a>
 							<ul class="dropdown-menu">
 								<li><a th:href="@{/users}">Users</a></li>
+								<li><a th:href="@{/findreplace}">Find Replace</a></li>
 								<li><a th:href="@{/export}">Export</a></li>
 								<li><a th:href="@{/import}">Import</a></li>
 							</ul></li>
@@ -218,6 +219,9 @@
 			<h1 class="text-center" th:classappend="${errortypeclass}"
 				th:text="${errorMessage}"></h1>
 		</div>
+
+
+		<div id="loader" class="lds-dual-ring hidden overlay"></div>
 
 
 	</div>

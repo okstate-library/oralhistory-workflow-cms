@@ -13,12 +13,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.okstatelibrary.oralhistoryworkflowcms.enums.UserRole;
 
 @Entity
 @Table(name = "user")
@@ -54,6 +55,9 @@ public class User implements UserDetails {
 	@Transient
 	@ElementCollection(targetClass = Integer.class)
 	private List<Integer> authorized;
+
+	@Transient
+	private String roleName;
 
 	public Long getUserId() {
 		return userId;
@@ -176,20 +180,20 @@ public class User implements UserDetails {
 		// 6 - Settings
 		// 7 - Delete Interview records
 		// 8 - Dark archive in browse page
-		
-		if (this.roleId == 0) // USER
+
+		if (this.roleId == 1) // USER
 		{
 			Integer[] sourceArray = { 1, 2, 3 };
 			authorizedList = Arrays.asList(sourceArray);
 
-		} else if (this.roleId == 1) // ADMIN
-		{
-			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6 , 7, 8 };
-			authorizedList = Arrays.asList(sourceArray);
-
-		} else if (this.roleId == 2) // STAFF
+		} else if (this.roleId == 2) // ADMIN
 		{
 			Integer[] sourceArray = { 1, 2, 3, 4 };
+			authorizedList = Arrays.asList(sourceArray);
+
+		} else if (this.roleId == 3) // STAFF
+		{
+			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6, 7, 8 };
 			authorizedList = Arrays.asList(sourceArray);
 
 		}
@@ -199,6 +203,20 @@ public class User implements UserDetails {
 
 	public void setAuthorized(List<Integer> authorized) {
 		this.authorized = authorized;
+	}
+
+	/**
+	 * @return the roleName
+	 */
+	public String getRoleName() {
+		return UserRole.values()[this.roleId - 1].toString();// roleName;
+	}
+
+	/**
+	 * @param roleName the roleName to set
+	 */
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 }

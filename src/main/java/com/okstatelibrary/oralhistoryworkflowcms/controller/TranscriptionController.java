@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
+import com.okstatelibrary.oralhistoryworkflowcms.entity.ui.*;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.FindReplaceOption;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.OriginalMediumType;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.PredefinedUserType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
@@ -133,81 +136,226 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		model.addAttribute("collections", collectionService.findAll());
-		model.addAttribute("subseries", subserieService.findAll());
-
-		model.addAttribute("interviewers",
-				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
-
-		model.addAttribute("subjects", subjectService.findAll());
+//		model.addAttribute("collections", collectionService.findAll());
+//		model.addAttribute("subseries", subserieService.findAll());
+//
+//		model.addAttribute("interviewers",
+//				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
+//
+//		model.addAttribute("subjects", subjectService.findAll());
+//
+//		model.addAttribute("transcriptions", transcriptionService.findAll());
 
 		this.messageSetup(model);
 
 		return "browse";
 	}
 
-	boolean isInitialSerach = true;
-	List<Transcription> brwoseTranscriptions = null;
-
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
-	public @ResponseBody List<Transcription> browseData(@RequestParam(required = false) String collections,
+	public @ResponseBody BrowsePageObject browseData(@RequestParam(required = false) String collections,
 			@RequestParam(required = false) String subseries, @RequestParam(required = false) String interviewers,
 			@RequestParam(required = false) String subjects, @RequestParam(required = false) String onlineoffline,
 			@RequestParam(required = false) String darkarchive, Model model) throws JsonProcessingException {
 
-		System.out.println("1111--get browse list" + isInitialSerach);
+		BrowsePageObject browsePageObject = new BrowsePageObject();
 
 		if (StringUtil.isNotNullOrEmpty(collections) || StringUtil.isNotNullOrEmpty(subseries)
 				|| StringUtil.isNotNullOrEmpty(interviewers) || StringUtil.isNotNullOrEmpty(subjects)
 				|| StringUtil.isNotNullOrEmpty(darkarchive) || StringUtil.isNotNullOrEmpty(onlineoffline)) {
 
-			brwoseTranscriptions = transcriptionService.findAll(collections, subseries, interviewers, subjects,
-					darkarchive, onlineoffline);
+			System.out.println("selected collections: " + collections);
+			System.out.println("selected subseries: " + subseries);
+			System.out.println("selected interviewers: " + interviewers);
+			System.out.println("selected onlineoffline: " + onlineoffline);
+			System.out.println("selected dark archive: " + darkarchive);
 
-//			List<Sho> distinctElements = transcriptions.stream().filter(distinctByKey(p -> p.getCollectionId()))
-//					.collect(Collectors.toList());
+			List<Transcription> transcripts = transcriptionService.findAll(collections, subseries, interviewers,
+					subjects, darkarchive, onlineoffline);
+
+			browsePageObject.setTranscriptions(transcripts);
+
+			browsePageObject.setCollections(getDistinctCollections(transcripts));
+
+			browsePageObject.setSubseries(getDistinctSubseries(transcripts));
+
+			browsePageObject.setInterviewers(getDistinctInterviewers(transcripts));
+
+			browsePageObject.setStatusOnline(getStatusOnline(transcripts));
+
+			browsePageObject.setDarkArchieve(getDarkArchieve(transcripts));
+
+		} else {
+
+			browsePageObject.setTranscriptions(transcriptionService.findAll());
+
+			browsePageObject.setCollections(ConvertCollectionToCheckBoxObject(collectionService.findAll()));
+
+			browsePageObject.setSubseries(ConvertSubseriesToCheckBoxObject(subserieService.findAll()));
+
+			browsePageObject.setInterviewers(ConvertInterviewersToCheckBoxObject(
+					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
+
+			browsePageObject.setStatusOnline(ConvertStatusOnlineToCheckBoxObject());
+
+			browsePageObject.setDarkArchieve(ConvertDarkArchieveToCheckBoxObject());
+
+		}
+
+		return browsePageObject;
+	}
+
+	private List<CheckBoxObject> getDarkArchieve(List<Transcription> transcripts) {
+
+		Map<Byte, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getIsDarkArchive, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Map.Entry<Byte, Long> entry : newTranscripts.entrySet()) {
+			Byte darkArchieve = entry.getKey();
+
+			if (darkArchieve == 1) {
+				checkBoxObjectList
+						.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archieve", entry.getValue()));
+			}
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertDarkArchieveToCheckBoxObject() {
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archieve"));
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> getStatusOnline(List<Transcription> transcripts) {
+		Map<Byte, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getIsOnline, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Map.Entry<Byte, Long> entry : newTranscripts.entrySet()) {
+			Byte status = entry.getKey();
+
+			if (status == 0) {
+				checkBoxObjectList.add(new CheckBoxObject("browseIsOfflineOption", "No", entry.getValue()));
+
+			} else {
+				checkBoxObjectList.add(new CheckBoxObject("browseIsOnlineOption", "Yes", entry.getValue()));
+			}
+
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertStatusOnlineToCheckBoxObject() {
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		checkBoxObjectList.add(new CheckBoxObject("browseIsOfflineOption", "No"));
+		checkBoxObjectList.add(new CheckBoxObject("browseIsOnlineOption", "Yes"));
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> getDistinctCollections(List<Transcription> transcripts) {
+		Map<Collection, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getCollection, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Map.Entry<Collection, Long> entry : newTranscripts.entrySet()) {
+			Collection collection = entry.getKey();
+
+			checkBoxObjectList
+					.add(new CheckBoxObject(collection.getId(), collection.getCollectionName(), entry.getValue()));
+
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertCollectionToCheckBoxObject(List<Collection> collections) {
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Collection collection : collections) {
+			checkBoxObjectList.add(new CheckBoxObject(collection.getId(), collection.getCollectionName()));
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> getDistinctInterviewers(List<Transcription> transcripts) {
+
+		Map<String, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getInterviewer, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		List<PredefinedUser> interviewerList = predefinedUserService
+				.findAllByType(PredefinedUserType.INTERVIEWER.getCode());
+
+		for (Map.Entry<String, Long> entry : newTranscripts.entrySet()) {
+
+			PredefinedUser interviewer = interviewerList.stream().filter(u -> u.getName().contains(entry.getKey()))
+					.findAny().orElse(null);
+
+			if (interviewer != null) {
+				checkBoxObjectList.add(new CheckBoxObject(interviewer.getId(), entry.getKey(), entry.getValue()));
+			}
+
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertInterviewersToCheckBoxObject(List<PredefinedUser> interviewers) {
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (PredefinedUser interviewer : interviewers) {
+			checkBoxObjectList.add(new CheckBoxObject(interviewer.getId(), interviewer.getName()));
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> getDistinctSubseries(List<Transcription> transcripts) {
+
+		Map<Subserie, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getsubseries, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Map.Entry<Subserie, Long> entry : newTranscripts.entrySet()) {
+			Subserie subserie = entry.getKey();
+
+			checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(), entry.getValue()));
+
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertSubseriesToCheckBoxObject(List<Subserie> subseries) {
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Subserie subserie : subseries) {
+			checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName()));
+		}
+
+		return checkBoxObjectList;
+	}
+
+//	@RequestMapping(value = "/browse/collections", method = RequestMethod.GET)
+//	public @ResponseBody List<Collection> browseCollecttion() throws JsonProcessingException {
 //
-//			// Let's verify distinct elements
-//			System.out.println(distinctElements);
-			isInitialSerach = false;
-
-			short[] ids = { 1, 2, 3, 4 };
-
-			model.addAttribute("collections", collectionService.findAll(ids));
-
-		} else {
-			isInitialSerach = true;
-			brwoseTranscriptions = transcriptionService.findAll();
-		}
-		
-		
-		System.out.println("22222 -- get browse list" + isInitialSerach);
-		
-		
-		return brwoseTranscriptions;
-	}
-
-	@RequestMapping(value = "/browse/collections", method = RequestMethod.GET)
-	public @ResponseBody List<Collection> browseCollecttion() throws JsonProcessingException {
-
-		short[] ids = { 1, 2, 3, 4 };
-
-		return collectionService.findAll();
-	}
-
-	@RequestMapping(value = "/browse/subseries", method = RequestMethod.GET)
-	public @ResponseBody List<Subserie> browseSubseries() throws JsonProcessingException {
-
-		System.out.println("Get Subseries." + isInitialSerach);
-
-		if (isInitialSerach) {
-			short[] ids = { 1, 2, 3, 4 };
-			return subserieService.findAll(ids);
-		} else {
-			short[] ids = { 1, 2 };
-			return subserieService.findAll(ids);
-		}
-	}
+//		return collectionService.findAll();
+//	}
 
 	// Utility function
 	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
@@ -645,6 +793,51 @@ public class TranscriptionController extends MainController {
 		return transcriptionService.report(report.getInterviewer(), report.getLocation(), report.getBeginDate(),
 				report.getEndDate(), report.getStatus(), report.getBornDigital(), report.getConverted());
 	}
+
+	// region Find and Replace Implementation
+	// ---------------------------------------------------------------------------------------
+
+	@RequestMapping("findreplace")
+	public String findreplace(Model model, Principal principal) throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		this.messageSetup(model);
+
+		return "findreplace";
+	}
+
+	@RequestMapping(value = "findreplace", method = RequestMethod.POST)
+	public String findreplacePost(@RequestParam(required = true) String option,
+			@RequestParam(required = true) String find, @RequestParam(required = true) String replace, Model model,
+			Principal principal) throws ParseException {
+
+		System.out.println("option-" + option);
+		System.out.println("find-" + find);
+		System.out.println("replace- " + replace);
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		int recordCount = transcriptionService.findreplace(FindReplaceOption.values()[Byte.parseByte(option) - 1], find,
+				replace);
+
+		if (recordCount > 0) {
+
+			this.errorType = ErrorType.SUCESS;
+			this.message = recordCount + " record(s) updated successfully!";
+
+		} else {
+			this.errorType = ErrorType.ERROR;
+			this.message = "No records found.!";
+		}
+
+		return "redirect:/findreplace";
+	}
+
+	// ---------------------------------------------------------------------------------------
+	// endregion
 
 	@RequestMapping("export")
 	public String export(Model model, Principal principal) throws ParseException {

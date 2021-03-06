@@ -19,5 +19,5 @@ public interface SubserieService {
 
 	Subserie findByName(short collectionId, String subseriesName);
 
-	List<Subserie> findAll(short[] ids);
+	List<Subserie> findAll(List<Short> ids);
 }

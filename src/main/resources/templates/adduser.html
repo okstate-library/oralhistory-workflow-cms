@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
 <head th:replace="common/header :: common-header" />
-<body roleId="page-top" data-spy="scroll"
-	data-target=".navbar-fixed-top">
+<body data-spy="scroll" data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 <div class="container">
 	<div class="row">
@@ -11,100 +10,99 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-6">
-			<form class="form-horizontal" method="post"
-				th:action="@{/user/adduser}">
+	<form class="form-horizontal" method="post"
+		th:action="@{/user/adduser}">
+		<div class="row">
 
-				<div class="form-group">
-					<label for="firstName" class="cols-sm-2 control-label">First
-						Name</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								id="firstName" name="firstName"
-								roleId="firstname" placeholder="Enter your first name"
-								required="required" />
-						</div>
-					</div>
-				</div>
 
-				<div class="form-group">
-					<label for="lastName" class="cols-sm-2 control-label">Last
-						Name</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								id="lastName" name="lastName"
-								roleId="lastName" placeholder="Enter your last name"
-								required="required" />
-						</div>
-					</div>
-				</div>
 
-				<div class="form-group">
-					<label for="email" class="cols-sm-2 control-label">Your
-						Email</label><span class="bg-danger pull-right" th:if="${emailExists}">Email
-						already exists</span>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i
-								class="fa fa-envelope fa" aria-hidden="true"></i></span> <input
-								type="text" class="form-control"
-								id="email" name="email" roleId="email"
-								placeholder="Enter your Email" required="required" />
-						</div>
-					</div>
-				</div>
+			<div class="col-md-5 form-group">
+				<label class="control-label">First Name</label> <input type="text"
+					class="form-control" id="firstName" name="firstName"
+					required="required" />
 
-				<div class="form-group">
-					<label for="username" class="cols-sm-2 control-label">Username</label><span
-						class="bg-danger pull-right" th:if="${usernameExists}">Username
-						already exists</span>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-users fa"
-								aria-hidden="true"></i></span> <input type="text" class="form-control"
-								id="username" name="username"
-								roleId="username" placeholder="Enter your Username"
-								required="required" />
-						</div>
-					</div>
-				</div>
+			</div>
 
-				<div class="form-group">
-					<label for="password" class="cols-sm-2 control-label">Password</label>
-					<div class="cols-sm-10">
-						<div class="input-group">
-							<span class="input-group-addon"><i
-								class="fa fa-lock fa-lg" aria-hidden="true"></i></span> <input
-								type="password" class="form-control"
-								id="password" name="password" roleId="password"
-								placeholder="Enter your Password" required="required" />
-						</div>
-						<div class="checkbox">
-							<label> <input id="showPassword" type="checkbox" />Show
-								Password
-							</label>
-						</div>
-					</div>
-				</div>
 
-				<div class="form-group ">
-					<button type="submit"
-						class="btn btn-primary btn-lg btn-block login-button">Sign
-						up!</button>
-				</div>
+			<div class="col-md-2 form-group"></div>
 
-				<hr />
 
-			</form>
+			<div class="col-md-5 form-group">
+				<label class="control-label">Username</label> <input type="text"
+					class="form-control" id="username" name="username"
+					required="required" />
+
+			</div>
 		</div>
-	</div>
 
+		<div class="row">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Last Name</label> <input type="text"
+					class="form-control" id="lastName" name="lastName"
+					required="required" />
+
+			</div>
+
+
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Password</label> <input type="password"
+					class="form-control" id="password" name="password"
+					required="required" />
+
+			</div>
+
+
+		</div>
+
+		<div class="row">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Email</label> <input type="text"
+					class="form-control" id="email" name="email" required="required" />
+
+			</div>
+
+
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+
+				<label for="username" class="cols-sm-2 control-label">Role</label>
+
+
+				<div class="cols-sm-10">
+					<div class="input-group">
+						<select class="form-control" id="collectitonDropDown"
+							onchange="selectSebseries()" name="CollectionId" required>
+							<option value="">Select Collection</option>
+
+							<option th:each="collection : ${collections}"
+								th:value="${collection.Id}"
+								th:text="${collection.CollectionName}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-12 form-group">
+
+				<button type="submit"
+					class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+
+			</div>
+		</div>
+	</form>
 </div>
+<
 
 
 

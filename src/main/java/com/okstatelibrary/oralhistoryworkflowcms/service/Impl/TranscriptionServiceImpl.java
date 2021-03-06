@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.FindReplaceOption;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.TranscriptionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.TranscriptionService;
 import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
@@ -386,6 +387,98 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 						? darkArchievePredicates.stream().reduce(x -> false, Predicate::or)
 						: u -> u.getId() > 0)
 				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public int findreplace(FindReplaceOption option, String find, String replace) {
+
+		int recordCount = 0;
+
+		for (Transcription transcription : findAll()) {
+
+			switch (option) {
+			case All:
+
+				boolean isFoundReplace = false;
+
+				if (StringUtil.isNotNullOrEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+					transcription.setTitle(transcription.getTitle().replace(find, replace));
+					isFoundReplace = true;
+				}
+
+				if (StringUtil.isNotNullOrEmpty(transcription.getDescription())
+						&& transcription.getDescription().contains(find)) {
+					transcription.setDescription(transcription.getDescription().replace(find, replace));
+
+					isFoundReplace = true;
+				}
+
+				if (StringUtil.isNotNullOrEmpty(transcription.getKeywords())
+						&& transcription.getKeywords().contains(find)) {
+					transcription.setKeywords(transcription.getKeywords().replace(find, replace));
+
+					isFoundReplace = true;
+				}
+
+				if (StringUtil.isNotNullOrEmpty(transcription.getSubject())
+						&& transcription.getSubject().contains(find)) {
+					transcription.setSubject(transcription.getSubject().replace(find, replace));
+
+					isFoundReplace = true;
+				}
+
+				if (isFoundReplace) {
+					transcriptionRepository.save(transcription);
+					recordCount++;
+				}
+
+				// code block
+				break;
+			case Title:
+
+				if (StringUtil.isNotNullOrEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+					transcription.setTitle(transcription.getTitle().replace(find, replace));
+
+					transcriptionRepository.save(transcription);
+					recordCount++;
+				}
+
+				break;
+			case Description:
+				if (StringUtil.isNotNullOrEmpty(transcription.getDescription())
+						&& transcription.getDescription().contains(find)) {
+					transcription.setDescription(transcription.getDescription().replace(find, replace));
+
+					transcriptionRepository.save(transcription);
+					recordCount++;
+				}
+				break;
+			case Keywords:
+				if (StringUtil.isNotNullOrEmpty(transcription.getKeywords())
+						&& transcription.getKeywords().contains(find)) {
+					transcription.setKeywords(transcription.getKeywords().replace(find, replace));
+
+					transcriptionRepository.save(transcription);
+					recordCount++;
+				}
+				break;
+			case Subject:
+				if (StringUtil.isNotNullOrEmpty(transcription.getSubject())
+						&& transcription.getSubject().contains(find)) {
+					transcription.setSubject(transcription.getSubject().replace(find, replace));
+
+					transcriptionRepository.save(transcription);
+					recordCount++;
+				}
+				break;
+			default:
+				// code block
+			}
+
+		}
+
+		return recordCount;
 
 	}
 
