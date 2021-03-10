@@ -384,7 +384,7 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 	background: grey;
 }
 
-@media ( min-width : 768px) {
+/* @media ( min-width : 768px) {
 	.my-custom-container {
 		width: 600px;
 	}
@@ -395,12 +395,13 @@ footer a:link, footer a:visited, footer a:hover, footer a:active {
 		width: 720px;
 	}
 }
+*/
 
 @media ( min-width : 1500px) {
 	.my-custom-container {
 		width: 1500px;
 	}
-}
+} 
 
 /* Multi-select check box list */
 .dropdown-menu label {
@@ -553,23 +554,17 @@ table {
 	this
 }
 
-/* .lds-dual-ring.hidden {
-        display: none;
-    } */
+/*
+*
+* ==========================================
+* LOADING WHEEL CSS CLASSES
+* ==========================================
+*
+*/
     
 /*Add an overlay to the entire page blocking any further presses to buttons or other elements.*/
-.overlay {
-/* 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, .8);
-	z-index: 999;
-	opacity: 1;
-	transition: all 0.5s; */
-	 
-position:absolute;
+.overlay { 
+	position:absolute;
     top:30%;
     left:50%;
     transform:translate(-50%, -50%);
@@ -591,4 +586,52 @@ position:absolute;
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/*
+*
+* ==========================================
+* MULTISELECT CSS CLASSES
+* ==========================================
+*
+*/
+:root
+{
+	--text: "Select values";
+}
+.multiple_select
+{
+	height: 18px;
+	width: 90%;
+	overflow: hidden;
+	-webkit-appearance: menulist;
+	position: relative;
+}
+.multiple_select::before
+{
+	content: var(--text);
+	display: block;
+  margin-left: 5px;
+  margin-bottom: 2px;
+}
+.multiple_select_active
+{
+	overflow: visible !important;
+}
+.multiple_select option
+{
+	display: none;
+    height: 18px;
+	background-color: white;
+}
+.multiple_select_active option
+{
+	display: block;
+}
+
+.multiple_select option::before {
+  content: "\2610";
+}
+.multiple_select option:checked::before {
+  content: "\2611";
 }

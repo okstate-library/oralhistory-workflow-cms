@@ -50,12 +50,16 @@
 
 			<div class="col-md-5 form-group">
 				<label class="control-label">Interviewer(s)</label> <select
-					class="form-control" th:name="Interviewer" required>
-					<option value="">Select Interviewer(s)</option>
+					id="myFilter" size="1" class="multiple_select form-control"
+					multiple th:name="Interviewer" required>
+					<option value="">Select Interviewer()s)</option>
 
 					<option th:each="interviewer : ${interviewers}"
 						th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
 				</select>
+
+
+
 
 			</div>
 

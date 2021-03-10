@@ -414,9 +414,7 @@ function callBrowseAjaxRequest() {
 			"darkarchive" :browseDarkArchiveOptionTexts,
 			
 		},
-		 beforeSend: function () { // Before we send the request, remove the
-				// .hidden class from the spinner and
-				// default to inline-block.
+		 beforeSend: function () { // Before we send the request
 			$('#loader').removeClass('hidden')
 			},
 		 success : function(data) {
@@ -436,11 +434,10 @@ function callBrowseAjaxRequest() {
 						      { "width": "90px", "targets": 1 },
 						      { "width": "15px", "targets": 2 },
 						      { "width": "40px", "targets": 3 },
-						      { "width": "50px", "targets": 4 },
-						      { "width": "50px", "targets": 5 },
+						      { "width": "100px", "targets": 4 },
+						      { "width": "10px", "targets": 5 },
 						      { "width": "10px", "targets": 6 },
-						      { "width": "10px", "targets": 7 },
-						      { "width": "10px", "targets": 8 }
+						      { "width": "10px", "targets": 7 }
 						    ],
 						columns : [
 
@@ -454,10 +451,7 @@ function callBrowseAjaxRequest() {
 						}, {
 							"data" : "interviewDates"
 						}, {
-							"data" : "collectionName",
-							render : getShortText,
-						}, {
-							"data" : "subseriesName",
+							"data" : data,//"collectionName",
 							render : getShortText,
 						}, {
 							"data" : "transcriptStatus",
@@ -570,7 +564,7 @@ function callBrowseAjaxRequest() {
 				$('#browseStatusOnline').append(option);
 			}
 			
-			// Dark Archieve
+			// Dark Archive
 			$('#browseDarkArchieve').empty();
 
 			for (var i = 0; i < data.darkArchieve.length; i++) {
@@ -611,7 +605,9 @@ function setupSelections()
 }
 
 function getShortText(data) {
-	return "<p  title='" + data + "'>" +  (data.length > 20 ? data.substr(0, 17) +"..." : data ) + "</p>";
+	
+	return  "(c)"+  data.collectionName  + (data.subseriesName != "N/A" ? "</br> (s)" + data.subseriesName : "") ;
+	//return "<p  title='" + data + "'>" +  (data.length > 20 ? data.collectionName.substr(0, 17) +"..." : data.collectionName ) + "</p>";
 }
 
 function getBooleanImage(data, type, full, meta) {
@@ -624,8 +620,8 @@ function getBooleanImage(data, type, full, meta) {
 
 function getLink(index, row, data) {
 
-	return '<a style="text-decoration:none;" href="modifyinterview/' + data.id
-			+ '" target="_blank">' + data.interviewee + '</a>'
+	return '<a href="modifyinterview/' + data.id
+			+ '">' + data.interviewee + '</a>'
 }
 
 var expanded = false;

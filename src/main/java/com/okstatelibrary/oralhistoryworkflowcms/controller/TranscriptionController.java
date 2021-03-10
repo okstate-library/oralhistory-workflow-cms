@@ -215,8 +215,7 @@ public class TranscriptionController extends MainController {
 			Byte darkArchieve = entry.getKey();
 
 			if (darkArchieve == 1) {
-				checkBoxObjectList
-						.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archieve", entry.getValue()));
+				checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archive", entry.getValue()));
 			}
 		}
 
@@ -226,7 +225,7 @@ public class TranscriptionController extends MainController {
 	private List<CheckBoxObject> ConvertDarkArchieveToCheckBoxObject() {
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
-		checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archieve"));
+		checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archive"));
 
 		return checkBoxObjectList;
 	}
@@ -452,6 +451,8 @@ public class TranscriptionController extends MainController {
 
 		transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
 
+		transcription.setInterviewDates(transcription.getInterviewDates().replaceAll(",", ";"));
+		
 		transcription.setCreatedDate(DateUtil.getTodaySqlDate());
 		transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
 
