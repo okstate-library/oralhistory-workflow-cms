@@ -63,10 +63,10 @@
 					<thead>
 						<tr>
 
-							<th>Project Code</th>
+							<th style="width: 100px">Project Code</th>
 							<th>Interviewees</th>
 							<th>Dates</th>
-							<th></th>
+							<th style="width: 50px"></th>
 
 						</tr>
 					</thead>
@@ -77,7 +77,7 @@
 							<td data-th-text="${transcription.InterviewDates}">...</td>
 							<td><a
 								th:href="@{/modifyinterview/{id}{action}(id=${transcription.Id},action='')}"
-								target="_blank">View</a></td>
+								target="_blank">view</a></td>
 
 						</tr>
 					</tbody>
@@ -100,6 +100,7 @@
 		$('#homeDatatable').DataTable({
 			searching : false,
 			bPaginate : false,
+			"bInfo" : false
 
 		});
 	});

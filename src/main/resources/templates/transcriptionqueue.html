@@ -5,7 +5,7 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container my-custom-container">
+<div class="my-custom-container">
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -16,7 +16,7 @@
 
 	<div class="row">
 
-		<div class="col-xs-1">
+		<!-- <div class="col-xs-1">
 			<div class="dropdown">
 
 
@@ -33,11 +33,11 @@
 
 			</div>
 
-		</div>
+		</div> -->
 
 
 
-		<div class="table-responsive col-xs-11">
+		<div class="table-responsive col-xs-12">
 			<table id="transcriptionQueueDataTable"
 				class="table table-bordered table-hover table-striped">
 				<thead>
@@ -52,7 +52,9 @@
 						<th>First edit</th>
 						<th>Second edit</th>
 						<th>Draft sent</th>
+						<th>Corrections</th>
 						<th>Final edit</th>
+						<th>Sent out</th>
 					</tr>
 				</thead>
 			</table>

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -151,6 +152,7 @@ public class TranscriptionController extends MainController {
 		return "browse";
 	}
 
+	@Lazy
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
 	public @ResponseBody BrowsePageObject browseData(@RequestParam(required = false) String collections,
 			@RequestParam(required = false) String subseries, @RequestParam(required = false) String interviewers,
@@ -451,8 +453,15 @@ public class TranscriptionController extends MainController {
 
 		transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
 
+		String interviewers = transcription.getInterviewer().replaceAll(", ", "/");
+		interviewers = interviewers.replaceAll(",", ";");
+		interviewers = interviewers.replaceAll("/", ", ");
+		transcription.setInterviewer(interviewers);
+
 		transcription.setInterviewDates(transcription.getInterviewDates().replaceAll(",", ";"));
-		
+
+		transcription.setInterviewDates(transcription.getInterviewDates().replaceAll(",", ";"));
+
 		transcription.setCreatedDate(DateUtil.getTodaySqlDate());
 		transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
 

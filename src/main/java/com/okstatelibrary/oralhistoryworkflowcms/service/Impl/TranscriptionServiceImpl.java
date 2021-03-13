@@ -160,23 +160,25 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 	private static Predicate<Transcription> getDatesPredicate(String beginDate, String endDate) {
 
+		String delimeter = ";";
+		
 		if (!StringUtils.isEmpty(beginDate) && StringUtils.isEmpty(endDate)) {
 
 			Date beign = DateUtil.convertDate(beginDate);
 
 			return u -> u.getInterviewDates().length() == 10 ? !beign.after(DateUtil.convertDate(u.getInterviewDates()))
 					: u.getInterviewDates().length() == 21
-							? !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
+							? !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 							: u.getInterviewDates().length() == 32
-									? !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
+									? !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
 									: u.getInterviewDates().length() == 43 ? !beign
-											.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[3]))
+											.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
 											: u.getId() > 0;
 
 		} else if (StringUtils.isEmpty(beginDate) && !StringUtils.isEmpty(endDate)) {
@@ -185,17 +187,17 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 			return u -> u.getInterviewDates().length() == 10 ? !end.before(DateUtil.convertDate(u.getInterviewDates()))
 					: u.getInterviewDates().length() == 21
-							? !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-									|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
+							? !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+									|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 							: u.getInterviewDates().length() == 32
-									? !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
+									? !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
 									: u.getInterviewDates().length() == 43 ? !end
-											.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[3]))
+											.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
 											: u.getId() > 0;
 
 		} else if (!StringUtils.isEmpty(beginDate) && !StringUtils.isEmpty(endDate)) {
@@ -207,31 +209,31 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 					? !beign.after(DateUtil.convertDate(u.getInterviewDates()))
 							&& !end.before(DateUtil.convertDate(u.getInterviewDates()))
 					: u.getInterviewDates().length() == 21
-							? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1])))
-									&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[1])))
+							? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1])))
+									&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1])))
 							: u.getInterviewDates().length() == 32
-									? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[2])))
-											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
+									? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
+											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
 													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
+															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(",")[2])))
+															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
 									: u.getInterviewDates().length() == 43 ? (!beign
-											.after(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(",")[3])))
-											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(",")[0]))
+											.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3])))
+											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
 													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(",")[1]))
+															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(",")[2]))
+															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
 													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(",")[3])))
+															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3])))
 											: u.getId() > 0;
 
 		}

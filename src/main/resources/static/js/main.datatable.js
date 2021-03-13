@@ -86,12 +86,130 @@ function callTransactionQueueAjaxRequest() {
 
 			$('#transcriptionQueueDataTable').dataTable().fnDestroy();
 
+			$('#transcriptionQueueDataTable thead tr').clone(true).appendTo( '#transcriptionQueueDataTable thead' );
+			
+			
+			const checkBoxBooleanColumn = [5];
+			
+			const checkBoxColumn = [4,6,7,8,9,10,11,12];
+			
+			function exists(arr, search) {
+			    return arr.some(row => row.includes(search));
+			}
+
+			const textBoxColumns = {
+				    0: 20,
+				    1: 20,
+				    3: 6,
+				};
+
+			function keyexists(searchKey)
+			{
+				for(key in textBoxColumns){
+					
+					if(key == searchKey )
+					   return true;
+					}
+				return false;
+			}
+			
+			
+			$('#transcriptionQueueDataTable thead tr:eq(1) th').each( function (i) {
+		        
+				var title = $(this).text();
+				
+				if (keyexists( i))
+				{
+			        $(this).html( '<input type="text" size="' + textBoxColumns[i] +'" placeholder="'+title+'" />' );
+			 
+			        $( 'input', this ).on( 'keyup change', function () {
+			            if ( table.column(i).search() !== this.value ) {
+			                table
+			                    .column(i)
+			                    .search(this.value)
+			                    .draw();
+			            }
+			        } );
+				}
+				else if (checkBoxColumn.includes(i))
+				{
+			        $(this).html( '<input type="checkbox" />' );
+			 
+			        $( 'input', this ).on( 'keyup change', function () {
+
+			        	 if(this.checked == true)
+			        	 {
+				        	 table
+					        	 .column(i)
+					        	 .search( '^(?!\s*$).+', true, false )
+					        	 .draw();
+			        	 }else
+			        	 { 		
+			        		 
+				        	 table
+					        	 .column(i)
+					        	 .search( '' )
+					        	 .draw();		  
+			        	 }
+			        	
+			        } );
+				}
+				else if (checkBoxBooleanColumn.includes(i))
+				{
+			        $(this).html( '<select id="prioritySelect" >'
+			        		+'<option value="reset">Reset</option>'
+			        		+'<option value="true">True</option>'
+			        	    +'<option value="false">False</option>'
+			        	  +'</select>' );
+			 
+			        $("#prioritySelect").change(function () {
+		                // alert($(this).val());
+		                
+		                var select = $(this).val() ;// alert($(this).val());
+			        	 
+			        	 if(select === "reset")
+			        	 {
+			        		 table
+			                 .column(i) // or columns???
+			                 .search( '^(?!\s*$).+', true, false)
+			                 .draw(); 
+			        		 
+			        	 }else if  (select === "true")
+			        	 { 	
+			        		 // alert(table.column(i).data())
+//			        		 
+			        		 table
+			                 .column(i) // or columns???
+			                 .search( '1')
+			                 .draw(); 
+			        		 
+			        	 }else
+		        		 {
+			        		 table
+			                 .column(i) // or columns???
+			                 .search( '0')
+			                 .draw(); 
+		        		 }
+		                
+		                
+		            });
+			      
+				}else
+					{
+					 $(this).html( '' );
+					}
+		        
+		    } );
+			
+		    
 			var table = $('#transcriptionQueueDataTable').DataTable(
 					{
 						dom : 'Bfrtip',
 						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
 						dom: 'Blfrtip',
 						data : data,
+						orderCellsTop: true,
+				        fixedHeader: true,
 						"columnDefs": [
 						      {  "width": "90px", "targets": 0 },
 						      { "width": "90px", "targets": 1 },
@@ -103,13 +221,16 @@ function callTransactionQueueAjaxRequest() {
 						      { "width": "10px", "targets": 7 },
 						      { "width": "10px", "targets": 8 },
 						      { "width": "10px", "targets": 9 },
-						      { "width": "10px", "targets": 10 }
+						      { "width": "10px", "targets": 10 },
+						      { "width": "10px", "targets": 11 },
+						      { "width": "10px", "targets": 12 }
 						    ],
 						    columns : [
 
 						{
 							"data" : "interviewee",
-							'render' : getLink
+							'render' : getLink,
+							'sortable': false,
 						}, {
 							"data" : "interviewer"
 						}, {
@@ -120,9 +241,9 @@ function callTransactionQueueAjaxRequest() {
 							"data" : "transcriberAssigned"
 						}, {
 							"data" : "isPriority",
-							render : getBooleanImage,
-							class  : 'text-center' ,
-							'sortable': false,
+// render : getBooleanImage,
+// class : 'text-center' ,
+							// 'sortable': false,
 						}, {
 							"data" : "auditCheckCompleted"
 						}, {
@@ -130,11 +251,15 @@ function callTransactionQueueAjaxRequest() {
 						}, {
 							"data" : "secondEditCompleted"
 						}, {
-							"data" : "draftSentDate"
+							"data" : "draftSentDate" 
+						}, {
+							"data" : "editWithCorrectionCompleted" 
 						}, {
 							"data" : "finalEditCompleted"
+						},{
+							"data" : "finalSentDate"
 						}, ],
-						sort : [ 0, 'desc' ],
+						
 						"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
 								[ 10, 50, 100, 200, "All" ] ],
 						"pageLength" : 10
@@ -451,7 +576,7 @@ function callBrowseAjaxRequest() {
 						}, {
 							"data" : "interviewDates"
 						}, {
-							"data" : data,//"collectionName",
+							"data" : data,// "collectionName",
 							render : getShortText,
 						}, {
 							"data" : "transcriptStatus",
@@ -607,7 +732,9 @@ function setupSelections()
 function getShortText(data) {
 	
 	return  "(c)"+  data.collectionName  + (data.subseriesName != "N/A" ? "</br> (s)" + data.subseriesName : "") ;
-	//return "<p  title='" + data + "'>" +  (data.length > 20 ? data.collectionName.substr(0, 17) +"..." : data.collectionName ) + "</p>";
+	// return "<p title='" + data + "'>" + (data.length > 20 ?
+	// data.collectionName.substr(0, 17) +"..." : data.collectionName ) +
+	// "</p>";
 }
 
 function getBooleanImage(data, type, full, meta) {

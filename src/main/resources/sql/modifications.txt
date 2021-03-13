@@ -40,7 +40,7 @@ UPDATE transcriptions SET InterviewDate1 = DATE_FORMAT(STR_TO_DATE(InterviewDate
 UPDATE transcriptions SET InterviewDate2 = DATE_FORMAT(STR_TO_DATE(InterviewDate2, '%m/%d/%Y'), "%m/%d/%Y") where id > 0;
 
 UPDATE transcriptions
-SET InterviewDates = CONCAT_WS(',', InterviewDates, InterviewDate1, InterviewDate2);
+SET InterviewDates = CONCAT_WS(';', InterviewDates, InterviewDate1, InterviewDate2);
 
 ALTER TABLE transcriptions DROP COLUMN InterviewDate1;
 ALTER TABLE transcriptions DROP COLUMN InterviewDate2;
@@ -58,10 +58,9 @@ UPDATE transcriptions SET ConvertToDigitalDate = DATE_FORMAT(ConvertToDigitalDat
 UPDATE transcriptions SET DraftSentDate = DATE_FORMAT(DraftSentDate, '%m/%d/%Y');
 UPDATE transcriptions SET FinalSentDate = DATE_FORMAT(FinalSentDate, '%m/%d/%Y');
 
-
---
+-- **************************
 -- Table structure for table `user`
---
+-- **************************
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -87,6 +86,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Damith','Perera','charmdm@okstate.edu','admin','$2a$12$OAnvM9LwHAGdGXIwTc9mYeoEH2aavfN1wDWH6GxhIJFOMKjlGN60G',_binary '',_binary '\0',1),(10,'User','User','User@gmail.com','user','$2a$12$OAnvM9LwHAGdGXIwTc9mYeoEH2aavfN1wDWH6GxhIJFOMKjlGN60G',_binary '',_binary '\0',0),(11,'Staff','Staf','staff@gmail.com','staff','$2a$12$sxb264ndAm6VQuctxkMKg.fWsJ4u0TyOFqKEztsCRxVg4McX0uYmO',_binary '',_binary '\0',2);
+INSERT INTO `user` VALUES (1,'Admin','User','admincms@okstate.edu','admin','$2a$12$OAnvM9LwHAGdGXIwTc9mYeoEH2aavfN1wDWH6GxhIJFOMKjlGN60G',_binary '',_binary '\0',3),(10,'User','User','User@gmail.com','user','$2a$12$OAnvM9LwHAGdGXIwTc9mYeoEH2aavfN1wDWH6GxhIJFOMKjlGN60G',_binary '',_binary '\0',1),(11,'Staff','Staf','staff@gmail.com','staff','$2a$12$sxb264ndAm6VQuctxkMKg.fWsJ4u0TyOFqKEztsCRxVg4McX0uYmO',_binary '',_binary '\0',2);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;

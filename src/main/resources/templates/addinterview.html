@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
 <head th:replace="common/header :: common-header" />
+
+
+
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
@@ -49,17 +52,12 @@
 			<div class="col-md-2"></div>
 
 			<div class="col-md-5 form-group">
-				<label class="control-label">Interviewer(s)</label> <select
-					id="myFilter" size="1" class="multiple_select form-control"
-					multiple th:name="Interviewer" required>
-					<option value="">Select Interviewer()s)</option>
-
+				<label class="control-label">Interviewer(s)</label> <br />
+				<select class="form-control" id="interviewers-dropdown" multiple="multiple"
+					th:name="Interviewer" required>
 					<option th:each="interviewer : ${interviewers}"
 						th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
 				</select>
-
-
-
 
 			</div>
 
@@ -243,4 +241,9 @@
 
 
 </body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#interviewers-dropdown').multiselect();
+	});
+</script>
 </html>
