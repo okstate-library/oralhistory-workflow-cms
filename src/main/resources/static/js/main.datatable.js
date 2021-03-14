@@ -1,71 +1,10 @@
 
 $(document).ready(function() {
-	
-	callTransactionQueueRequest();
 
 	// callBrowseRequest();
 });
 
 // Transaction Queue page options
-
-var options = [];
-var isinitialize = true;
-
-function callTransactionQueueRequest() {
-
-	$('.transcriptQueueOption')
-			.click(
-
-					function() {
-
-						var optionValue = $(this).attr('value');
-
-						if (this.checked && optionValue == 1) {
-							for (i = 2; i < 11; i++) {
-								var element = document
-										.getElementById("transcriptionQueueOption-"
-												+ i);
-
-								element.checked = false;
-							}
-
-							options = [];
-							isinitialize = true;
-
-						} else if (this.checked) {
-
-							options.push(optionValue);
-
-							var element = document
-									.getElementById("transcriptionQueueOption-" + 1);
-
-							element.checked = false;
-
-							isinitialize = false;
-
-						} else {
-							var index = options.indexOf(optionValue);
-
-							if (index !== -1) {
-								options.splice(index, 1);
-							}
-
-							isinitialize = false;
-
-							if (options.length == 0) {
-								var element = document
-										.getElementById("transcriptionQueueOption-" + 1);
-
-								element.checked = true;
-								options = [];
-								isinitialize = true;
-							}
-						}
-
-						callTransactionQueueAjaxRequest();
-
-					});
-}
 
 function callTransactionQueueAjaxRequest() {
 
@@ -73,21 +12,14 @@ function callTransactionQueueAjaxRequest() {
 		type : "GET",
 		cache : false,
 		url : '/transcriptionqueue/data',
-		data : {
-			"options" : options.toString(),
-			"isinitialize" : isinitialize,
-		},
-		 beforeSend: function () { // Before we send the request, remove the
-									// .hidden class from the spinner and
-									// default to inline-block.
-             $('#loader').removeClass('hidden')
+		 beforeSend: function () { 
+             $('#loader').removeClass('hidden') // Loader 
          },
 		success : function(data) {
 
 			$('#transcriptionQueueDataTable').dataTable().fnDestroy();
 
 			$('#transcriptionQueueDataTable thead tr').clone(true).appendTo( '#transcriptionQueueDataTable thead' );
-			
 			
 			const checkBoxBooleanColumn = [5];
 			

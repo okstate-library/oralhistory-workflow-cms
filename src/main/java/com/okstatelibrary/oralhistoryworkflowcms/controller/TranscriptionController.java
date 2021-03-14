@@ -91,20 +91,20 @@ public class TranscriptionController extends MainController {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	private static List<TranscriptionQueueOption> queueOptions = new ArrayList<TranscriptionQueueOption>();
-
-	static {
-		queueOptions.add(new TranscriptionQueueOption(1, "All", true));
-		queueOptions.add(new TranscriptionQueueOption(2, "Priority", false));
-		queueOptions.add(new TranscriptionQueueOption(3, "Transcribed", false));
-		queueOptions.add(new TranscriptionQueueOption(4, "Audit check", false));
-		queueOptions.add(new TranscriptionQueueOption(5, "First edit", false));
-		queueOptions.add(new TranscriptionQueueOption(6, "Second edit", false));
-		queueOptions.add(new TranscriptionQueueOption(7, "Draft sent", false));
-		queueOptions.add(new TranscriptionQueueOption(8, "Corrections", false));
-		queueOptions.add(new TranscriptionQueueOption(9, "Final edit", false));
-		queueOptions.add(new TranscriptionQueueOption(10, "Sent out", false));
-	}
+//	private static List<TranscriptionQueueOption> queueOptions = new ArrayList<TranscriptionQueueOption>();
+//
+//	static {
+//		queueOptions.add(new TranscriptionQueueOption(1, "All", true));
+//		queueOptions.add(new TranscriptionQueueOption(2, "Priority", false));
+//		queueOptions.add(new TranscriptionQueueOption(3, "Transcribed", false));
+//		queueOptions.add(new TranscriptionQueueOption(4, "Audit check", false));
+//		queueOptions.add(new TranscriptionQueueOption(5, "First edit", false));
+//		queueOptions.add(new TranscriptionQueueOption(6, "Second edit", false));
+//		queueOptions.add(new TranscriptionQueueOption(7, "Draft sent", false));
+//		queueOptions.add(new TranscriptionQueueOption(8, "Corrections", false));
+//		queueOptions.add(new TranscriptionQueueOption(9, "Final edit", false));
+//		queueOptions.add(new TranscriptionQueueOption(10, "Sent out", false));
+//	}
 
 	public TranscriptionController() {
 		transcriptionList = new ArrayList<Transcription>();
@@ -371,47 +371,48 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		model.addAttribute("queueptions", queueOptions);
+		//model.addAttribute("queueptions", queueOptions);
 
 		return "transcriptionqueue";
 	}
 
 	@RequestMapping(value = "/transcriptionqueue/data", method = RequestMethod.GET)
-	public @ResponseBody List<Transcription> transcriptionQueueData(@RequestParam(required = false) String options,
-			@RequestParam(required = false) String isinitialize) throws JsonProcessingException {
+	public @ResponseBody List<Transcription> transcriptionQueueData() throws JsonProcessingException {
 
-		List<Transcription> list = null;
+//		List<Transcription> list = null;
+//
+//		System.out.println("isinitialize -- " + isinitialize);
+//		System.out.println("options -- " + options);
+//
+//		if (isinitialize != null && !isinitialize.isEmpty() && Boolean.parseBoolean(isinitialize)) {
+//
+//			System.out.println("isinitialize  true");
+//
+//			list = transcriptionService.findAll(false);
+//
+//			this.transcriptionList = list;
+//
+//		} else {
+//
+//			System.out.println("isinitialize is false");
+//
+//			list = this.transcriptionList.stream()
+//					.filter(u -> u.getIsPriority() == (byte) (options.contains("2") ? 1 : u.getIsPriority()))
+//					.filter(u -> options.contains("3") ? StringUtil.isNotNullOrEmpty(u.getTranscriberAssigned()) : true)
+//					.filter(u -> options.contains("4") ? StringUtil.isNotNullOrEmpty(u.getAuditCheckCompleted()) : true)
+//					.filter(u -> options.contains("5") ? StringUtil.isNotNullOrEmpty(u.getFirstEditCompleted()) : true)
+//					.filter(u -> options.contains("6") ? StringUtil.isNotNullOrEmpty(u.getSecondEditCompleted()) : true)
+//					.filter(u -> options.contains("7") ? u.getDraftSentDate() != null : true)
+//					.filter(u -> options.contains("8") ? StringUtil.isNotNullOrEmpty(u.getEditWithCorrectionCompleted())
+//							: true)
+//					.filter(u -> options.contains("9") ? StringUtil.isNotNullOrEmpty(u.getFinalEditCompleted()) : true)
+//					.filter(u -> options.contains("10") ? u.getFinalSentDate() != null : true)
+//					.collect(Collectors.toList());
+//		}
+//
+//		return list;
 
-		System.out.println("isinitialize -- " + isinitialize);
-		System.out.println("options -- " + options);
-
-		if (isinitialize != null && !isinitialize.isEmpty() && Boolean.parseBoolean(isinitialize)) {
-
-			System.out.println("isinitialize  true");
-
-			list = transcriptionService.findAll(false);
-
-			this.transcriptionList = list;
-
-		} else {
-
-			System.out.println("isinitialize is false");
-
-			list = this.transcriptionList.stream()
-					.filter(u -> u.getIsPriority() == (byte) (options.contains("2") ? 1 : u.getIsPriority()))
-					.filter(u -> options.contains("3") ? StringUtil.isNotNullOrEmpty(u.getTranscriberAssigned()) : true)
-					.filter(u -> options.contains("4") ? StringUtil.isNotNullOrEmpty(u.getAuditCheckCompleted()) : true)
-					.filter(u -> options.contains("5") ? StringUtil.isNotNullOrEmpty(u.getFirstEditCompleted()) : true)
-					.filter(u -> options.contains("6") ? StringUtil.isNotNullOrEmpty(u.getSecondEditCompleted()) : true)
-					.filter(u -> options.contains("7") ? u.getDraftSentDate() != null : true)
-					.filter(u -> options.contains("8") ? StringUtil.isNotNullOrEmpty(u.getEditWithCorrectionCompleted())
-							: true)
-					.filter(u -> options.contains("9") ? StringUtil.isNotNullOrEmpty(u.getFinalEditCompleted()) : true)
-					.filter(u -> options.contains("10") ? u.getFinalSentDate() != null : true)
-					.collect(Collectors.toList());
-		}
-
-		return list;
+		return transcriptionService.findAll(false);
 	}
 
 	@RequestMapping("/addinterview")
