@@ -24,7 +24,7 @@
 
 
 						<select class="form-control" name="EquipmentType" required>
-							<option value="">Select Type</option>
+							<option>Select Type</option>
 							<option
 								th:each="type : ${T(com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType).values()}"
 								th:value="${type.ShortCode}" th:text="${type}"

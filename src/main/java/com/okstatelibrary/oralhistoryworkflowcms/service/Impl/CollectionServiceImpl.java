@@ -1,6 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +12,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.CollectionRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.CollectionService;
 
@@ -29,7 +29,9 @@ public class CollectionServiceImpl implements CollectionService {
 	@Cacheable(cacheNames = "findAllCollectionCache")
 	@Override
 	public List<Collection> findAll() {
-		return collectionRepository.findAll();
+		return collectionRepository.findAll().stream().sorted(Comparator.comparing(Collection::getCollectionName))
+				.collect(Collectors.toList());
+
 	}
 
 	@Override
@@ -41,7 +43,8 @@ public class CollectionServiceImpl implements CollectionService {
 			collections.add(findById(id).orElse(null));
 		}
 
-		return collections;
+		return collections.stream().sorted(Comparator.comparing(Collection::getCollectionName))
+				.collect(Collectors.toList());
 	}
 
 	@Cacheable(cacheNames = "findByCollectionIdCache")
@@ -73,7 +76,10 @@ public class CollectionServiceImpl implements CollectionService {
 
 	@Override
 	public List<Collection> findByRepositoryId(short RepositoryId) {
-		return findAll().stream().filter(u -> u.getRepositoryId() == RepositoryId).collect(Collectors.toList());
+		return findAll().stream().sorted(Comparator.comparing(Collection::getCollectionName))
+				.filter(u -> u.getRepositoryId() == RepositoryId).collect(Collectors.toList())
+
+		;
 	}
 
 	@Override

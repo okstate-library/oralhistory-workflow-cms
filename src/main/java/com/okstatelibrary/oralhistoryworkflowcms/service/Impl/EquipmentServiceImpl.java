@@ -1,5 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,8 @@ public class EquipmentServiceImpl implements EquipmentService {
 	@Cacheable(cacheNames = "findAllEquipmentUsedCache")
 	@Override
 	public List<Equipments> findAll() {
-		return equipmentUsedRepository.findAll();
+		return equipmentUsedRepository.findAll().stream().sorted(Comparator.comparing(Equipments::getEquipmentTypeName))
+				.collect(Collectors.toList());
 	}
 
 	public void flushCache() {
@@ -42,6 +44,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
 	@Override
 	public Equipments saveEquipment(Equipments equipment) {
+		flushCache();
 		return equipmentUsedRepository.save(equipment);
 	}
 
@@ -54,6 +57,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 	public void deleteEquipment(short id) {
 		equipmentUsedRepository.deleteById(id);
 
+		flushCache();
 	}
 
 }

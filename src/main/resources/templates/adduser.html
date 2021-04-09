@@ -10,8 +10,8 @@
 		</div>
 	</div>
 
-	<form class="form-horizontal" method="post"
-		th:action="@{/user/adduser}">
+	<form class="form-horizontal" method="post" th:object="${user}"
+		th:action="@{/adduser}">
 		<div class="row">
 
 
@@ -77,13 +77,12 @@
 
 				<div class="cols-sm-10">
 					<div class="input-group">
-						<select class="form-control" id="collectitonDropDown"
-							onchange="selectSebseries()" name="CollectionId" required>
-							<option value="">Select Collection</option>
+						<select class="form-control" id="roleDropDown" name="roleId"
+							required>
+							<option value="">Select Role</option>
 
-							<option th:each="collection : ${collections}"
-								th:value="${collection.Id}"
-								th:text="${collection.CollectionName}"></option>
+							<option value="1">User</option>
+							<option value="2">Staff</option>
 						</select>
 					</div>
 				</div>

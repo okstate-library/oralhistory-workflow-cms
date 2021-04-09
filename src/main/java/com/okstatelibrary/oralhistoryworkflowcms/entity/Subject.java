@@ -39,6 +39,10 @@ public class Subject {
 		this.Id = id;
 	}
 
+	public Subject(String SubjectName) {
+		this.SubjectName = SubjectName;
+	}
+	
 	public Subject(short Id, String SubjectName) {
 		this.Id = Id;
 		this.SubjectName = SubjectName;

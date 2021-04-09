@@ -5,7 +5,7 @@ public class StringUtil {
 	/*
 	 * 
 	 */
-	public static boolean isNotNullOrEmpty(String str) {
+	public static boolean isNotNullOrNotEmpty(String str) {
 		return str != null && !str.isEmpty();
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,22 +35,12 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed,
-			boolean isAuditCheck, boolean isFirstEdit, boolean isSecondEdit, boolean isDraftSent, boolean isCorrections,
-			boolean isFinalEdit, boolean isSentOut) {
+	public boolean isProjectCodeExists(String code) {
 
-		return transcriptionRepository.findAll().stream()
-				.filter(u -> u.getTranscriptStatus() == (byte) (isTranscripted ? 1 : 0))
-				.filter(u -> u.getIsPriority() == (byte) (isPriority ? 1 : u.getIsPriority()))
-				.filter(u -> isTranscribed ? StringUtil.isNotNullOrEmpty(u.getTranscriberAssigned()) : true)
-				.filter(u -> isAuditCheck ? StringUtil.isNotNullOrEmpty(u.getAuditCheckCompleted()) : true)
-				.filter(u -> isFirstEdit ? StringUtil.isNotNullOrEmpty(u.getFirstEditCompleted()) : true)
-				.filter(u -> isSecondEdit ? StringUtil.isNotNullOrEmpty(u.getSecondEditCompleted()) : true)
-				.filter(u -> isDraftSent ? u.getDraftSentDate() != null : true)
-				.filter(u -> isCorrections ? StringUtil.isNotNullOrEmpty(u.getEditWithCorrectionCompleted()) : true)
-				.filter(u -> isFinalEdit ? StringUtil.isNotNullOrEmpty(u.getFinalEditCompleted()) : true)
-				.filter(u -> isSentOut ? u.getFinalSentDate() != null : true).collect(Collectors.toList());
+		List<Transcription> list = this.findAll().stream()
+				.filter(u -> u.getProjectCode().toLowerCase().equals(code.toLowerCase())).collect(Collectors.toList());
 
+		return list != null && list.size() > 0 ? true : false;
 	}
 
 	@SuppressWarnings("null")
@@ -128,18 +117,45 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findBySuject(String subjectName) {
-		return transcriptionRepository.findAll().stream().filter(u -> u.getSubject().contains(subjectName))
+	public boolean isRecordsExistsBySuject(String subjectName) {
+
+		List<Transcription> list = this.findAll().stream()
+				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getSubject()) ? u.getSubject().contains(subjectName)
+						: false)
 				.collect(Collectors.toList());
+
+		return list != null && list.size() > 0 ? true : false;
+		
 	}
 
 	@Override
-	public List<Transcription> findByEquipmentName(String equipmentName) {
+	public boolean isRecordsExistsByEquipmentName(String equipmentName) {
 
-		Stream<Transcription> stream = transcriptionRepository.findAll().stream()
-				.filter(u -> u.getSubject().contains(equipmentName));
+		List<Transcription> audioList = this.findAll().stream()
+				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getAudioEquipmentUsed())
+						? u.getAudioEquipmentUsed().contains(equipmentName)
+						: false)
+				.collect(Collectors.toList());
 
-		return stream == null ? null : stream.collect(Collectors.toList());
+		List<Transcription> videoList = this.findAll().stream()
+				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getVideoEquipmentUsed())
+						? u.getVideoEquipmentUsed().contains(equipmentName)
+						: false)
+				.collect(Collectors.toList());
+
+		return (audioList != null && audioList.size() > 0) || (videoList != null && videoList.size() > 0) ? true
+				: false;
+	}
+
+	@Override
+	public boolean isRecordsExistsByOriginalMedium(String medium) {
+
+		List<Transcription> list = this.findAll().stream()
+				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getOriginalMedium()) ? u.getOriginalMedium().contains(medium)
+						: false)
+				.collect(Collectors.toList());
+
+		return list != null && list.size() > 0 ? true : false;
 	}
 
 	public Double calculateValue(Double initialValue) {
@@ -161,7 +177,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	private static Predicate<Transcription> getDatesPredicate(String beginDate, String endDate) {
 
 		String delimeter = ";";
-		
+
 		if (!StringUtils.isEmpty(beginDate) && StringUtils.isEmpty(endDate)) {
 
 			Date beign = DateUtil.convertDate(beginDate);
@@ -172,13 +188,19 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 							: u.getInterviewDates().length() == 32
 									? !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign
+													.after(DateUtil
+															.convertDate(u.getInterviewDates().split(delimeter)[2]))
 									: u.getInterviewDates().length() == 43 ? !beign
 											.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
 											: u.getId() > 0;
 
 		} else if (StringUtils.isEmpty(beginDate) && !StringUtils.isEmpty(endDate)) {
@@ -191,19 +213,27 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 									|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
 							: u.getInterviewDates().length() == 32
 									? !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
 									: u.getInterviewDates().length() == 43 ? !end
 											.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3]))
 											: u.getId() > 0;
 
 		} else if (!StringUtils.isEmpty(beginDate) && !StringUtils.isEmpty(endDate)) {
 
 			Date beign = DateUtil.convertDate(beginDate);
 			Date end = DateUtil.convertDate(endDate);
+
+			System.out.println(beign);
+			System.out.println(end);
 
 			return u -> u.getInterviewDates().length() == 10
 					? !beign.after(DateUtil.convertDate(u.getInterviewDates()))
@@ -212,28 +242,33 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 							? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
 									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1])))
 									&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1])))
-							: u.getInterviewDates().length() == 32
-									? (!beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
-											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1])))
+							: u.getInterviewDates().length() == 32 ? (!beign
+									.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+									|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
+									&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2])))
 									: u.getInterviewDates().length() == 43 ? (!beign
 											.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
-											|| !beign.after(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3])))
-											&& (!end.before(DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
-													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
-													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
-													|| !end.before(
-															DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3])))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[1]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[2]))
+											|| !beign.after(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[3])))
+											&& (!end.before(
+													DateUtil.convertDate(u.getInterviewDates().split(delimeter)[0]))
+													|| !end.before(DateUtil
+															.convertDate(u.getInterviewDates().split(delimeter)[1]))
+													|| !end.before(DateUtil
+															.convertDate(u.getInterviewDates().split(delimeter)[2]))
+													|| !end.before(DateUtil
+															.convertDate(u.getInterviewDates().split(delimeter)[3])))
 											: u.getId() > 0;
 
 		}
@@ -280,13 +315,6 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	public List<Transcription> findAll(String collectionIds, String subseriesIds, String interviewes, String subjects,
 			String darkarchive, String onlineoffline) {
 
-//		System.out.println("collectionIds -- " + collectionIds);
-//		System.out.println("subseriesIds -- " + subseriesIds);
-//		System.out.println("intervieweroptions -- " + interviewes);
-//		System.out.println("subjects -- " + subjects);
-//		System.out.println("darkarchive -- " + darkarchive);
-//		System.out.println("onlineoffline -- " + onlineoffline);
-
 		List<Predicate<Transcription>> collectionPredicates = null;
 
 		if (collectionIds != null && !collectionIds.trim().isEmpty()) {
@@ -321,7 +349,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 			interviewerPredicates = new ArrayList<Predicate<Transcription>>();
 
-			String[] interviewers = interviewes.split(",");
+			String[] interviewers = interviewes.split(";");
 
 			for (String name : interviewers) {
 
@@ -339,7 +367,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 			for (String subject : allsubjects) {
 
-				subjectPredicates.add(c -> c.getSubject().toLowerCase().contains(subject.toLowerCase()));
+				subjectPredicates.add(c -> c.getSubject() != null ?  c.getSubject().toLowerCase().contains(subject.toLowerCase()) : true);
 			}
 		}
 
@@ -404,26 +432,26 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 				boolean isFoundReplace = false;
 
-				if (StringUtil.isNotNullOrEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
 					transcription.setTitle(transcription.getTitle().replace(find, replace));
 					isFoundReplace = true;
 				}
 
-				if (StringUtil.isNotNullOrEmpty(transcription.getDescription())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getDescription())
 						&& transcription.getDescription().contains(find)) {
 					transcription.setDescription(transcription.getDescription().replace(find, replace));
 
 					isFoundReplace = true;
 				}
 
-				if (StringUtil.isNotNullOrEmpty(transcription.getKeywords())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getKeywords())
 						&& transcription.getKeywords().contains(find)) {
 					transcription.setKeywords(transcription.getKeywords().replace(find, replace));
 
 					isFoundReplace = true;
 				}
 
-				if (StringUtil.isNotNullOrEmpty(transcription.getSubject())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getSubject())
 						&& transcription.getSubject().contains(find)) {
 					transcription.setSubject(transcription.getSubject().replace(find, replace));
 
@@ -439,7 +467,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				break;
 			case Title:
 
-				if (StringUtil.isNotNullOrEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
 					transcription.setTitle(transcription.getTitle().replace(find, replace));
 
 					transcriptionRepository.save(transcription);
@@ -448,7 +476,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 				break;
 			case Description:
-				if (StringUtil.isNotNullOrEmpty(transcription.getDescription())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getDescription())
 						&& transcription.getDescription().contains(find)) {
 					transcription.setDescription(transcription.getDescription().replace(find, replace));
 
@@ -457,7 +485,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				}
 				break;
 			case Keywords:
-				if (StringUtil.isNotNullOrEmpty(transcription.getKeywords())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getKeywords())
 						&& transcription.getKeywords().contains(find)) {
 					transcription.setKeywords(transcription.getKeywords().replace(find, replace));
 
@@ -466,7 +494,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				}
 				break;
 			case Subject:
-				if (StringUtil.isNotNullOrEmpty(transcription.getSubject())
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getSubject())
 						&& transcription.getSubject().contains(find)) {
 					transcription.setSubject(transcription.getSubject().replace(find, replace));
 

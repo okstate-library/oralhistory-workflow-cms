@@ -17,10 +17,6 @@ public interface TranscriptionService {
 	List<Transcription> findAll(String collectionIds, String subseriesoptions, String intervieweroptions,
 			String subjects, String darkarchive, String onlineoffline);
 
-	List<Transcription> findAll(boolean isTranscripted, boolean isPriority, boolean isTranscribed, boolean isAuditCheck,
-			boolean isFirstEdit, boolean isSecondEdit, boolean isDraftSent, boolean isCorrections, boolean isFinalEdit,
-			boolean isSsentOut);
-
 	Optional<Transcription> findById(int id);
 
 	Transcription save(Transcription transcription);
@@ -33,12 +29,16 @@ public interface TranscriptionService {
 
 	List<Transcription> findByInterviewerName(String interviewerName);
 
-	List<Transcription> findBySuject(String subjectName);
+	boolean isRecordsExistsBySuject(String subjectName);
 
-	List<Transcription> findByEquipmentName(String equipmentName);
+	boolean isRecordsExistsByEquipmentName(String equipmentName);
+
+	boolean isRecordsExistsByOriginalMedium(String medium);
 
 	List<Transcription> report(String interviewer, String location, String beginDate, String endDate, String status,
 			String bornDigital, String converetd);
+
+	boolean isProjectCodeExists(String code);
 
 	void delete(int id);
 

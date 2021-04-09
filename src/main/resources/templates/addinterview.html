@@ -20,12 +20,13 @@
 		onSubmit="return validate()" th:object="${transcription}"
 		th:action="@{/addinterview}">
 
-		<div class="row">
+		<div class="row row-striped">
 
 			<div class="col-md-5 form-group">
 
 				<label class="control-label">Project Code</label> <input type="text"
-					class="form-control" name="ProjectCode" required="required" />
+					class="form-control" id="ProjectCode" name="ProjectCode"
+					required="required" />
 
 			</div>
 
@@ -38,7 +39,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row row-striped">
 
 			<div class="col-md-5 form-group">
 
@@ -52,8 +53,8 @@
 			<div class="col-md-2"></div>
 
 			<div class="col-md-5 form-group">
-				<label class="control-label">Interviewer(s)</label> <br />
-				<select class="form-control" id="interviewers-dropdown" multiple="multiple"
+				<label class="control-label">Interviewer(s)</label> <br /> <select
+					class="form-control" id="interviewers-dropdown" multiple="multiple"
 					th:name="Interviewer" required>
 					<option th:each="interviewer : ${interviewers}"
 						th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
@@ -63,7 +64,7 @@
 
 		</div>
 
-		<div class="row">
+		<div class="row row-striped">
 
 
 			<div class="col-md-11 form-group">
@@ -76,12 +77,12 @@
 
 		</div>
 
-		<div class="row">
+		<div class="row row-striped">
 
 
 			<div class="col-md-5 form-group">
 
-				<label for="username" class="cols-sm-2 control-label">Collection</label>
+				<label for="username" class="control-label">Collection</label>
 
 
 				<div class="cols-sm-10">
@@ -101,14 +102,14 @@
 			<div class="col-md-2"></div>
 
 			<div class="col-md-5 form-group">
-				<label for="username" class="cols-sm-2 control-label">Subserie</label>
+				<label for="username" class="control-label">Subseries</label>
 
 
 				<div class="input-group">
 
 					<select class="form-control" id="subseriesDropDown"
 						th:name="SubseriesId" required>
-						<option value="">Select Subserie</option>
+						<option value="">Select Subseries</option>
 
 						<option th:each="subserie : ${subseries}"
 							th:value="${subserie.Id}" th:text="${subserie.SubseriesName}"></option>
@@ -118,7 +119,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row row-striped">
 			<div class="col-md-5 form-group">
 				<label for="password" class="cols-sm-2 control-label">Audio
 					Equipment</label>
@@ -157,73 +158,122 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Release
-					form</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<span> <input type="radio" name="ReleaseForm" value="1" />
-							<label>Yes</label>
-						</span> <span> <input name="ReleaseForm" type="radio" value="0" />
-							<label>No</label>
-						</span>
-					</div>
+		<div class="row row-striped">
+			<div class="col-md-2 form-group">
+				<label for="password" class="control-label">Release form</label>
+				<div class="form-control">
+
+					<span> <input type="radio" name="ReleaseForm" value="1" />
+						<label>Yes</label>
+					</span> <span> <input name="ReleaseForm" type="radio" value="0" />
+						<label>No</label>
+					</span>
+
 
 				</div>
 			</div>
-			<div class="col-md-2"></div>
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Record
-					format</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<span> <input name="Format" type="checkbox" value="Audio" />
-							<label>Audio</label>
-						</span> <span> <input name="Format" type="checkbox" value="Video" />
-							<label>Video</label>
-						</span>
-					</div>
+			<div class="col-md-5"></div>
+			<div class="col-md-2 form-group">
+				<label for="password" class="control-label">Record format</label>
+				<div class="form-control">
 
+					<span> <input name="Format" type="checkbox" value="Audio" />
+						<label>Audio</label>
+					</span> <span> <input name="Format" type="checkbox" value="Video" />
+						<label>Video</label>
+					</span>
 				</div>
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Born
-					Digital</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<span> <input type="radio" name="IsBornDigital" value="1" />
-							<label>Yes</label>
-						</span> <span> <input class="control-" name="IsBornDigital"
-							type="radio" value="0" /> <label>No</label>
-						</span>
-					</div>
+		<div class="row row-striped">
+			<div class="col-md-2 form-group">
+				<label for="password" class="control-label">Born Digital</label>
+
+				<div class="form-control">
+
+					<span> <input type="radio" name="IsBornDigital" value="1" />
+						<label>Yes</label>
+					</span> <span> <input name="IsBornDigital" type="radio" value="0" />
+						<label>No</label>
+					</span>
 
 				</div>
 			</div>
-			<div class="col-md-2"></div>
+			<div class="col-md-5"></div>
 
 			<div class="col-md-5 form-group">
 
-				<label class="cols-sm-2 control-label">Transcriber assigned</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<select class="form-control" th:name="TranscriberAssigned">
-							<option th:value="0">Select Transcriber</option>
+				<label class="cols-sm-2 control-label">Transcriber assigned</label>s
+				<div class="input-group">
+					<select class="form-control" th:name="TranscriberAssigned">
+						<option th:value="0">Select Transcriber</option>
 
-							<option th:each="transcriber : ${transcribers}"
-								th:value="${transcriber.Name}" th:text="${transcriber.Name}"></option>
-						</select>
-					</div>
+						<option th:each="transcriber : ${transcribers}"
+							th:value="${transcriber.Name}" th:text="${transcriber.Name}"></option>
+					</select>
+				</div>
+
+
+			</div>
+		</div>
+
+		<div class="row row-striped">
+			<div class="col-md-2 form-group">
+
+				<label for="password" class="cols-sm-2 control-label">Restriction</label>
+				<div class="form-control">
+
+					<span> <input type="radio" name="IsRestriction" value="1" />
+						<label>Yes</label>
+					</span> <span> <input name="IsRestriction" type="radio" value="0" />
+						<label>No</label>
+					</span>
+
 
 				</div>
 
 			</div>
 		</div>
 
+		<div class="row row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Restriction note</label>
+				<textarea class="form-control" name="RestrictionNote"
+					th:inline="text"></textarea>
+			</div>
+		</div>
+
+		<div class="row row-striped">
+
+			<div class="col-md-2 form-group">
+
+				<label class="control-label">Priority</label>
+				<div class="form-control">
+					<span> <input type="radio" name="IsPriority" value="1" /> <label>Yes</label>
+					</span> <span> <input name="IsPriority" type="radio" value="0" />
+						<label>No</label>
+					</span>
+
+
+				</div>
+
+			</div>
+		</div>
+		<div class="row row-striped">
+
+			<div class="col-md-12 form-group">
+
+				<label class="control-label">Reason of priority</label>
+
+				<textarea class="form-control" name="ReasonForPriority"
+					th:inline="text"></textarea>
+
+			</div>
+
+		</div>
+
+		<div class="row row-striped"></div>
 		<div class="form-group ">
 			<button type="submit"
 				class="btn btn-primary btn-lg btn-block login-button">Submit</button>
@@ -243,7 +293,12 @@
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#interviewers-dropdown').multiselect();
+		$('#interviewers-dropdown').multiselect({
+	        enableFiltering: true,
+	        delimiter: '; ',
+            delimiterText: '; ',
+            enableCaseInsensitiveFiltering: true,
+	    });
 	});
 </script>
 </html>

@@ -31,10 +31,55 @@ $(document)
 					var end = new Date();
 
 					$('.dates').datepicker({
-						multidate : true
+						multidate : true,
+						multidateSeparator : ';'
 					});
 
 					$('.date').datepicker({});
+
+					$("#ProjectCode")
+							.on(
+									'change',
+									function postinput() {
+										var matchvalue = $(this).val();
+
+										$
+												.ajax(
+														{
+															url : '/validateprojectcode',
+															data : {
+																code : matchvalue
+															},
+															type : 'post'
+														})
+
+												.done(
+														function(responseData) {
+
+															if (responseData) {
+																alert('Project code is alreay using. Change to procced!');
+
+																$(
+																		"#ProjectCode")
+																		.focus();
+
+																$(
+																		"#ProjectCode")
+																		.css(
+																				"background-color",
+																				"red");
+															} else {
+																$(
+																		"#ProjectCode")
+																		.css(
+																				"background-color",
+																				"#fff");
+															}
+														}).fail(function() {
+													console.log('Failed');
+												})
+
+									});
 
 					$("#submitreport")
 							.click(
@@ -109,6 +154,60 @@ $(document)
 															reportButton.style.visibility = "visible";
 														} else {
 															reportButton.style.visibility = "hidden";
+														}
+
+													},
+													error : function(e) {
+														var err = eval("("
+																+ xhr.responseText
+																+ ")");
+														alert(err.Message);
+													},
+													complete : function() {
+														// class and hiding the
+														// spinner.
+														$('#loader').addClass(
+																'hidden')
+													},
+												});
+
+									});
+
+					$("#subjectvaidate")
+							.click(
+									function(event) {
+
+										document
+												.getElementById("subjectrecordcount").innerHTML = "";
+
+										$
+												.ajax({
+													type : "POST",
+													contentType : "application/json",
+													url : "/subjects/validate",
+													dataType : 'json',
+													beforeSend : function() { // Before
+														// we
+														// send
+														// the
+														// request
+														$('#loader')
+																.removeClass(
+																		'hidden')
+													},
+													success : function(data) {
+
+														
+														var submitSubjectRow = document
+																.getElementById("submitSubjectRow");
+
+														if (data > 0) {
+															document
+															.getElementById("subjectrecordcount").innerHTML = data + ' records found.';
+
+															submitSubjectRow.style.visibility = "visible";
+														} else {
+															submitSubjectRow.style.visibility = "hidden";
 														}
 
 													},

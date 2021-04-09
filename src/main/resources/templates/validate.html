@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Validate Master data</h1>
+		</div>
+	</div>
+
+	<div class="row form-group">
+
+		<div class="col-md-6  ">
+			Validate <b>Subjects</b>
+		</div>
+		<div class="col-md-6">
+			<button id="subjectvaidate" type="submit"
+				class="btn btn-primary btn-block ">Validate subjects</button>
+
+		</div>
+
+	</div>
+	<div class="row  form-group"></div>
+
+	<div class="row  form-group" id="submitSubjectRow"
+		style="visibility: hidden;">
+		<form method="post" id="reportDownloadForm"
+			th:action="@{/subjects/submitall}">
+
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+					<h3 id="subjectrecordcount"></h3>
+				</div>
+				<div class="col-md-2"></div>
+				<div class="col-md-3">
+					<button type="submit" id="submitSubjectsButton"
+						class="btn btn-success btn-md btn-block" name="action"
+						value="download">Add to master data.</button>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+
+		</form>
+	</div>
+
+	<!-- <div class="row">
+
+		<div class="col-md-6">
+			Download all <b>collections</b> as an excel file.
+		</div>
+		<div class="col-md-6">
+
+
+
+			<form method="post" th:action="@{/collections/export}">
+
+				<div class="form-group ">
+					<button type="submit" class="btn btn-primary btn-block ">Collection
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-6">
+			Download all <b>subseries</b> as an excel file.
+		</div>
+		<div class="col-md-6">
+
+
+
+			<form method="post" th:action="@{/subseries/export}">
+
+				<div class="form-group ">
+					<button type="submit" class="btn btn-primary btn-block ">Subseries
+					</button>
+				</div>
+			</form>
+
+
+		</div>
+	</div> -->
+
+</div>
+
+</body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+
+</html>

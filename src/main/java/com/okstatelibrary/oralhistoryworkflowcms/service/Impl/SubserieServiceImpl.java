@@ -1,6 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +11,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Collection;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.SubserieRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.SubserieService;
@@ -29,7 +29,9 @@ public class SubserieServiceImpl implements SubserieService {
 	@Cacheable(cacheNames = "findAllSubseriesCache")
 	@Override
 	public List<Subserie> findAll() {
-		return subserieRepository.findAll();
+
+		return subserieRepository.findAll().stream().sorted(Comparator.comparing(Subserie::getSubseriesName))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -40,9 +42,10 @@ public class SubserieServiceImpl implements SubserieService {
 			subseriesList.add(findById(id).orElse(null));
 		}
 
-		return subseriesList;
+		return subseriesList.stream().sorted(Comparator.comparing(Subserie::getSubseriesName))
+				.collect(Collectors.toList());
 	}
-	
+
 	@Cacheable(cacheNames = "findBySubseriesIdCache")
 	@Override
 	public Optional<Subserie> findById(int Id) {
@@ -70,8 +73,9 @@ public class SubserieServiceImpl implements SubserieService {
 
 		List<Subserie> list = null;
 
-		list = subserieRepository.findAll().stream().filter(u -> u.getCollection().getId() == collectionId)
-				.collect(Collectors.toList());
+		list = subserieRepository.findAll().stream().sorted(Comparator.comparing(Subserie::getSubseriesName))
+				.filter(u -> u.getCollection().getId() == collectionId).collect(Collectors.toList());
+
 		return list;
 
 	}
@@ -102,5 +106,4 @@ public class SubserieServiceImpl implements SubserieService {
 
 	}
 
-	
 }

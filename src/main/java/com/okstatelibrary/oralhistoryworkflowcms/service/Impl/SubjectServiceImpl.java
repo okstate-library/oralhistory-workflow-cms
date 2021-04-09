@@ -1,20 +1,21 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Repository;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Subject;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.SubjectRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.SubjectService;
 
 import org.springframework.cache.annotation.*;
 
-@Service
+@Repository
 public class SubjectServiceImpl implements SubjectService {
 
 	@Autowired
@@ -26,7 +27,9 @@ public class SubjectServiceImpl implements SubjectService {
 	@Cacheable(cacheNames = "findAllSubjectCache")
 	@Override
 	public List<Subject> findAll() {
-		return subjectRepository.findAll();
+		return subjectRepository.findAll().stream().sorted(Comparator.comparing(Subject::getSubjectName))
+				.collect(Collectors.toList());
+
 	}
 
 	@Cacheable(cacheNames = "findBySubjectIdCache")
@@ -38,15 +41,10 @@ public class SubjectServiceImpl implements SubjectService {
 	@Caching(evict = { @CacheEvict(value = "findAllSubjectCache", allEntries = true),
 			@CacheEvict(value = "findBySubjectIdCache", allEntries = true) })
 	public Subject saveSubject(Subject subject) {
-		if (subject.getId() == 0) {
-			return subjectRepository.save(subject);
-		} else {
-			if (findById(subject.getId()) != null) {
-				return subjectRepository.save(subject);
-			} else {
-				return null;
-			}
-		}
+		flushCache();
+
+		return subjectRepository.save(subject);
+
 	}
 
 	public void flushCache() {
@@ -59,6 +57,8 @@ public class SubjectServiceImpl implements SubjectService {
 	@Override
 	public void deleteSubject(short id) {
 		subjectRepository.deleteById(id);
+
+		flushCache();
 	}
 
 }

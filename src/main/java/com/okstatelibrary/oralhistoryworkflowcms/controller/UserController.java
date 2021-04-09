@@ -1,8 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.User;
-import com.okstatelibrary.oralhistoryworkflowcms.repository.RoleRepository;
-import com.okstatelibrary.oralhistoryworkflowcms.security.Role;
 import com.okstatelibrary.oralhistoryworkflowcms.service.UserService;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 
@@ -24,9 +22,6 @@ public class UserController extends MainController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private RoleRepository roleDao;
 
 	@GetMapping("/users")
 	public String users(Principal principal, Model model) {
@@ -85,32 +80,48 @@ public class UserController extends MainController {
 
 		model.addAttribute("user", user);
 
+		messageSetup(model);
+
 		return "adduser";
 	}
 
 	@PostMapping("/adduser")
-	public String adduser(@ModelAttribute("user") User user, Model model) {
+	public String adduser(@ModelAttribute("user") User user, Model model, Principal principal) {
 
 		if (userService.checkUserExists(user.getUsername(), user.getEmail())) {
 
 			if (userService.checkEmailExists(user.getEmail())) {
-				model.addAttribute("emailExists", true);
+
+				System.out.println("Email exists.");
+
+				this.errorType = ErrorType.ERROR;
+				this.message = "Email exists.";
+
+				// model.addAttribute("emailExists", true);
 			}
 
 			if (userService.checkUsernameExists(user.getUsername())) {
-				model.addAttribute("usernameExists", true);
+
+				System.out.println("username exists.");
+
+				this.errorType = ErrorType.ERROR;
+				this.message = "User name exists.";
 			}
 
 			return "adduser";
 		} else {
 
-			Role role = roleDao.findByName("ROLE_USER");
-
-			user.setRoleId(role.getRoleId());
+			
+			user.setDeleted(false);
+			user.setEnabled(true);
 
 			userService.createUser(user);
 
-			message = "User details saved successfully!";
+			this.message = "User details saved successfully!";
+
+			
+			User adminUser = userService.findByUsername(principal.getName());
+			model.addAttribute("user", adminUser);
 
 			return "redirect:/users";
 		}
@@ -160,7 +171,7 @@ public class UserController extends MainController {
 
 		message = "Update user status successfully!";
 
-		return "redirect:/user/details/" + user.getUsername();
+		return "redirect:/user/" + user.getUsername();
 	}
 
 	@PostMapping("/resetpasswordbyuser")
@@ -182,9 +193,10 @@ public class UserController extends MainController {
 
 		updatePassword(username, "abc123");
 
+		this.errorType = ErrorType.SUCESS;
 		message = "Reset password successfully!";
 
-		return "redirect:/user/details/" + username;
+		return "redirect:/users";
 
 	}
 
@@ -199,7 +211,7 @@ public class UserController extends MainController {
 
 		message = "Delete user successfully!";
 
-		return "redirect:/user/users";
+		return "redirect:/users";
 	}
 
 	private void updatePassword(String username, String newPassword) {

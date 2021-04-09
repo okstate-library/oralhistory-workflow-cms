@@ -1,6 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,8 +11,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.okstatelibrary.oralhistoryworkflowcms.entity.Medium;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.PredefinedUser;
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Subserie;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.PredefineRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.PredefinedUserService;
 
@@ -29,7 +30,8 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 	@Cacheable(cacheNames = "findAllPredefinedUserCache")
 	@Override
 	public List<PredefinedUser> findAll() {
-		return predefinedUserRepository.findAll();
+		return predefinedUserRepository.findAll().stream().sorted(Comparator.comparing(PredefinedUser::getName))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -74,15 +76,15 @@ public class PredefinedUserServiceImpl implements PredefinedUserService {
 
 	@Override
 	public List<PredefinedUser> findAllByType(short[] ids) {
-		
-		List<PredefinedUser> predefineUsers =  new ArrayList<PredefinedUser>();
-	
+
+		List<PredefinedUser> predefineUsers = new ArrayList<PredefinedUser>();
+
 		for (Short id : ids) {
 			predefineUsers.add(findById(id).orElse(null));
 		}
-		
+
 		return predefineUsers;
-	
+
 	}
 
 }

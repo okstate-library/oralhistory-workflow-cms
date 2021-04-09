@@ -6,28 +6,16 @@ public class CheckBoxObject {
 
 	}
 
-	public CheckBoxObject(String identification, String name) {
+	public CheckBoxObject(int id, String identification, String name) {
+		this.id = id;
 		this.identification = identification;
 		this.name = name;
 		this.withCount = false;
 	}
 
-	public CheckBoxObject(String identification, String name, long count) {
-
+	public CheckBoxObject(int id, String identification, String name, long count) {
+		this.id = id;
 		this.identification = identification;
-		this.name = name;
-		this.withCount = true;
-		this.count = count;
-	}
-
-	public CheckBoxObject(int id, String name) {
-		this.id = id;
-		this.name = name;
-		this.withCount = false;
-	}
-
-	public CheckBoxObject(int id, String name, long count) {
-		this.id = id;
 		this.name = name;
 		this.withCount = true;
 		this.count = count;
@@ -53,7 +41,6 @@ public class CheckBoxObject {
 
 	public String getName() {
 		if (this.withCount) {
-
 			return this.getSubStringName() + " (" + count + ")";
 		} else {
 			return this.getSubStringName();

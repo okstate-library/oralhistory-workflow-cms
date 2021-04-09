@@ -5,7 +5,7 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container my-custom-container">
+<div class="my-custom-container">
 	<!--  my-custom-container -->
 
 	<div class="row">
@@ -20,15 +20,15 @@
 			<div style="background: blue;"></div>
 			<p>
 				<u><b>Selected Options</b></u> <input type="button" value="Reset"
-					id="reset_selection" />
+					id="reset_selection" style="display: none;" />
 
 			</p>
 			<p id="browseSelections"></p>
 			<br />
 
 			<div id="accordion">
-				<div class="card" style="background: #f2f2f2;">
-					<div class="accordion-header" id="headingOne">
+				<div class="card accordin-card">
+					<div class="accordion-header accordin-heading" id="headingOne">
 						<h5 class="mb-0">
 							<button class="btn btn-link" data-toggle="collapse"
 								data-target="#collapseOne" aria-expanded="true"
@@ -40,25 +40,13 @@
 						data-parent="#accordion">
 						<div class="card-body">
 
-							<div id="browseCollections"></div>
-
-							<!-- <th:block th:each="collection : ${collections}">
-
-								<label class="dropdown-item small"><input
-									class="browseCollectionOption" type="checkbox"
-									th:id="'browseOption-' + ${collection.Id}"
-									th:value="${collection.Id}"
-									th:name="${collection.CollectionName}"
-									th:text="'   ' + ${#strings.abbreviate(collection.CollectionName,30)}" />
-								</label>
-								<br />
-							</th:block> -->
+							<div id="browseCollections" class="accordin-body"></div>
 
 						</div>
 					</div>
 				</div>
-				<div class="card">
-					<div class="card-header" id="headingTwo">
+				<div id="subseriesCard" class="card">
+					<div class="card-header accordin-heading" id="headingTwo">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseTwo" aria-expanded="false"
@@ -68,25 +56,12 @@
 					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion">
 						<div class="card-body">
-
-							<div id="browseSubseries"></div>
-
-
-							<th:block th:each="subserie : ${subseries}">
-
-								<label class="dropdown-item small"><input
-									class="browseSubserieOption" type="checkbox"
-									th:id="'browseSubserieOption-' + ${subserie.Id}"
-									th:value="${subserie.Id}" th:name="${subserie.SubseriesName}"
-									th:text="'   ' + ${#strings.abbreviate(subserie.SubseriesName,30)}" />
-								</label>
-								<br />
-							</th:block>
+							<div id="browseSubseries" class="accordin-body"></div>
 						</div>
 					</div>
 				</div>
-				<div class="card" style="background: #f2f2f2;">
-					<div class="card-header" id="headingThree">
+				<div class="card accordin-card">
+					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseThree" aria-expanded="false"
@@ -97,23 +72,13 @@
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
 
-							<div id="browseInterviewers"></div>
+							<div id="browseInterviewers" class="accordin-body"></div>
 
-							<!-- <th:block th:each="interviewer : ${interviewers}">
-
-								<label class="dropdown-item small"><input
-									class="browseInterviewerOption" type="checkbox"
-									th:id="'browseInterviewerOption-' + ${interviewer.Id}"
-									th:value="${interviewer.Id}" th:name="${interviewer.Name}"
-									th:text="'   ' + ${#strings.abbreviate(interviewer.Name,30)}" />
-								</label>
-								<br />
-							</th:block> -->
 						</div>
 					</div>
 				</div>
-				<div class="card">
-					<div class="card-header" id="headingThree">
+				<div id="subjectCard" class="card">
+					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseFour" aria-expanded="false"
@@ -123,21 +88,12 @@
 					<div id="collapseFour" class="collapse"
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
-							<th:block th:each="subject : ${subjects}">
-
-								<label class="dropdown-item small"><input
-									class="browseSubjectOption" type="checkbox"
-									th:id="'browseSubjectOption-' + ${subject.Id}"
-									th:value="${subject.Id}" th:name="${subject.SubjectName}"
-									th:text="'   ' + ${#strings.abbreviate(subject.SubjectName,30)}" />
-								</label>
-								<br />
-							</th:block>
+							<div id="browseSubjects" class="accordin-body"></div>
 						</div>
 					</div>
 				</div>
-				<div class="card" style="background: #f2f2f2;">
-					<div class="card-header" id="headingThree">
+				<div class="card accordin-card">
+					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseFive" aria-expanded="false"
@@ -148,29 +104,14 @@
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
 
-							<div id="browseStatusOnline"></div>
+							<div id="browseStatusOnline" class="accordin-body"></div>
 
-							<!-- <th:block>
-
-								<label class="dropdown-item small"> <input
-									id="browseIsOnlineOption" type="checkbox" name="online"
-									th:text="' ' + Online" />
-
-								</label>
-								<br />
-								<label class="dropdown-item small"> <input
-									id="browseIsOfflineOption" type="checkbox" name="offline"
-									th:text="' ' + Offline" />
-
-								</label>
-
-							</th:block> -->
 						</div>
 					</div>
 				</div>
-				<div class="card"
+				<div id="darkArchieveCard" class="card"
 					th:if="${user != null && user.authorized.contains(8)}">
-					<div class="card-header" id="headingThree">
+					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
 							<button class="btn btn-link collapsed" data-toggle="collapse"
 								data-target="#collapseSix" aria-expanded="false"
@@ -180,16 +121,7 @@
 					<div id="collapseSix" class="collapse"
 						aria-labelledby="headingThree" data-parent="#accordion">
 						<div class="card-body">
-							
-							<div id="browseDarkArchieve"></div>
-							
-							<!-- <th:block>
-
-								<label class="dropdown-item small"> <input
-									id="browseDarkArchiveOption" type="checkbox" name="true"
-									th:text="' ' + 'Dark ' + 'Archive'" />
-								</label>
-							</th:block> -->
+							<div id="browseDarkArchieve" class="accordin-body"></div>
 						</div>
 					</div>
 				</div>
@@ -206,7 +138,7 @@
 							<th title="Interviewers">Interviewers</th>
 							<th title="Project Code">Code</th>
 							<th title="Dates">Dates</th>
-							<th title="Collection">Collection(c)/ Subseries(s)</th>
+							<th title="Collection">Collection/ Subseries</th>
 							<th style="font-size: 9px; text-align: center;"
 								title="Transcribed">Transcribed</th>
 							<th title="Online/Offline">Online</th>
@@ -231,65 +163,31 @@
 <div th:replace="common/header :: body-bottom-datatable-scripts"></div>
 
 <script>
+	$("#browseCollections").on("click", function(event) {
+		callBrowseRequest();
+	});
 
-$("#browseCollections").on("click",function(event) {
-    
-	callBrowseRequest();
+	$("#browseSubseries").on("click", function(event) {
+		callBrowseRequest();
+	});
+
+	$("#browseInterviewers").on("click", function(event) {
+		callBrowseRequest();
+	});
 	
-});
-
-$("#browseSubseries").on("click",function(event) {
-    
-	callBrowseRequest();
-	 //alert('browseSubseries')
-	 
-//var target = $(event.target);
-//if (target.is('input:checkbox')) return;
-//
-//var checkbox = $(this).find("input[type='checkbox']");
-//
-//if( !checkbox.prop("checked") ){
-//checkbox.prop("checked",true);
-//} else {
-//checkbox.prop("checked",false);
-//}
+	$("#browseSubjects").on("click", function(event) {
+		callBrowseRequest();
 	});
 
-$("#browseInterviewers").on("click",function(event) {
-	    
-	callBrowseRequest();
-	 //alert('browseInterviewers')
-	 
-//var target = $(event.target);
-//if (target.is('input:checkbox')) return;
-//
-//var checkbox = $(this).find("input[type='checkbox']");
-//
-//if( !checkbox.prop("checked") ){
-//checkbox.prop("checked",true);
-//} else {
-//checkbox.prop("checked",false);
-//}
+	$("#browseStatusOnline").on("click", function(event) {
+		callBrowseRequest();
 	});
 
-$("#browseStatusOnline").on("click",function(event) {
-    
-	callBrowseRequest();
-});
-
-$("#browseDarkArchieve").on("click",function(event) {
-    
-	callBrowseRequest();
-});
+	$("#browseDarkArchieve").on("click", function(event) {
+		callBrowseRequest();
+	});
 
 	callBrowseAjaxRequest();
-
-	
-	//selectBrowseSubseries();
-
-	/* countChecked();
-
-	$("#browseSubseries input[type=checkbox]").on("click", countChecked); */
 </script>
 </body>
 </html>

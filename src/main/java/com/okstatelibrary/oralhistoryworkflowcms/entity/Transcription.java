@@ -1,10 +1,6 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
-import java.io.Serializable;
 import java.text.ParseException;
-import java.util.function.Predicate;
-
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,10 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.util.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 
 @Entity
 @Table(name = "transcriptions")
@@ -513,16 +506,6 @@ public class Transcription { // implements Serializable
 		this.ReleaseForm = value;
 	}
 
-	private String Place;
-
-	public String getPlace() {
-		return this.Place;
-	}
-
-	public void setPlace(String value) {
-		this.Place = value;
-	}
-
 	private String TranscriberAssigned;
 
 	public String getTranscriberAssigned() {
@@ -671,16 +654,6 @@ public class Transcription { // implements Serializable
 
 	public void setIsBornDigital(byte value) {
 		this.IsBornDigital = value;
-	}
-
-	private byte OriginalMediumType;
-
-	public byte getOriginalMediumType() {
-		return this.OriginalMediumType;
-	}
-
-	public void setOriginalMediumType(byte value) {
-		this.OriginalMediumType = value;
 	}
 
 	private String OriginalMedium;

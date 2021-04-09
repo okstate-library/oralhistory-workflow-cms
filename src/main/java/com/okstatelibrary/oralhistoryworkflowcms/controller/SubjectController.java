@@ -1,20 +1,37 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
+import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
+import com.okstatelibrary.oralhistoryworkflowcms.util.StringUtil;
 
 @Controller
 @RequestMapping("subjects")
@@ -71,8 +88,6 @@ public class SubjectController extends MainController {
 	@PostMapping("/update")
 	public String update(@ModelAttribute("subject") Subject subject, Model model, Principal principal) {
 
-		User user = userService.findByUsername(principal.getName());
-
 		Subject newSuject = null;
 
 		if (subject.getId() > 0) {
@@ -105,11 +120,7 @@ public class SubjectController extends MainController {
 
 		Subject newSubject = subjectService.findById(subject.getId()).orElse(null);
 
-		List<Transcription> transcriptions = transcriptionService.findBySuject(newSubject.getSubjectName());
-
-		System.out.print(transcriptions.size());
-		
-		if (transcriptions != null && transcriptions.size() > 0) {
+		if (transcriptionService.isRecordsExistsBySuject(newSubject.getSubjectName())) {
 
 			this.errorType = ErrorType.WARNING;
 			this.message = "Cannot delete subject record, due to references!";
@@ -122,6 +133,63 @@ public class SubjectController extends MainController {
 		}
 
 		return "redirect:/subjects";
+	}
+
+	@RequestMapping(value = "/validate", method = RequestMethod.POST)
+	@ResponseBody
+	public String validate(Model model, HttpServletRequest request) throws IOException {
+
+		List<String> masterSubjects = subjectService.findAll().stream().map(Subject::getSubjectName)
+				.collect(Collectors.toList());
+
+		masterSubjects.replaceAll(String::toLowerCase);
+
+		List<Transcription> transcriptions = transcriptionService.findAll();
+
+		List<String> subjects = new ArrayList<String>();
+
+		for (Transcription transcription : transcriptions) {
+
+			if (StringUtil.isNotNullOrNotEmpty(transcription.getSubject())) {
+
+				String[] transcriptionSubjects = transcription.getSubject().split(";");
+
+				for (String transcriptionSubject : transcriptionSubjects) {
+
+					String trimmedSubject = transcriptionSubject.trim().toLowerCase();
+
+					if (!subjects.contains(trimmedSubject) && !masterSubjects.contains(trimmedSubject)
+							&& StringUtil.isNotNullOrNotEmpty(trimmedSubject)) {
+						subjects.add(trimmedSubject);
+					}
+				}
+			}
+		}
+
+		HttpSession session = request.getSession();
+		session.setAttribute("subjectsListObj", subjects);
+
+		return subjects.size() + "";
+	}
+
+	@PostMapping("/submitall")
+	public String submitall(HttpServletRequest request) throws IOException {
+
+		HttpSession session = request.getSession();
+		List<String> subjects = (List<String>) session.getAttribute("subjectsListObj");
+
+		for (String subjectName : subjects) {
+
+			Subject subject = new Subject(
+					subjectName.substring(0, 1).toUpperCase() + subjectName.substring(1).toLowerCase());
+
+			subjectService.saveSubject(subject);
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Subject details added successfully!";
+
+		return "redirect:/validate";
 	}
 
 }

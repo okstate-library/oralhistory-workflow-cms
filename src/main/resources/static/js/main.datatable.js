@@ -13,7 +13,7 @@ function callTransactionQueueAjaxRequest() {
 		cache : false,
 		url : '/transcriptionqueue/data',
 		 beforeSend: function () { 
-             $('#loader').removeClass('hidden') // Loader 
+             $('#loader').removeClass('hidden') // Loader
          },
 		success : function(data) {
 
@@ -95,30 +95,28 @@ function callTransactionQueueAjaxRequest() {
 			        	  +'</select>' );
 			 
 			        $("#prioritySelect").change(function () {
-		                // alert($(this).val());
+		            
 		                
-		                var select = $(this).val() ;// alert($(this).val());
+		                var select = $(this).val() ;
 			        	 
 			        	 if(select === "reset")
 			        	 {
 			        		 table
-			                 .column(i) // or columns???
+			                 .column(i) 
 			                 .search( '^(?!\s*$).+', true, false)
 			                 .draw(); 
 			        		 
 			        	 }else if  (select === "true")
-			        	 { 	
-			        		 // alert(table.column(i).data())
-//			        		 
+			        	 { 
 			        		 table
-			                 .column(i) // or columns???
+			                 .column(i) 
 			                 .search( '1')
 			                 .draw(); 
 			        		 
 			        	 }else
 		        		 {
 			        		 table
-			                 .column(i) // or columns???
+			                 .column(i) 
 			                 .search( '0')
 			                 .draw(); 
 		        		 }
@@ -137,7 +135,7 @@ function callTransactionQueueAjaxRequest() {
 			var table = $('#transcriptionQueueDataTable').DataTable(
 					{
 						dom : 'Bfrtip',
-						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
+						buttons : [ 'excel', 'pdf' ],
 						dom: 'Blfrtip',
 						data : data,
 						orderCellsTop: true,
@@ -260,8 +258,8 @@ $("#reset_selection").click(function(){
 
 
 function callBrowseRequest() {
-
-	alert('callBrowseRequest');
+	
+	document.getElementById("reset_selection").style.display = "inline";
 	
 	// Collection Section
 	$('.browseCollectionOption')
@@ -271,9 +269,6 @@ function callBrowseRequest() {
 						var optionValue = $(this).attr('value');
 						var optionText = $(this).attr('name');
 
-
-						alert('browse Collaetion called' + optionValue);
-						
 						if (this.checked) {
 							browseCollectionOptions.push(optionValue);
 							browseCollectionOptionTexts.push(optionText);
@@ -308,12 +303,9 @@ function callBrowseRequest() {
 			function() {
 				
 				
-				
 				var optionValue = $(this).attr('value');
 				var optionText = $(this).attr('name');
 
-				alert('browseSubserieOption called' + optionValue);
-				
 				if (this.checked) {
 					browseSubserieOptions.push(optionValue);
 					browseSubserieOptionTexts.push(optionText);
@@ -348,7 +340,7 @@ function callBrowseRequest() {
 	.click(
 			function() {
 				
-				var optionText = $(this).attr('name');
+				var optionText = $(this).attr('value');
 
 				if (this.checked) {
 					browseInterviewerOptionTexts.push(optionText);
@@ -375,7 +367,7 @@ function callBrowseRequest() {
 	.click(
 			function() {
 				
-				var optionText = $(this).attr('name');
+				var optionText = $(this).attr('value');
 
 				if (this.checked) {
 					browseSubjectOptionTexts.push(optionText);
@@ -400,8 +392,6 @@ function callBrowseRequest() {
 	
 	$('#browseIsOnlineOption').change(function() {
 		
-		alert('browse online called');
-		
 		browseOnlineOfflineOptionTexts = "";
 		
         if(this.checked) {
@@ -420,8 +410,6 @@ function callBrowseRequest() {
 	
 	$('#browseIsOfflineOption').change(function() {
 		
-	c
-		
 		browseOnlineOfflineOptionTexts = "";
 		
         if(this.checked) {
@@ -439,9 +427,7 @@ function callBrowseRequest() {
 	
 	 $('#browseDarkArchiveOption').change(function() {
 		
-			alert('browse dark archieve called');
-			
-		 browseDarkArchiveOptionTexts= "";
+		 	browseDarkArchiveOptionTexts= "";
 		 
 	        if(this.checked) {
 	        	 
@@ -481,9 +467,8 @@ function callBrowseAjaxRequest() {
 
 			var table = $('#browseDataTable').DataTable(
 					{
-						scrollX:        false,
-						dom : 'Bfrtip',
-						buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
+						scrollX: false,
+						buttons : [ 'excel', 'pdf' ],
 						dom: 'Blfrtip',
 						data : data.transcriptions,
 						"columnDefs": [
@@ -546,26 +531,28 @@ function callBrowseAjaxRequest() {
 			
 			
 			// Collections
-			
+			 
 			 $('#browseCollections').empty();
-			
+			 
 			 for (var i = 0; i < data.collections.length; i++) {
 					
 					var collection = data.collections[i];
 					
-					
-							
-							option = "<label class='dropdown-item small'> " +
-							"<input class='browseCollectionOption' type='checkbox'" +
-							"name='" + collection.name +  "'" +
-							"value='" + collection.id +  "'" +
-							"id='browseCollectionOption-" + collection.id +  "'>"
-							+ " " +collection.name + " </label> <br /> ";
-							
-									
+					option = "<label class='dropdown-item small' " +
+					"title='" + collection.identification +  "'>" +
+					"<input class='browseCollectionOption' type='checkbox'" +
+					"name='" + collection.name +  "'" +
+					"value='" + collection.id +  "'" +
+					"id='browseCollectionOption-" + collection.id +  "'>" 
+					+ " " +collection.name + " </label> <br /> ";
+										
 					$('#browseCollections').append(option);
 				}
 			
+			 
+			 
+			 $('#collections-dropdown').empty();
+			 
 			// Subseries
 			$('#browseSubseries').empty();
 
@@ -574,7 +561,8 @@ function callBrowseAjaxRequest() {
 				var subseries = data.subseries[i];
 				
 				
-						option = "<label class='dropdown-item small'> " +
+						option = "<label class='dropdown-item small' " +
+						"title='" + subseries.identification +  "'>" +
 						"<input class='browseSubserieOption' type='checkbox'" +
 						"name='" + subseries.name +  "'" +
 						"value='" + subseries.id +  "'" +
@@ -584,6 +572,9 @@ function callBrowseAjaxRequest() {
 								
 				$('#browseSubseries').append(option);
 			}
+			
+			accordianVisibility('#subseriesCard',data.subseries);
+			
 
 			// Interviewers
 			
@@ -594,15 +585,38 @@ function callBrowseAjaxRequest() {
 				var interviewer = data.interviewers[i];
 				
 				
-					option = "<label class='dropdown-item small'> " +
+					option = "<label class='dropdown-item small' " +
+					"title='" + interviewer.identification +  "'>" +
 					"<input class='browseInterviewerOption' type='checkbox'" +
 					"name='" + interviewer.name +  "'" +
-					"value='" + interviewer.id +  "'" +
+					"value='" + interviewer.identification +  "'" +
 					"id='browseInterviewerOption-" + interviewer.id +  "'>"
 					+ " " + interviewer.name + "</label> <br /> ";
 				
 				$('#browseInterviewers').append(option);
 			}
+			
+			// Subjects
+			
+			$('#browseSubjects').empty();
+
+			for (var i = 0; i < data.subjects.length; i++) {
+				
+				var subject = data.subjects[i];
+				
+				
+					option = "<label class='dropdown-item small' " +
+					"title='" + subject.identification +  "'>" +
+					"<input class='browseSubjectOption' type='checkbox'" +
+					"name='" + subject.name +  "'" +
+					"value='" + subject.identification +  "'" +
+					"id='browseSubjectOption-" + subject.id +  "'>"
+					+ " " + subject.name + "</label> <br /> ";
+				
+				$('#browseSubjects').append(option);
+			}
+			
+			accordianVisibility('#subjectCard',data.subjects);
 			
 			// Online offline
 			$('#browseStatusOnline').empty();
@@ -638,7 +652,10 @@ function callBrowseAjaxRequest() {
 				$('#browseDarkArchieve').append(option);
 			}
 			
+			accordianVisibility('#darkArchieveCard',data.darkArchieve);
+			
 			$('#loader').addClass('hidden');
+		
 		},
 		error : function() {
 			alert(error);
@@ -646,6 +663,17 @@ function callBrowseAjaxRequest() {
 		complete : function() {
 		}
 	});
+}
+
+function accordianVisibility(card , data)
+{
+	if (data.length == 0)
+	{
+		$(card).hide();
+	}else
+	{
+		$(card).show();
+	}
 }
 
 function setupSelections()
@@ -663,7 +691,7 @@ function setupSelections()
 
 function getShortText(data) {
 	
-	return  "(c)"+  data.collectionName  + (data.subseriesName != "N/A" ? "</br> (s)" + data.subseriesName : "") ;
+	return  data.collectionName  + (data.subseriesName != "N/A" ? "/ " + data.subseriesName : "") ;
 	// return "<p title='" + data + "'>" + (data.length > 20 ?
 	// data.collectionName.substr(0, 17) +"..." : data.collectionName ) +
 	// "</p>";

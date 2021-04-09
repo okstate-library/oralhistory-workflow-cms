@@ -9,11 +9,10 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -51,15 +50,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.ui.*;
-import com.okstatelibrary.oralhistoryworkflowcms.enums.EquipmentType;
-import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
-import com.okstatelibrary.oralhistoryworkflowcms.enums.FindReplaceOption;
-import com.okstatelibrary.oralhistoryworkflowcms.enums.OriginalMediumType;
-import com.okstatelibrary.oralhistoryworkflowcms.enums.PredefinedUserType;
+import com.okstatelibrary.oralhistoryworkflowcms.enums.*;
 import com.okstatelibrary.oralhistoryworkflowcms.service.*;
-import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
-import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
-import com.okstatelibrary.oralhistoryworkflowcms.util.StringUtil;
+import com.okstatelibrary.oralhistoryworkflowcms.util.*;
 
 @Controller
 @RequestMapping("")
@@ -75,7 +68,7 @@ public class TranscriptionController extends MainController {
 	private CollectionService collectionService;
 
 	@Autowired
-	private SubserieService subserieService;
+	private MediumService mediumService;
 
 	@Autowired
 	private PredefinedUserService predefinedUserService;
@@ -83,28 +76,16 @@ public class TranscriptionController extends MainController {
 	@Autowired
 	private EquipmentService equipmentService;
 
-	// @Autowired
-	List<Transcription> transcriptionList;
+	@Autowired
+	private SubserieService subserieService;
 
 	@Autowired
 	private SubjectService subjectService;
 
-	ObjectMapper mapper = new ObjectMapper();
+	// @Autowired
+	List<Transcription> transcriptionList;
 
-//	private static List<TranscriptionQueueOption> queueOptions = new ArrayList<TranscriptionQueueOption>();
-//
-//	static {
-//		queueOptions.add(new TranscriptionQueueOption(1, "All", true));
-//		queueOptions.add(new TranscriptionQueueOption(2, "Priority", false));
-//		queueOptions.add(new TranscriptionQueueOption(3, "Transcribed", false));
-//		queueOptions.add(new TranscriptionQueueOption(4, "Audit check", false));
-//		queueOptions.add(new TranscriptionQueueOption(5, "First edit", false));
-//		queueOptions.add(new TranscriptionQueueOption(6, "Second edit", false));
-//		queueOptions.add(new TranscriptionQueueOption(7, "Draft sent", false));
-//		queueOptions.add(new TranscriptionQueueOption(8, "Corrections", false));
-//		queueOptions.add(new TranscriptionQueueOption(9, "Final edit", false));
-//		queueOptions.add(new TranscriptionQueueOption(10, "Sent out", false));
-//	}
+	ObjectMapper mapper = new ObjectMapper();
 
 	public TranscriptionController() {
 		transcriptionList = new ArrayList<Transcription>();
@@ -123,29 +104,39 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("user", user);
 
 		model.addAttribute("transciprtionCount", transcriptionService.findAll(false).size());
-		// .filter(u->u.getTranscriptStatus() == 1)
-		// .collect(Collectors.toList());
 
 		model.addAttribute("browseCount", transcriptionService.findAll().size());
 
 		return "index";
 	}
 
+	@RequestMapping("/validate")
+	public String validate(Model model, Principal principal) throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		this.messageSetup(model);
+
+		return "validate";
+	}
+
+//	@RequestMapping("/validatesubjects")
+//	public String validatesubjects(Model model, Principal principal) throws ParseException {
+//
+//		User user = userService.findByUsername(principal.getName());
+//		model.addAttribute("user", user);
+//
+//		this.messageSetup(model);
+//
+//		return "validate";
+//	}
+
 	@RequestMapping("/browse")
 	public String browse(Model model, Principal principal) throws ParseException {
 
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
-
-//		model.addAttribute("collections", collectionService.findAll());
-//		model.addAttribute("subseries", subserieService.findAll());
-//
-//		model.addAttribute("interviewers",
-//				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
-//
-//		model.addAttribute("subjects", subjectService.findAll());
-//
-//		model.addAttribute("transcriptions", transcriptionService.findAll());
 
 		this.messageSetup(model);
 
@@ -161,9 +152,9 @@ public class TranscriptionController extends MainController {
 
 		BrowsePageObject browsePageObject = new BrowsePageObject();
 
-		if (StringUtil.isNotNullOrEmpty(collections) || StringUtil.isNotNullOrEmpty(subseries)
-				|| StringUtil.isNotNullOrEmpty(interviewers) || StringUtil.isNotNullOrEmpty(subjects)
-				|| StringUtil.isNotNullOrEmpty(darkarchive) || StringUtil.isNotNullOrEmpty(onlineoffline)) {
+		if (StringUtil.isNotNullOrNotEmpty(collections) || StringUtil.isNotNullOrNotEmpty(subseries)
+				|| StringUtil.isNotNullOrNotEmpty(interviewers) || StringUtil.isNotNullOrNotEmpty(subjects)
+				|| StringUtil.isNotNullOrNotEmpty(darkarchive) || StringUtil.isNotNullOrNotEmpty(onlineoffline)) {
 
 			System.out.println("selected collections: " + collections);
 			System.out.println("selected subseries: " + subseries);
@@ -176,11 +167,15 @@ public class TranscriptionController extends MainController {
 
 			browsePageObject.setTranscriptions(transcripts);
 
-			browsePageObject.setCollections(getDistinctCollections(transcripts));
+			List<CheckBoxObject> selectedCollections = getDistinctCollections(transcripts);
 
-			browsePageObject.setSubseries(getDistinctSubseries(transcripts));
+			browsePageObject.setCollections(selectedCollections);
+
+			browsePageObject.setSubseries(getDistinctSubseries(transcripts, selectedCollections.size()));
 
 			browsePageObject.setInterviewers(getDistinctInterviewers(transcripts));
+
+			browsePageObject.setSubjects(getDistinctSubjects(transcripts));
 
 			browsePageObject.setStatusOnline(getStatusOnline(transcripts));
 
@@ -196,6 +191,8 @@ public class TranscriptionController extends MainController {
 
 			browsePageObject.setInterviewers(ConvertInterviewersToCheckBoxObject(
 					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
+
+			browsePageObject.setSubjects(ConvertSubjectsToCheckBoxObject(subjectService.findAll()));
 
 			browsePageObject.setStatusOnline(ConvertStatusOnlineToCheckBoxObject());
 
@@ -217,7 +214,8 @@ public class TranscriptionController extends MainController {
 			Byte darkArchieve = entry.getKey();
 
 			if (darkArchieve == 1) {
-				checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archive", entry.getValue()));
+				checkBoxObjectList
+						.add(new CheckBoxObject(1, "browseDarkArchiveOption", "Dark Archive", entry.getValue()));
 			}
 		}
 
@@ -227,7 +225,7 @@ public class TranscriptionController extends MainController {
 	private List<CheckBoxObject> ConvertDarkArchieveToCheckBoxObject() {
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
-		checkBoxObjectList.add(new CheckBoxObject("browseDarkArchiveOption", "Dark Archive"));
+		checkBoxObjectList.add(new CheckBoxObject(1, "browseDarkArchiveOption", "Dark Archive"));
 
 		return checkBoxObjectList;
 	}
@@ -242,10 +240,10 @@ public class TranscriptionController extends MainController {
 			Byte status = entry.getKey();
 
 			if (status == 0) {
-				checkBoxObjectList.add(new CheckBoxObject("browseIsOfflineOption", "No", entry.getValue()));
+				checkBoxObjectList.add(new CheckBoxObject(1, "browseIsOfflineOption", "No", entry.getValue()));
 
 			} else {
-				checkBoxObjectList.add(new CheckBoxObject("browseIsOnlineOption", "Yes", entry.getValue()));
+				checkBoxObjectList.add(new CheckBoxObject(1, "browseIsOnlineOption", "Yes", entry.getValue()));
 			}
 
 		}
@@ -256,13 +254,14 @@ public class TranscriptionController extends MainController {
 	private List<CheckBoxObject> ConvertStatusOnlineToCheckBoxObject() {
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
-		checkBoxObjectList.add(new CheckBoxObject("browseIsOfflineOption", "No"));
-		checkBoxObjectList.add(new CheckBoxObject("browseIsOnlineOption", "Yes"));
+		checkBoxObjectList.add(new CheckBoxObject(1, "browseIsOfflineOption", "No"));
+		checkBoxObjectList.add(new CheckBoxObject(2, "browseIsOnlineOption", "Yes"));
 
 		return checkBoxObjectList;
 	}
 
 	private List<CheckBoxObject> getDistinctCollections(List<Transcription> transcripts) {
+
 		Map<Collection, Long> newTranscripts = transcripts.stream()
 				.collect(Collectors.groupingBy(Transcription::getCollection, Collectors.counting()));
 
@@ -271,8 +270,8 @@ public class TranscriptionController extends MainController {
 		for (Map.Entry<Collection, Long> entry : newTranscripts.entrySet()) {
 			Collection collection = entry.getKey();
 
-			checkBoxObjectList
-					.add(new CheckBoxObject(collection.getId(), collection.getCollectionName(), entry.getValue()));
+			checkBoxObjectList.add(new CheckBoxObject(collection.getId(), collection.getCollectionName(),
+					collection.getCollectionName(), entry.getValue()));
 
 		}
 
@@ -283,58 +282,36 @@ public class TranscriptionController extends MainController {
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
 		for (Collection collection : collections) {
-			checkBoxObjectList.add(new CheckBoxObject(collection.getId(), collection.getCollectionName()));
+			checkBoxObjectList.add(new CheckBoxObject(collection.getId(), collection.getCollectionName(),
+					collection.getCollectionName()));
 		}
 
 		return checkBoxObjectList;
 	}
 
-	private List<CheckBoxObject> getDistinctInterviewers(List<Transcription> transcripts) {
-
-		Map<String, Long> newTranscripts = transcripts.stream()
-				.collect(Collectors.groupingBy(Transcription::getInterviewer, Collectors.counting()));
-
-		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
-
-		List<PredefinedUser> interviewerList = predefinedUserService
-				.findAllByType(PredefinedUserType.INTERVIEWER.getCode());
-
-		for (Map.Entry<String, Long> entry : newTranscripts.entrySet()) {
-
-			PredefinedUser interviewer = interviewerList.stream().filter(u -> u.getName().contains(entry.getKey()))
-					.findAny().orElse(null);
-
-			if (interviewer != null) {
-				checkBoxObjectList.add(new CheckBoxObject(interviewer.getId(), entry.getKey(), entry.getValue()));
-			}
-
-		}
-
-		return checkBoxObjectList;
-	}
-
-	private List<CheckBoxObject> ConvertInterviewersToCheckBoxObject(List<PredefinedUser> interviewers) {
-
-		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
-
-		for (PredefinedUser interviewer : interviewers) {
-			checkBoxObjectList.add(new CheckBoxObject(interviewer.getId(), interviewer.getName()));
-		}
-
-		return checkBoxObjectList;
-	}
-
-	private List<CheckBoxObject> getDistinctSubseries(List<Transcription> transcripts) {
+	private List<CheckBoxObject> getDistinctSubseries(List<Transcription> transcripts, int collectionSize) {
 
 		Map<Subserie, Long> newTranscripts = transcripts.stream()
 				.collect(Collectors.groupingBy(Transcription::getsubseries, Collectors.counting()));
 
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
+		int numberOfSubseries = newTranscripts.size();
+
 		for (Map.Entry<Subserie, Long> entry : newTranscripts.entrySet()) {
+
 			Subserie subserie = entry.getKey();
 
-			checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(), entry.getValue()));
+			if (collectionSize == 1 && numberOfSubseries > 1) {
+				checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(),
+						subserie.getSubseriesName(), entry.getValue()));
+			} else {
+				if (!subserie.getSubseriesName().toLowerCase().contentEquals("n/a")) {
+
+					checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(),
+							subserie.getSubseriesName(), entry.getValue()));
+				}
+			}
 
 		}
 
@@ -346,17 +323,111 @@ public class TranscriptionController extends MainController {
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
 		for (Subserie subserie : subseries) {
-			checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName()));
+
+			if (!subserie.getSubseriesName().toLowerCase().contentEquals("n/a")) {
+
+				checkBoxObjectList.add(
+						new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(), subserie.getSubseriesName()));
+			}
 		}
 
 		return checkBoxObjectList;
 	}
 
-//	@RequestMapping(value = "/browse/collections", method = RequestMethod.GET)
-//	public @ResponseBody List<Collection> browseCollecttion() throws JsonProcessingException {
-//
-//		return collectionService.findAll();
-//	}
+	private List<CheckBoxObject> getDistinctInterviewers(List<Transcription> transcripts) {
+
+		List<String> interviewers = new ArrayList<String>();
+
+		for (Transcription transcript : transcripts) {
+
+			if (StringUtil.isNotNullOrNotEmpty(transcript.getInterviewer())) {
+
+				String[] selectedInterviewers = transcript.getInterviewer().split("; ");
+
+				for (String selectedinterviewer : selectedInterviewers) {
+
+					interviewers.add(selectedinterviewer);
+				}
+			}
+		}
+
+		Map<String, Long> newTranscripts = interviewers.stream()
+				.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		int i = 0;
+
+		for (Map.Entry<String, Long> entry : newTranscripts.entrySet()) {
+
+			checkBoxObjectList.add(new CheckBoxObject(i++, entry.getKey(), entry.getKey(), entry.getValue()));
+
+		}
+
+		Collections.sort(checkBoxObjectList, Comparator.comparing(CheckBoxObject::getName));
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertInterviewersToCheckBoxObject(List<PredefinedUser> interviewers) {
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (PredefinedUser interviewer : interviewers) {
+			checkBoxObjectList
+					.add(new CheckBoxObject(interviewer.getId(), interviewer.getName(), interviewer.getName()));
+		}
+
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> getDistinctSubjects(List<Transcription> transcripts) {
+
+		List<String> subjects = new ArrayList<String>();
+
+		for (Transcription transcript : transcripts) {
+
+			if (StringUtil.isNotNullOrNotEmpty(transcript.getSubject())) {
+				String[] selectedSubjects = transcript.getSubject().split("; ");
+
+				for (String selectedSubject : selectedSubjects) {
+
+					subjects.add(selectedSubject);
+				}
+			}
+		}
+
+		Map<String, Long> newTranscripts = subjects.stream()
+				.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		int i = 0;
+
+		for (Map.Entry<String, Long> entry : newTranscripts.entrySet()) {
+
+			checkBoxObjectList.add(new CheckBoxObject(++i, entry.getKey(), entry.getKey(), entry.getValue()));
+
+		}
+
+		Collections.sort(checkBoxObjectList, Comparator.comparing(CheckBoxObject::getName));
+		
+		return checkBoxObjectList;
+	}
+
+	private List<CheckBoxObject> ConvertSubjectsToCheckBoxObject(List<Subject> subjects) {
+
+		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
+
+		for (Subject subject : subjects) {
+
+			checkBoxObjectList
+					.add(new CheckBoxObject(subject.getId(), subject.getSubjectName(), subject.getSubjectName()));
+
+		}
+
+		return checkBoxObjectList;
+	}
 
 	// Utility function
 	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
@@ -371,46 +442,13 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		//model.addAttribute("queueptions", queueOptions);
+		// model.addAttribute("queueptions", queueOptions);
 
 		return "transcriptionqueue";
 	}
 
 	@RequestMapping(value = "/transcriptionqueue/data", method = RequestMethod.GET)
 	public @ResponseBody List<Transcription> transcriptionQueueData() throws JsonProcessingException {
-
-//		List<Transcription> list = null;
-//
-//		System.out.println("isinitialize -- " + isinitialize);
-//		System.out.println("options -- " + options);
-//
-//		if (isinitialize != null && !isinitialize.isEmpty() && Boolean.parseBoolean(isinitialize)) {
-//
-//			System.out.println("isinitialize  true");
-//
-//			list = transcriptionService.findAll(false);
-//
-//			this.transcriptionList = list;
-//
-//		} else {
-//
-//			System.out.println("isinitialize is false");
-//
-//			list = this.transcriptionList.stream()
-//					.filter(u -> u.getIsPriority() == (byte) (options.contains("2") ? 1 : u.getIsPriority()))
-//					.filter(u -> options.contains("3") ? StringUtil.isNotNullOrEmpty(u.getTranscriberAssigned()) : true)
-//					.filter(u -> options.contains("4") ? StringUtil.isNotNullOrEmpty(u.getAuditCheckCompleted()) : true)
-//					.filter(u -> options.contains("5") ? StringUtil.isNotNullOrEmpty(u.getFirstEditCompleted()) : true)
-//					.filter(u -> options.contains("6") ? StringUtil.isNotNullOrEmpty(u.getSecondEditCompleted()) : true)
-//					.filter(u -> options.contains("7") ? u.getDraftSentDate() != null : true)
-//					.filter(u -> options.contains("8") ? StringUtil.isNotNullOrEmpty(u.getEditWithCorrectionCompleted())
-//							: true)
-//					.filter(u -> options.contains("9") ? StringUtil.isNotNullOrEmpty(u.getFinalEditCompleted()) : true)
-//					.filter(u -> options.contains("10") ? u.getFinalSentDate() != null : true)
-//					.collect(Collectors.toList());
-//		}
-//
-//		return list;
 
 		return transcriptionService.findAll(false);
 	}
@@ -449,39 +487,53 @@ public class TranscriptionController extends MainController {
 			return "addinterview";
 		}
 
-		User user = userService.findByUsername(principal.getName());
-		model.addAttribute("user", user);
-
-		transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
-
-		String interviewers = transcription.getInterviewer().replaceAll(", ", "/");
-		interviewers = interviewers.replaceAll(",", ";");
-		interviewers = interviewers.replaceAll("/", ", ");
-		transcription.setInterviewer(interviewers);
-
-		transcription.setInterviewDates(transcription.getInterviewDates().replaceAll(",", ";"));
-
-		transcription.setInterviewDates(transcription.getInterviewDates().replaceAll(",", ";"));
-
-		transcription.setCreatedDate(DateUtil.getTodaySqlDate());
-		transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
-
-		transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
-		transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
-
-		Transcription trans = transcriptionService.save(transcription);
-
-		if (trans != null && trans.getId() > 0) {
-
-			this.errorType = ErrorType.SUCESS;
-			this.message = "Interview details added successfully!";
+		if (transcriptionService.isProjectCodeExists(transcription.getProjectCode())) {
+			this.errorType = ErrorType.ERROR;
+			this.message = "Project Code exists!";
 
 		} else {
-			this.errorType = ErrorType.ERROR;
-			this.message = "Failed to add interview!";
+
+			User user = userService.findByUsername(principal.getName());
+			model.addAttribute("user", user);
+
+			transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
+
+			//
+//			String interviewers = transcription.getInterviewer().replaceAll(", ", "/");
+//			interviewers = interviewers.replaceAll(",", ";");
+//			interviewers = interviewers.replaceAll("/", ", ");
+
+			transcription.setInterviewer(setDelimeterdInterviewers(transcription.getInterviewer()));
+
+			transcription.setInterviewDates(transcription.getInterviewDates());
+
+			transcription.setCreatedDate(DateUtil.getTodaySqlDate());
+			transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+			transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
+			transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+			Transcription trans = transcriptionService.save(transcription);
+
+			if (trans != null && trans.getId() > 0) {
+
+				this.errorType = ErrorType.SUCESS;
+				this.message = "Interview details added successfully!";
+
+			} else {
+				this.errorType = ErrorType.ERROR;
+				this.message = "Failed to add interview!";
+			}
 		}
 
 		return "redirect:/addinterview";
+	}
+
+	@RequestMapping(value = "/validateprojectcode", method = RequestMethod.POST)
+	public @ResponseBody boolean validateProjectCode(@RequestParam(value = "code") String code) {
+
+		return transcriptionService.isProjectCodeExists(code);
+
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -501,8 +553,6 @@ public class TranscriptionController extends MainController {
 	@RequestMapping(value = { "/modifyinterview/{id}" })
 	public String modifyinterview(@PathVariable(required = false) String id, Principal principal, Model model) {
 
-		System.out.println("id" + id);
-
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
@@ -519,6 +569,12 @@ public class TranscriptionController extends MainController {
 					predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
 
 			model.addAttribute("interviewdetails", transcription);
+			model.addAttribute("mediums", mediumService.findAll());
+			model.addAttribute("interviewers",
+					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
+
+			model.addAttribute("subjects", subjectService.findAll());
+
 		} else {
 			this.errorType = ErrorType.ERROR;
 			this.message = "Relevent interview record cannot find in the system. Please refresh the 'Browse' or 'Transcription queue' page and look for the record.";
@@ -583,6 +639,9 @@ public class TranscriptionController extends MainController {
 		// TranscriptNote
 		newTranscription.setTranscriptNote(transcription.getTranscriptNote());
 
+		// InitialNote
+		newTranscription.setInitialNote(transcription.getInitialNote());
+
 		return submitTranscription(newTranscription);
 	}
 
@@ -597,13 +656,10 @@ public class TranscriptionController extends MainController {
 		newTranscription.setIsVideoFormat(transcription.getIsVideoFormat());
 
 		// Born digital
-		newTranscription.setOriginalMediumType(transcription.getOriginalMediumType());
+		newTranscription.setIsBornDigital(transcription.getIsBornDigital());
 
-		if (transcription.getOriginalMediumType() == OriginalMediumType.OTHER.getOriginalMediumTypeCode()) {
-			newTranscription.setOriginalMedium(transcription.getOriginalMedium());
-		} else {
-			newTranscription.setOriginalMedium("");
-		}
+		// Original medium
+		newTranscription.setOriginalMedium(transcription.getOriginalMedium());
 
 		// Converted to digital
 		newTranscription.setIsConvertToDigital(transcription.getIsConvertToDigital());
@@ -633,13 +689,14 @@ public class TranscriptionController extends MainController {
 
 		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
 
-		System.out.println("getConvertToDigitalDate" + transcription.getTitle());
-
 		// Title
 		newTranscription.setTitle(transcription.getTitle());
 
 		// Interviewee
 		newTranscription.setInterviewee(transcription.getInterviewee());
+
+		// Interviewee
+		newTranscription.setInterviewer(setDelimeterdInterviewers(transcription.getInterviewer()));
 
 		// InterviewDates
 		newTranscription.setInterviewDates(transcription.getInterviewDates());
@@ -648,7 +705,9 @@ public class TranscriptionController extends MainController {
 		newTranscription.setConvertToDigitalDate(transcription.getConvertToDigitalDate());
 
 		// Subject
-		newTranscription.setSubject(transcription.getSubject());
+		newTranscription.setSubject(StringUtil.isNotNullOrNotEmpty(transcription.getSubject())
+				? transcription.getSubject().replaceAll(",", "; ")
+				: "");
 
 		// Keywords
 		newTranscription.setKeywords(transcription.getKeywords());
@@ -670,6 +729,9 @@ public class TranscriptionController extends MainController {
 
 		// ProjectCode
 		newTranscription.setProjectCode(transcription.getProjectCode());
+
+		// Identifier
+		newTranscription.setIdentifier(transcription.getIdentifier());
 
 		// CoverageTemporal
 		newTranscription.setCoverageTemporal(transcription.getCoverageTemporal());
@@ -695,8 +757,8 @@ public class TranscriptionController extends MainController {
 		return submitTranscription(newTranscription);
 	}
 
-	@RequestMapping(value = "/modifysupplemental", method = RequestMethod.POST)
-	public String modifysupplemental(@Valid Transcription transcription, BindingResult bindingResult, Model model,
+	@RequestMapping(value = "/modifymiscellaneous", method = RequestMethod.POST)
+	public String modifymiscellaneous(@Valid Transcription transcription, BindingResult bindingResult, Model model,
 			Principal principal) throws ParseException {
 
 		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
@@ -706,6 +768,9 @@ public class TranscriptionController extends MainController {
 
 		// IsRosetta
 		newTranscription.setIsRosetta(transcription.getIsRosetta());
+
+		// IsRosetta Form
+		newTranscription.setIsRosettaForm(transcription.getIsRosettaForm());
 
 		// Release Form
 		newTranscription.setReleaseForm(transcription.getReleaseForm());
@@ -781,8 +846,6 @@ public class TranscriptionController extends MainController {
 	@ResponseBody
 	public String reportPost(@RequestBody Report report, HttpServletRequest request) {
 
-		System.out.println("beginDate-" + report.getBeginDate());
-
 		HttpSession session = request.getSession();
 		session.setAttribute("reportobj", report);
 
@@ -805,6 +868,7 @@ public class TranscriptionController extends MainController {
 				report.getEndDate(), report.getStatus(), report.getBornDigital(), report.getConverted());
 	}
 
+	// ---------------------------------------------------------------------------------------
 	// region Find and Replace Implementation
 	// ---------------------------------------------------------------------------------------
 
@@ -849,6 +913,11 @@ public class TranscriptionController extends MainController {
 
 	// ---------------------------------------------------------------------------------------
 	// endregion
+	// ---------------------------------------------------------------------------------------
+
+	// ---------------------------------------------------------------------------------------
+	// region Export Implementation
+	// ---------------------------------------------------------------------------------------
 
 	@RequestMapping("export")
 	public String export(Model model, Principal principal) throws ParseException {
@@ -858,6 +927,20 @@ public class TranscriptionController extends MainController {
 
 		return "export";
 	}
+
+	@PostMapping("/transactions/export")
+	public ResponseEntity<Resource> export(Model model, HttpServletResponse response) throws IOException {
+
+		List<Transcription> transcriptions = new ArrayList<Transcription>();
+
+		transcriptions.add(transcriptionService.findById(1).orElse(null));
+
+		return downloadTranscriptions(transcriptions);
+	}
+
+	// ---------------------------------------------------------------------------------------
+	// endregion
+	// ---------------------------------------------------------------------------------------
 
 	@RequestMapping("/import")
 	public String importdata(Model model, Principal principal) throws ParseException {
@@ -949,19 +1032,13 @@ public class TranscriptionController extends MainController {
 		return "import";
 	}
 
-	@PostMapping("/transactions/export")
-	public ResponseEntity<Resource> export(Model model, HttpServletResponse response) throws IOException {
+	private String setDelimeterdInterviewers(String interviewers) {
 
-		return downloadTranscriptions(transcriptionService.findAll());
+		interviewers = interviewers.replaceAll(", ", "/");
+		interviewers = interviewers.replaceAll(",", ";");
+		interviewers = interviewers.replaceAll("/", ", ");
 
-//		String filename = "transcriptions.xlsx";
-//
-//		InputStreamResource file = new InputStreamResource(
-//				ExcelService.transcriptionToExcel());
-//
-//		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-//				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
-
+		return interviewers;
 	}
 
 	private ResponseEntity<Resource> downloadTranscriptions(List<Transcription> transcriptions) {

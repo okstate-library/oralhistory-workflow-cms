@@ -86,11 +86,27 @@ public class BrowsePageObject {
 		this.darkArchieve = darkArchieve;
 	}
 
+	/**
+	 * @return the subjects
+	 */
+	public List<CheckBoxObject> getSubjects() {
+		return subjects;
+	}
+
+	/**
+	 * @param subjects the subjects to set
+	 */
+	public void setSubjects(List<CheckBoxObject> subjects) {
+		this.subjects = subjects;
+	}
+
 	private List<CheckBoxObject> collections;
 
 	private List<CheckBoxObject> interviewers;
 
 	private List<CheckBoxObject> subseries;
+	
+	private List<CheckBoxObject> subjects;
 	
 	private List<CheckBoxObject> statusOnline;
 	
