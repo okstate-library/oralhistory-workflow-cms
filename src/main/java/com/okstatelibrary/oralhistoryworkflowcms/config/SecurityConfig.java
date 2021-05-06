@@ -23,50 +23,53 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    @Autowired
 //    private Environment env;
 
-    private static final String SALT = "salt"; // Salt should be protected carefully
-    private static final String[] PUBLIC_MATCHERS = {
-            "/webjars/**",
-            "/css/**",
-            "/js/**",
-            "/images/**",
-            "/",
-            "/index",
-            "/api/currenttraffic",           
-            "/error/**/*",
-            "/console/**"
-    };
-    
-    @Autowired
-    private UserSecurityService userSecurityService;
+	private static final String SALT = "salt"; // Salt should be protected carefully
+	private static final String[] PUBLIC_MATCHERS = {
+			// "/webjars/**",
+			"/css/**", "/js/**", "/images/**", "/", "/index",
+//            "/api/currenttraffic",           
+//            "/error/**/*",
+//            "/console/**"
+	};
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
-    }
+	@Autowired
+	private UserSecurityService userSecurityService;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+//    	http.authorizeRequests()
+//        .antMatchers("/").hasAnyAuthority("USER", "CREATOR", "EDITOR", "ADMIN")
+//        .antMatchers("/new").hasAnyAuthority("ADMIN", "CREATOR")
+//        .antMatchers("/edit/**").hasAnyAuthority("ADMIN", "EDITOR")
+//        .antMatchers("/delete/**").hasAuthority("ADMIN")
+//        .anyRequest().authenticated()
+//        .and()
+//        .formLogin().permitAll()
+//        .and()
+//        .logout().permitAll()
+//        .and()
+//        .exceptionHandling().accessDeniedPage("/403")
+//        ;
+		http.authorizeRequests().
 //                antMatchers("/**").
-        antMatchers(PUBLIC_MATCHERS).
-                permitAll().anyRequest().authenticated();
+				antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
 
-        http
-                .csrf().disable().cors().disable()
-                .formLogin().failureUrl("/login?error").defaultSuccessUrl("/index").loginPage("/login").permitAll()
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").deleteCookies("remember-me").permitAll()
-                .and()
-                .rememberMe();
+		http.csrf().disable().cors().disable().formLogin().failureUrl("/login?error").defaultSuccessUrl("/index")
+				.loginPage("/login").permitAll().and().logout()
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/")
+				.deleteCookies("remember-me").permitAll().and().rememberMe();
 
-    }
+	}
 
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder());
-    }
-
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder());
+	}
 
 }

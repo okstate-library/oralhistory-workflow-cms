@@ -31,7 +31,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	@Override
 	public List<Transcription> findAll(boolean isTranscripted) {
 		return transcriptionRepository.findAll().stream()
-				.filter(u -> u.getTranscriptStatus() == (byte) (isTranscripted ? 1 : 0)).collect(Collectors.toList());
+				.filter(u -> u.getSentOut()== (byte) (isTranscripted ? 1 : 0)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -91,9 +91,9 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findBySubseriesId(int subseriesId) {
+	public List<Transcription> findBySeriesId(int seriesId) {
 
-		return transcriptionRepository.findAll().stream().filter(u -> u.getSubseriesId() == subseriesId)
+		return transcriptionRepository.findAll().stream().filter(u -> u.getSeriesId() == seriesId)
 				.collect(Collectors.toList());
 
 	}
@@ -312,7 +312,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findAll(String collectionIds, String subseriesIds, String interviewes, String subjects,
+	public List<Transcription> findAll(String collectionIds, String seriesIds, String interviewes, String subjects,
 			String darkarchive, String onlineoffline) {
 
 		List<Predicate<Transcription>> collectionPredicates = null;
@@ -329,17 +329,17 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 			}
 		}
 
-		List<Predicate<Transcription>> subseriesPredicates = null;
+		List<Predicate<Transcription>> seriesPredicates = null;
 
-		if (subseriesIds != null && !subseriesIds.trim().isEmpty()) {
+		if (seriesIds != null && !seriesIds.trim().isEmpty()) {
 
-			subseriesPredicates = new ArrayList<Predicate<Transcription>>();
+			seriesPredicates = new ArrayList<Predicate<Transcription>>();
 
-			String[] subseries = subseriesIds.split(",");
+			String[] series = seriesIds.split(",");
 
-			for (String id : subseries) {
+			for (String id : series) {
 
-				subseriesPredicates.add(c -> c.getSubseriesId() == Short.parseShort(id));
+				seriesPredicates.add(c -> c.getSeriesId() == Short.parseShort(id));
 			}
 		}
 
@@ -401,8 +401,8 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				.filter(collectionPredicates != null && collectionPredicates.size() > 0
 						? collectionPredicates.stream().reduce(x -> false, Predicate::or)
 						: u -> u.getId() > 0)
-				.filter(subseriesPredicates != null && subseriesPredicates.size() > 0
-						? subseriesPredicates.stream().reduce(x -> false, Predicate::or)
+				.filter(seriesPredicates != null && seriesPredicates.size() > 0
+						? seriesPredicates.stream().reduce(x -> false, Predicate::or)
 						: u -> u.getId() > 0)
 				.filter(interviewerPredicates != null && interviewerPredicates.size() > 0
 						? interviewerPredicates.stream().reduce(x -> false, Predicate::or)

@@ -9,14 +9,17 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +80,7 @@ public class TranscriptionController extends MainController {
 	private EquipmentService equipmentService;
 
 	@Autowired
-	private SubserieService subserieService;
+	private SeriesService seriesService;
 
 	@Autowired
 	private SubjectService subjectService;
@@ -117,23 +120,16 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("user", user);
 
 		this.messageSetup(model);
-
+		
 		return "validate";
 	}
 
-//	@RequestMapping("/validatesubjects")
-//	public String validatesubjects(Model model, Principal principal) throws ParseException {
-//
-//		User user = userService.findByUsername(principal.getName());
-//		model.addAttribute("user", user);
-//
-//		this.messageSetup(model);
-//
-//		return "validate";
-//	}
-
 	@RequestMapping("/browse")
-	public String browse(Model model, Principal principal) throws ParseException {
+	public String browse(Model model, Principal principal, HttpServletRequest request,
+			@RequestParam(name = "search", required = false) String search) throws ParseException {
+
+		HttpSession session = request.getSession();
+		session.setAttribute("searchword", search);
 
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
@@ -146,24 +142,23 @@ public class TranscriptionController extends MainController {
 	@Lazy
 	@RequestMapping(value = "/browse/data", method = RequestMethod.GET)
 	public @ResponseBody BrowsePageObject browseData(@RequestParam(required = false) String collections,
-			@RequestParam(required = false) String subseries, @RequestParam(required = false) String interviewers,
+			@RequestParam(required = false) String series, @RequestParam(required = false) String interviewers,
 			@RequestParam(required = false) String subjects, @RequestParam(required = false) String onlineoffline,
-			@RequestParam(required = false) String darkarchive, Model model) throws JsonProcessingException {
+			@RequestParam(required = false) String darkarchive, Model model, HttpServletRequest request)
+			throws JsonProcessingException {
 
 		BrowsePageObject browsePageObject = new BrowsePageObject();
 
-		if (StringUtil.isNotNullOrNotEmpty(collections) || StringUtil.isNotNullOrNotEmpty(subseries)
+		HttpSession session = request.getSession();
+
+		browsePageObject.setSearchWord((String) session.getAttribute("searchword"));
+
+		if (StringUtil.isNotNullOrNotEmpty(collections) || StringUtil.isNotNullOrNotEmpty(series)
 				|| StringUtil.isNotNullOrNotEmpty(interviewers) || StringUtil.isNotNullOrNotEmpty(subjects)
 				|| StringUtil.isNotNullOrNotEmpty(darkarchive) || StringUtil.isNotNullOrNotEmpty(onlineoffline)) {
 
-			System.out.println("selected collections: " + collections);
-			System.out.println("selected subseries: " + subseries);
-			System.out.println("selected interviewers: " + interviewers);
-			System.out.println("selected onlineoffline: " + onlineoffline);
-			System.out.println("selected dark archive: " + darkarchive);
-
-			List<Transcription> transcripts = transcriptionService.findAll(collections, subseries, interviewers,
-					subjects, darkarchive, onlineoffline);
+			List<Transcription> transcripts = transcriptionService.findAll(collections, series, interviewers, subjects,
+					darkarchive, onlineoffline);
 
 			browsePageObject.setTranscriptions(transcripts);
 
@@ -171,7 +166,7 @@ public class TranscriptionController extends MainController {
 
 			browsePageObject.setCollections(selectedCollections);
 
-			browsePageObject.setSubseries(getDistinctSubseries(transcripts, selectedCollections.size()));
+			browsePageObject.setSeries(getDistinctSeries(transcripts, selectedCollections.size()));
 
 			browsePageObject.setInterviewers(getDistinctInterviewers(transcripts));
 
@@ -187,7 +182,7 @@ public class TranscriptionController extends MainController {
 
 			browsePageObject.setCollections(ConvertCollectionToCheckBoxObject(collectionService.findAll()));
 
-			browsePageObject.setSubseries(ConvertSubseriesToCheckBoxObject(subserieService.findAll()));
+			browsePageObject.setSeries(ConvertSeriesToCheckBoxObject(seriesService.findAll()));
 
 			browsePageObject.setInterviewers(ConvertInterviewersToCheckBoxObject(
 					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
@@ -289,27 +284,27 @@ public class TranscriptionController extends MainController {
 		return checkBoxObjectList;
 	}
 
-	private List<CheckBoxObject> getDistinctSubseries(List<Transcription> transcripts, int collectionSize) {
+	private List<CheckBoxObject> getDistinctSeries(List<Transcription> transcripts, int collectionSize) {
 
-		Map<Subserie, Long> newTranscripts = transcripts.stream()
-				.collect(Collectors.groupingBy(Transcription::getsubseries, Collectors.counting()));
+		Map<Series, Long> newTranscripts = transcripts.stream()
+				.collect(Collectors.groupingBy(Transcription::getseries, Collectors.counting()));
 
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
-		int numberOfSubseries = newTranscripts.size();
+		int numberOfSeries = newTranscripts.size();
 
-		for (Map.Entry<Subserie, Long> entry : newTranscripts.entrySet()) {
+		for (Map.Entry<Series, Long> entry : newTranscripts.entrySet()) {
 
-			Subserie subserie = entry.getKey();
+			Series series = entry.getKey();
 
-			if (collectionSize == 1 && numberOfSubseries > 1) {
-				checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(),
-						subserie.getSubseriesName(), entry.getValue()));
+			if (collectionSize == 1 && numberOfSeries > 1) {
+				checkBoxObjectList.add(new CheckBoxObject(series.getId(), series.getSeriesName(),
+						series.getSeriesName(), entry.getValue()));
 			} else {
-				if (!subserie.getSubseriesName().toLowerCase().contentEquals("n/a")) {
+				if (!series.getSeriesName().toLowerCase().contentEquals(StringUtil.NotAvaliable)) {
 
-					checkBoxObjectList.add(new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(),
-							subserie.getSubseriesName(), entry.getValue()));
+					checkBoxObjectList.add(new CheckBoxObject(series.getId(), series.getSeriesName(),
+							series.getSeriesName(), entry.getValue()));
 				}
 			}
 
@@ -318,16 +313,16 @@ public class TranscriptionController extends MainController {
 		return checkBoxObjectList;
 	}
 
-	private List<CheckBoxObject> ConvertSubseriesToCheckBoxObject(List<Subserie> subseries) {
+	private List<CheckBoxObject> ConvertSeriesToCheckBoxObject(List<Series> series) {
 
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
-		for (Subserie subserie : subseries) {
+		for (Series aseries : series) {
 
-			if (!subserie.getSubseriesName().toLowerCase().contentEquals("n/a")) {
+			if (!aseries.getSeriesName().toLowerCase().contentEquals(StringUtil.NotAvaliable)) {
 
-				checkBoxObjectList.add(
-						new CheckBoxObject(subserie.getId(), subserie.getSubseriesName(), subserie.getSubseriesName()));
+				checkBoxObjectList
+						.add(new CheckBoxObject(aseries.getId(), aseries.getSeriesName(), aseries.getSeriesName()));
 			}
 		}
 
@@ -402,16 +397,18 @@ public class TranscriptionController extends MainController {
 
 		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
 
+		LinkedHashMap<String, Long> sortedTranscripts = new LinkedHashMap<>();
+
+		newTranscripts.entrySet().stream().sorted(Map.Entry.comparingByValue((Comparator.reverseOrder())))
+				.forEachOrdered(x -> sortedTranscripts.put(x.getKey(), x.getValue()));
+
 		int i = 0;
 
-		for (Map.Entry<String, Long> entry : newTranscripts.entrySet()) {
+		for (Map.Entry<String, Long> entry : sortedTranscripts.entrySet()) {
 
 			checkBoxObjectList.add(new CheckBoxObject(++i, entry.getKey(), entry.getKey(), entry.getValue()));
-
 		}
 
-		Collections.sort(checkBoxObjectList, Comparator.comparing(CheckBoxObject::getName));
-		
 		return checkBoxObjectList;
 	}
 
@@ -460,7 +457,7 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("user", user);
 
 		model.addAttribute("collections", collectionService.findAll());
-		model.addAttribute("subseries", subserieService.findAll());
+		model.addAttribute("series", seriesService.findAll());
 
 		model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
 		model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
@@ -468,14 +465,43 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("transcribers",
 				predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
 
-		model.addAttribute("interviewers",
-				predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
+		List<PredefinedUser> interviewers = predefinedUserService
+				.findAllByType(PredefinedUserType.INTERVIEWER.getCode());
+
+		model.addAttribute("interviewers", sortByPreference(interviewers));
 
 		model.addAttribute("transcription", new Transcription());
 
 		this.messageSetup(model);
 
 		return "addinterview";
+	}
+
+	private List<PredefinedUser> sortByPreference(List<PredefinedUser> interviewers) {
+
+		List<PredefinedUser> newInterviewers = new ArrayList<PredefinedUser>(interviewers);
+
+		List<PredefinedUser> selectedList = new ArrayList<PredefinedUser>();
+
+		String[] selectedNames = new String[] { "Blackshear, Emily", "Daglaris, Patrick", "Finchum, Tanya",
+				"Little Thunder, Julie Pearson", "Milligan, Sarah", "Neurohr, Karen" };
+
+		List<String> namesList = Arrays.asList(selectedNames);
+
+		for (PredefinedUser interviewer : interviewers) {
+
+			if (namesList.contains(interviewer.getName())) {
+				selectedList.add(interviewer);
+
+				newInterviewers.remove(interviewer);
+			}
+		}
+
+		Collections.sort(selectedList, Comparator.comparing(PredefinedUser::getName));
+
+		Collections.sort(newInterviewers, Comparator.comparing(PredefinedUser::getName));
+
+		return Stream.concat(selectedList.stream(), newInterviewers.stream()).collect(Collectors.toList());
 	}
 
 	@RequestMapping(value = "/addinterview", method = RequestMethod.POST)
@@ -498,11 +524,6 @@ public class TranscriptionController extends MainController {
 
 			transcription.setTitle("Oral history interview with " + transcription.getInterviewee());
 
-			//
-//			String interviewers = transcription.getInterviewer().replaceAll(", ", "/");
-//			interviewers = interviewers.replaceAll(",", ";");
-//			interviewers = interviewers.replaceAll("/", ", ");
-
 			transcription.setInterviewer(setDelimeterdInterviewers(transcription.getInterviewer()));
 
 			transcription.setInterviewDates(transcription.getInterviewDates());
@@ -512,6 +533,29 @@ public class TranscriptionController extends MainController {
 
 			transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
 			transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+			Series series = seriesService.findById(transcription.getSeriesId()).orElse(null);
+
+			if (!series.getSeriesName().toLowerCase().equals(StringUtil.NotAvaliable)) {
+
+				transcription.setLanguage(series.getLanguage());
+				transcription.setRights(series.getRights());
+				transcription.setScopeAndContents(series.getScopeAndContent());
+				transcription.setPublisher(series.getPublisher());
+				transcription.setFormat(series.getFormat());
+				transcription.setType(series.getType());
+
+			} else {
+
+				Collection collection = collectionService.findById(transcription.getCollectionId()).orElse(null);
+
+				transcription.setLanguage(collection.getLanguage());
+				transcription.setRights(collection.getRights());
+				transcription.setScopeAndContents(collection.getScopeAndContent());
+				transcription.setPublisher(collection.getPublisher());
+				transcription.setFormat(collection.getFormat());
+				transcription.setType(collection.getType());
+			}
 
 			Transcription trans = transcriptionService.save(transcription);
 
@@ -536,13 +580,65 @@ public class TranscriptionController extends MainController {
 
 	}
 
+	@RequestMapping(value = "/bulkmodify", method = RequestMethod.GET)
+	public String bulkmodify(Model model, Principal principal, @Valid String ids, HttpServletRequest request)
+			throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		List<Transcription> transcriptionList = new ArrayList<Transcription>();
+
+		HttpSession session = request.getSession();
+		session.setAttribute("bulkIds", ids);
+
+		for (String id : ids.split(",")) {
+			transcriptionList.add(transcriptionService.findById(Integer.parseInt(id)).orElse(null));
+		}
+
+		model.addAttribute("transcriptions", transcriptionList);
+
+		this.messageSetup(model);
+
+		return "bulkmodify";
+	}
+
+	@RequestMapping(value = "/bulkmodify", method = RequestMethod.POST)
+	public String bulkmodifyPost(@Valid Transcription transcription, BindingResult bindingResult, Model model,
+			Principal principal, HttpServletRequest request) throws ParseException {
+
+		User user = userService.findByUsername(principal.getName());
+		model.addAttribute("user", user);
+
+		HttpSession session = request.getSession();
+		String ids = (String) session.getAttribute("bulkIds");
+
+		for (String id : ids.split(",")) {
+
+			Transcription newTranscription = transcriptionService.findById(Integer.parseInt(id)).orElse(null);
+
+			newTranscription.setSentOut(transcription.getSentOut());
+			newTranscription.setIsProductionMasterFileStatus(transcription.getIsProductionMasterFileStatus());
+			newTranscription.setIsOnline(transcription.getIsOnline());
+			newTranscription.setIsRosetta(transcription.getIsRosetta());
+
+			newTranscription.setUpdatedDate(DateUtil.getTodaySqlDate());
+			newTranscription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+			transcriptionService.save(newTranscription);
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Bulk records successfully modified!";
+
+		return "redirect:/browse";
+	}
+
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public String deleteinterview(@Valid Transcription transcription, BindingResult bindingResult, Model model,
 			Principal principal) throws ParseException {
 
 		transcriptionService.delete(transcription.getId());
-
-		System.out.print(transcription.getId());
 
 		this.errorType = ErrorType.SUCESS;
 		this.message = "Interview details deleted successfully!";
@@ -561,7 +657,7 @@ public class TranscriptionController extends MainController {
 		if (transcription != null) {
 			// Master data for drop downs
 			model.addAttribute("collections", collectionService.findAll());
-			model.addAttribute("subseries", subserieService.findAll());
+			model.addAttribute("series", seriesService.findAll());
 			model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
 			model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
 
@@ -569,15 +665,18 @@ public class TranscriptionController extends MainController {
 					predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
 
 			model.addAttribute("interviewdetails", transcription);
+
 			model.addAttribute("mediums", mediumService.findAll());
+
 			model.addAttribute("interviewers",
-					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode()));
+					sortByPreference(predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
 
 			model.addAttribute("subjects", subjectService.findAll());
 
 		} else {
 			this.errorType = ErrorType.ERROR;
-			this.message = "Relevent interview record cannot find in the system. Please refresh the 'Browse' or 'Transcription queue' page and look for the record.";
+			this.message = "Relevent interview record cannot find in the system. Please refresh the 'Browse' or"
+					+ " 'Transcription queue' page and look for the record.";
 		}
 
 		this.messageSetup(model);
@@ -673,7 +772,7 @@ public class TranscriptionController extends MainController {
 		}
 
 		// Access media status
-		newTranscription.setIsAccessMediaStatus(transcription.getIsAccessMediaStatus());
+		newTranscription.setIsProductionMasterFileStatus(transcription.getIsProductionMasterFileStatus());
 
 		// Specification and file locations
 		newTranscription.setTechnicalSpecification(transcription.getTechnicalSpecification());
@@ -769,9 +868,6 @@ public class TranscriptionController extends MainController {
 		// IsRosetta
 		newTranscription.setIsRosetta(transcription.getIsRosetta());
 
-		// IsRosetta Form
-		newTranscription.setIsRosettaForm(transcription.getIsRosettaForm());
-
 		// Release Form
 		newTranscription.setReleaseForm(transcription.getReleaseForm());
 
@@ -797,6 +893,9 @@ public class TranscriptionController extends MainController {
 		// Audio and video equipment used
 		newTranscription.setAudioEquipmentUsed(transcription.getAudioEquipmentUsed());
 		newTranscription.setVideoEquipmentUsed(transcription.getVideoEquipmentUsed());
+
+		// CONTENTdmURL
+		newTranscription.setCONTENTdmURL(transcription.getCONTENTdmURL());
 
 		// TranscriptLocation
 		newTranscription.setTranscriptLocation(transcription.getTranscriptLocation());
@@ -888,10 +987,6 @@ public class TranscriptionController extends MainController {
 			@RequestParam(required = true) String find, @RequestParam(required = true) String replace, Model model,
 			Principal principal) throws ParseException {
 
-		System.out.println("option-" + option);
-		System.out.println("find-" + find);
-		System.out.println("replace- " + replace);
-
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
@@ -933,7 +1028,7 @@ public class TranscriptionController extends MainController {
 
 		List<Transcription> transcriptions = new ArrayList<Transcription>();
 
-		transcriptions.add(transcriptionService.findById(1).orElse(null));
+		transcriptions = transcriptionService.findAll();
 
 		return downloadTranscriptions(transcriptions);
 	}
@@ -999,14 +1094,13 @@ public class TranscriptionController extends MainController {
 						transcription.setCollectionId((short) 1);
 					}
 
-					// Setup Subseries using suibsreis name
-					Subserie subserie = subserieService.findByName(collection.getId(),
-							transcription.getSubseriesName());
+					// Setup Series using series name
+					Series aseries = seriesService.findByName(collection.getId(), transcription.getSeriesName());
 
-					if (subserie != null) {
-						transcription.setSubseriesId(subserie.getId());
+					if (aseries != null) {
+						transcription.setSeriesId(aseries.getId());
 					} else {
-						transcription.setSubseriesId((short) 1);
+						transcription.setSeriesId((short) 1);
 					}
 
 					transcription.setCreatedDate(DateUtil.getTodaySqlDate());

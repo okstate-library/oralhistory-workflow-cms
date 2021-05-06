@@ -23,13 +23,6 @@ $(document)
 		.ready(
 				function() {
 
-					// $.toggleShowPassword({
-					// field : '#password',
-					// control : "#showPassword"
-					// });
-
-					var end = new Date();
-
 					$('.dates').datepicker({
 						multidate : true,
 						multidateSeparator : ';'
@@ -197,24 +190,31 @@ $(document)
 													},
 													success : function(data) {
 
-														
 														var submitSubjectRow = document
 																.getElementById("submitSubjectRow");
 
+														var subjectNoRecordsRow = document
+																.getElementById("subjectNoRecordsRow");
+
 														if (data > 0) {
 															document
-															.getElementById("subjectrecordcount").innerHTML = data + ' records found.';
+																	.getElementById("subjectrecordcount").innerHTML = data
+																	+ ' records found.';
 
 															submitSubjectRow.style.visibility = "visible";
+															subjectNoRecordsRow.style.visibility = "hidden";
+															
 														} else {
 															submitSubjectRow.style.visibility = "hidden";
+															subjectNoRecordsRow.style.visibility = "visible";
 														}
 
 													},
 													error : function(e) {
 														var err = eval("("
-																+ xhr.responseText
+																+ e.responseText
 																+ ")");
+
 														alert(err.Message);
 													},
 													complete : function() {
@@ -227,37 +227,60 @@ $(document)
 
 									});
 
+//					$("#collectionvaidate")
+//							.click(
+//									function(event) {
+//
+//										$
+//												.ajax({
+//													type : "POST",
+//													contentType : "application/json",
+//													url : "/collections/validate",
+//													dataType : 'json',
+//													done(function (data) {
+//													    alert('success');
+//													})
+//													,
+//													error : function(e) {
+//														var err = eval("("
+//																+ xhr.responseText
+//																+ ")");
+//														alert(err.Message);
+//													}
+//												});
+//
+//									});
+
 				});
 
-function selectSebseries() {
+function selectSeriesByCollection() {
 
 	var collectionId = document.getElementById("collectitonDropDown").value;
 
 	$.ajax({
 		type : 'GET',
-		url : "../subseries/getSubseries",
+		url : "../series/getSeries",
 		data : {
 			"collectionId" : collectionId
 		},
 		success : function(data) {
 
-			var subseriesDropDown = $('#subseriesDropDown'), option = "";
+			var seriesDropDown = $('#seriesDropDown'), option = "";
 
-			subseriesDropDown.empty();
+			seriesDropDown.empty();
 
 			if (data.length > 1) {
 
-				option = option
-						+ "<option value=''> Select Subseries </option>";
+				option = option + "<option value=''> Select Series </option>";
 
 			}
 
 			for (var i = 0; i < data.length; i++) {
 				option = option + "<option value='" + data[i].id + "'>"
-						+ data[i].subseriesName + "</option>";
+						+ data[i].seriesName + "</option>";
 			}
 
-			subseriesDropDown.append(option);
+			seriesDropDown.append(option);
 		},
 		error : function(xhr, status, error) {
 			var err = eval("(" + xhr.responseText + ")");

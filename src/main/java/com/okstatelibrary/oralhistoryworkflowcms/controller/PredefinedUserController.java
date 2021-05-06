@@ -108,8 +108,6 @@ public class PredefinedUserController extends MainController {
 	public String update(@ModelAttribute("predefinedUser") PredefinedUser predefinedUser, Model model,
 			Principal principal) {
 
-		System.out.println(predefinedUser.getUserType());
-
 		PredefinedUser newPredefinedUser = null;
 
 		if (predefinedUser.getId() > 0) {

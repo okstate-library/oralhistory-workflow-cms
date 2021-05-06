@@ -7,17 +7,26 @@
 <body data-spy="scroll" data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container main">
+<div class="container">
 
+	<div class="row col-md-12 data-entry-col" th:if="${user != null}">
 
-	<div class="col-md-12">
-		<img src="images/logo.png">
+		<form action="/browse">
+			<div class="form-group form-group-lg">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-6">
+					<input class="form-control" name="search" type="search">
+				</div>
+				<button  class="col-sm-2 btn btn-success  btn-lg" type="submit">Search</button>
+
+			</div>
+		</form>
+
 	</div>
 
+	<div th:if="${user != null}" class="row  data-entry-col">
 
-	<div th:if="${user != null}" class="row">
-
-		<div class="col-md-6 data-entry-col">
+		<div class="col-md-6  data-entry-col">
 
 			<div class="row">
 				<div class="col-md-12">
@@ -37,8 +46,7 @@
 
 		</div>
 
-
-		<div class="col-md-6 data-entry-col">
+		<div class="col-md-6  data-entry-col">
 			<div class="row">
 				<div class="col-md-12">
 
@@ -56,7 +64,7 @@
 
 		</div>
 
-		<div class="col-md-12 data-entry-col">
+		<div class="col-md-12">
 			<div class="table-responsive">
 				<table id="homeDatatable"
 					class="table table-bordered table-hover table-striped">
@@ -86,8 +94,6 @@
 		</div>
 
 	</div>
-
-
 
 </div>
 

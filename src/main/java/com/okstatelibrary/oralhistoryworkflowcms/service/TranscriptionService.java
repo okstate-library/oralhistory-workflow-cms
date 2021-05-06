@@ -14,7 +14,7 @@ public interface TranscriptionService {
 
 	List<Transcription> findAll(boolean isTranscripted);
 
-	List<Transcription> findAll(String collectionIds, String subseriesoptions, String intervieweroptions,
+	List<Transcription> findAll(String collectionIds, String seriesoptions, String intervieweroptions,
 			String subjects, String darkarchive, String onlineoffline);
 
 	Optional<Transcription> findById(int id);
@@ -23,7 +23,7 @@ public interface TranscriptionService {
 
 	List<Transcription> findByCollectinoId(short collectionId);
 
-	List<Transcription> findBySubseriesId(int id);
+	List<Transcription> findBySeriesId(int id);
 
 	List<Transcription> findByTranscriberName(String transcriberName);
 

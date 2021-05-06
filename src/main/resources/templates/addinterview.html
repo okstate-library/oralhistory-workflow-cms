@@ -88,7 +88,7 @@
 				<div class="cols-sm-10">
 					<div class="input-group">
 						<select class="form-control" id="collectitonDropDown"
-							onchange="selectSebseries()" name="CollectionId" required>
+							onchange="selectSeriesByCollection()" name="CollectionId" required>
 							<option value="">Select Collection</option>
 
 							<option th:each="collection : ${collections}"
@@ -102,17 +102,17 @@
 			<div class="col-md-2"></div>
 
 			<div class="col-md-5 form-group">
-				<label for="username" class="control-label">Subseries</label>
+				<label for="username" class="control-label">Series</label>
 
 
 				<div class="input-group">
 
-					<select class="form-control" id="subseriesDropDown"
-						th:name="SubseriesId" required>
-						<option value="">Select Subseries</option>
+					<select class="form-control" id="seriesDropDown"
+						th:name="SeriesId" required>
+						<option value="">Select a Series</option>
 
-						<option th:each="subserie : ${subseries}"
-							th:value="${subserie.Id}" th:text="${subserie.SubseriesName}"></option>
+						<option th:each="aseries : ${series}" th:value="${aseries.Id}"
+							th:text="${aseries.SeriesName}"></option>
 					</select>
 				</div>
 
@@ -293,11 +293,13 @@
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#interviewers-dropdown').multiselect({
-	        enableFiltering: true,
-	        delimiter: '; ',
-            delimiterText: '; ',
-            enableCaseInsensitiveFiltering: true,
+		$('#interviewers-dropdown').multiselect({            
+            enableFiltering : true,
+			enableCaseInsensitiveFiltering : true,
+			delimiter : '; ',
+			delimiterText : '; ',
+			maxHeight : 450,
+			numberDisplayed : 10,
 	    });
 	});
 </script>

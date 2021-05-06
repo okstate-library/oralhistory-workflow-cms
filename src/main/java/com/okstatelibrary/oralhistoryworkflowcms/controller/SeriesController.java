@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,14 @@ import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
 
 @Controller
-@RequestMapping("subseries")
-public class SubserieController extends MainController {
+@RequestMapping("series")
+public class SeriesController extends MainController {
 
 	@Autowired
 	private UserService userService;
 
 	@Autowired
-	private SubserieService subserieService;
+	private SeriesService seriesService;
 
 	@Autowired
 	private CollectionService collectionService;
@@ -46,18 +47,18 @@ public class SubserieController extends MainController {
 	private TranscriptionService transcriptionService;
 
 	@RequestMapping("")
-	public String subseries(Model model, Principal principal) throws ParseException {
+	public String series(Model model, Principal principal) throws ParseException {
 
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		List<Subserie> subseries = subserieService.findAll();
+		List<Series> series = seriesService.findAll();
 
-		model.addAttribute("subseries", subseries);
+		model.addAttribute("series", series);
 
 		this.messageSetup(model);
 
-		return "subseries";
+		return "series";
 	}
 
 	@RequestMapping(value = { "/add" })
@@ -66,12 +67,12 @@ public class SubserieController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		Subserie subserie = new Subserie(Integer.parseInt("0"));
+		Series aseries = new Series(Integer.parseInt("0"));
 
 		model.addAttribute("collections", collectionService.findAll());
-		model.addAttribute("subseriedetails", subserie);
+		model.addAttribute("aseriesdetails", aseries);
 
-		return "subseriedetails";
+		return "seriesdetails";
 	}
 
 	@RequestMapping(value = { "/{id}" })
@@ -80,96 +81,122 @@ public class SubserieController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
-		Subserie subserie = null;
+		Series series = null;
 
-		subserie = subserieService.findById(Integer.parseInt(id)).orElse(null);
+		series = seriesService.findById(Integer.parseInt(id)).orElse(null);
 
 		model.addAttribute("collections", collectionService.findAll());
-		model.addAttribute("subseriedetails", subserie);
+		model.addAttribute("aseriesdetails", series);
 
-		return "subseriedetails";
+		return "seriesdetails";
 	}
 
-	@RequestMapping(value = "/getSubseries", method = RequestMethod.GET)
-	public @ResponseBody List<Subserie> getSubseries(@RequestParam(value = "collectionId") short collectionId) {
+	@RequestMapping(value = "/getSeries", method = RequestMethod.GET)
+	public @ResponseBody List<Series> getSeries(@RequestParam(value = "collectionId") short collectionId) {
 
 		if (collectionId == 0) {
-			return subserieService.findAll();//
+			return seriesService.findAll();//
 
 		} else {
-			return subserieService.findAllbyCollectionId(collectionId); // .findAll();//
+			return seriesService.findAllbyCollectionId(collectionId); // .findAll();//
 		}
 
 	}
 
 	@PostMapping("/update")
-	public String update(@ModelAttribute("subserie") Subserie subserie, Model model, Principal principal) {
+	public String update(@ModelAttribute("series") Series series, Model model, Principal principal) {
 
 		User user = userService.findByUsername(principal.getName());
 
-		Subserie newSubserie = null;
+		Series newSeries = null;
 
-		if (subserie.getId() > 0) {
+		if (series.getId() > 0) {
 
-			newSubserie = subserieService.findById(subserie.getId()).orElse(null);
+			newSeries = series;
 
-			newSubserie.setCollectionId(subserie.getCollectionId());
-			newSubserie.setSubseriesName(subserie.getSubseriesName());
+			Series oldSeries = seriesService.findById(series.getId()).orElse(null);
+
+			newSeries.setCreatedBy(oldSeries.getCreatedBy());
+			newSeries.setCreatedDate(oldSeries.getCreatedDate());
 
 		} else {
-			newSubserie = subserie;
+			newSeries = series;
 
-			newSubserie.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
-			newSubserie.setCreatedDate(DateUtil.getTodaySqlDate());
+			newSeries.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
+			newSeries.setCreatedDate(DateUtil.getTodaySqlDate());
 		}
 
-		newSubserie.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
-		newSubserie.setUpdatedDate(DateUtil.getTodaySqlDate());
+		newSeries.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+		newSeries.setUpdatedDate(DateUtil.getTodaySqlDate());
 
-		Subserie sub = subserieService.saveSubseries(newSubserie);
+		Series sub = seriesService.saveSeries(newSeries);
 
 		if (sub != null && sub.getId() > 0) {
 
 			this.errorType = ErrorType.SUCESS;
-			this.message = "Subseries details changed successfully!";
+			this.message = "Series details changed successfully!";
 
 		} else {
 			this.errorType = ErrorType.ERROR;
-			this.message = "Failed to add subseries!";
+			this.message = "Failed to add series!";
 		}
 
-		return "redirect:/subseries";
+		return "redirect:/series";
 	}
 
 	@PostMapping("/delete")
-	public String delete(@ModelAttribute("subserie") Subserie subserie, Model model) {
+	public String delete(@ModelAttribute("series") Series series, Model model) {
 
-		List<Transcription> transcriptions = transcriptionService.findBySubseriesId(subserie.getId());
+		List<Transcription> transcriptions = transcriptionService.findBySeriesId(series.getId());
 
 		if (transcriptions != null && transcriptions.size() > 0) {
 
 			this.errorType = ErrorType.WARNING;
-			this.message = "Cannot delete subseries record, due to references!";
+			this.message = "Cannot delete series record, due to references!";
 		} else {
 
-			subserieService.deleteSubseries(subserie.getId());
+			seriesService.deleteSeries(series.getId());
 
 			this.errorType = ErrorType.SUCESS;
-			this.message = "Successfully deleted subseries!";
+			this.message = "Successfully deleted series!";
 		}
 
-		return "redirect:/subseries";
+		return "redirect:/series";
 	}
 
 	@PostMapping("/export")
 	public ResponseEntity<Resource> export(Model model, HttpServletResponse response) throws IOException {
 
-		String filename = "subseries.xlsx";
+		String filename = "series.xlsx";
 
-		InputStreamResource file = new InputStreamResource(ExcelService.subseriesToExcel(subserieService.findAll()));
+		InputStreamResource file = new InputStreamResource(ExcelService.seriesToExcel(seriesService.findAll()));
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
 				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
 
+	}
+
+	@RequestMapping(value = "/validate", method = RequestMethod.POST)
+	public String validate(Model model, HttpServletRequest request, Principal principal) throws IOException {
+
+		User user = userService.findByUsername(principal.getName());
+
+		List<Series> seriesList = seriesService.findAll();
+
+		for (Series aSeries : seriesList) {
+
+			List<Transcription> transcriptions = transcriptionService.findBySeriesId(aSeries.getId());
+
+			aSeries.setNumberOfInterviews(((short) transcriptions.size()));
+			aSeries.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+			aSeries.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+			seriesService.saveSeries(aSeries);
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Series records validated!";
+
+		return "redirect:/validate";
 	}
 }

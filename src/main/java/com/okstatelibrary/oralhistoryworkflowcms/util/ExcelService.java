@@ -53,8 +53,8 @@ public class ExcelService {
 		}
 	}
 
-	public static InputStream subseriesToExcel(List<Subserie> subseries) {
-		String[] headernames = { "Id", "Collection Name", "Subseries Name" };
+	public static InputStream seriesToExcel(List<Series> series) {
+		String[] headernames = { "Id", "Collection Name", "Series Name" };
 
 		try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			Sheet sheet = workbook.createSheet("collections");
@@ -68,12 +68,12 @@ public class ExcelService {
 			}
 
 			int rowIdx = 1;
-			for (Subserie subserie : subseries) {
+			for (Series aseries : series) {
 				Row row = sheet.createRow(rowIdx++);
 
-				row.createCell(0).setCellValue(subserie.getId());
-				row.createCell(1).setCellValue(subserie.getCollection().getCollectionName());
-				row.createCell(2).setCellValue(subserie.getSubseriesName());
+				row.createCell(0).setCellValue(aseries.getId());
+				row.createCell(1).setCellValue(aseries.getCollection().getCollectionName());
+				row.createCell(2).setCellValue(aseries.getSeriesName());
 			}
 
 			workbook.write(out);
@@ -85,7 +85,7 @@ public class ExcelService {
 
 	public static InputStream transcriptionToExcel(List<Transcription> transcriptions) {
 
-		String[] headernames = { "Id", "Collection name", "Subseries name", "Project code", "Interview dates",
+		String[] headernames = { "Id", "Collection name", "Series name", "Project code", "Interview dates",
 				"Interviewee", "Interviewer", "Title", "Description", "Subject", "Keywords", "Priority",
 				"Reason for priority", "Initial note", "Interviewer description", "Interviewer keywords",
 				"Interviewer subjects", "Scope and contents", "Format", "Type", "Publisher", "Relation is part of",
@@ -115,7 +115,7 @@ public class ExcelService {
 
 				row.createCell(0).setCellValue(transcription.getId());
 				row.createCell(1).setCellValue(transcription.getCollection().getCollectionName());
-				row.createCell(2).setCellValue(transcription.getsubseries().getSubseriesName());
+				row.createCell(2).setCellValue(transcription.getseries().getSeriesName());
 				row.createCell(3).setCellValue(transcription.getProjectCode());
 				row.createCell(4).setCellValue(transcription.getInterviewDates());
 				row.createCell(5).setCellValue(transcription.getInterviewee());
@@ -145,45 +145,44 @@ public class ExcelService {
 				row.createCell(27).setCellValue(transcription.getTranscript());
 				row.createCell(28).setCellValue(transcription.getFileName());
 				row.createCell(29).setCellValue(getBooleanValue(transcription.getIsOnline()));
+				
 				row.createCell(30).setCellValue(getBooleanValue(transcription.getIsRosetta()));
-
-				row.createCell(31).setCellValue(getBooleanValue(transcription.getIsRosettaForm()));
-				row.createCell(32).setCellValue(getBooleanValue(transcription.getIsRestriction()));
-				row.createCell(33).setCellValue(transcription.getRestrictionNote());
-				row.createCell(34).setCellValue(getBooleanValue(transcription.getIsDarkArchive()));
-				row.createCell(35).setCellValue(transcription.getDarkArchiveNote());
-				row.createCell(36).setCellValue(transcription.getAudioEquipmentUsed());
-				row.createCell(37).setCellValue(transcription.getVideoEquipmentUsed());
-				row.createCell(38).setCellValue(transcription.getEquipmentNumber());
-				row.createCell(39).setCellValue(transcription.getInterviewerNote());
-
-				row.createCell(40).setCellValue(transcription.getGeneralNote());
-				row.createCell(41).setCellValue(getBooleanValue(transcription.getReleaseForm()));
-				row.createCell(42).setCellValue(transcription.getTranscriberAssigned());
-				row.createCell(43).setCellValue(transcription.getAuditCheckCompleted());
-				row.createCell(44).setCellValue(transcription.getFirstEditCompleted());
-				row.createCell(45).setCellValue(transcription.getSecondEditCompleted());
-				row.createCell(46).setCellValue(transcription.getThirdEditCompleted());
-				row.createCell(47).setCellValue(transcription.getDraftSentDate());
-				row.createCell(48).setCellValue(transcription.getEditWithCorrectionCompleted());
-				row.createCell(49).setCellValue(transcription.getFinalEditCompleted());
-
-				row.createCell(50).setCellValue(transcription.getFinalSentDate());
-				row.createCell(51).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));
-				row.createCell(52).setCellValue(transcription.getMetadataDraft());
-				row.createCell(53).setCellValue(transcription.getTranscriptNote());
-				row.createCell(54).setCellValue(getBooleanValue(transcription.getIsAudioFormat()));
-				row.createCell(55).setCellValue(getBooleanValue(transcription.getIsVideoFormat()));
-				row.createCell(56).setCellValue(getBooleanValue(transcription.getIsBornDigital()));
-				row.createCell(57).setCellValue(transcription.getOriginalMedium());
-				row.createCell(58).setCellValue(getBooleanValue(transcription.getIsConvertToDigital()));
-				row.createCell(59).setCellValue(transcription.getConvertToDigitalDate());
-
-				row.createCell(60).setCellValue(getTranscriptStatus(transcription.getIsAccessMediaStatus()));
-				row.createCell(61).setCellValue(transcription.getTechnicalSpecification());
-				row.createCell(62).setCellValue(transcription.getMasterFileLocation());
-				row.createCell(63).setCellValue(transcription.getAccessFileLocation());
-				row.createCell(64).setCellValue(getBooleanValue(transcription.getSentOut()));
+				row.createCell(31).setCellValue(getBooleanValue(transcription.getIsRestriction()));
+				row.createCell(32).setCellValue(transcription.getRestrictionNote());
+				row.createCell(33).setCellValue(getBooleanValue(transcription.getIsDarkArchive()));
+				row.createCell(34).setCellValue(transcription.getDarkArchiveNote());
+				row.createCell(35).setCellValue(transcription.getAudioEquipmentUsed());
+				row.createCell(36).setCellValue(transcription.getVideoEquipmentUsed());
+				row.createCell(37).setCellValue(transcription.getEquipmentNumber());
+				row.createCell(38).setCellValue(transcription.getInterviewerNote());
+				row.createCell(39).setCellValue(transcription.getGeneralNote());
+				
+				row.createCell(40).setCellValue(getBooleanValue(transcription.getReleaseForm()));
+				row.createCell(41).setCellValue(transcription.getTranscriberAssigned());
+				row.createCell(42).setCellValue(transcription.getAuditCheckCompleted());
+				row.createCell(43).setCellValue(transcription.getFirstEditCompleted());
+				row.createCell(44).setCellValue(transcription.getSecondEditCompleted());
+				row.createCell(45).setCellValue(transcription.getThirdEditCompleted());
+				row.createCell(46).setCellValue(transcription.getDraftSentDate());
+				row.createCell(47).setCellValue(transcription.getEditWithCorrectionCompleted());
+				row.createCell(48).setCellValue(transcription.getFinalEditCompleted());
+				row.createCell(49).setCellValue(transcription.getFinalSentDate());
+				
+				row.createCell(50).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));			
+				row.createCell(51).setCellValue(transcription.getMetadataDraft());
+				row.createCell(52).setCellValue(transcription.getTranscriptNote());
+				row.createCell(53).setCellValue(getBooleanValue(transcription.getIsAudioFormat()));
+				row.createCell(54).setCellValue(getBooleanValue(transcription.getIsVideoFormat()));
+				row.createCell(55).setCellValue(getBooleanValue(transcription.getIsBornDigital()));
+				row.createCell(56).setCellValue(transcription.getOriginalMedium());
+				row.createCell(57).setCellValue(getBooleanValue(transcription.getIsConvertToDigital()));
+				row.createCell(58).setCellValue(transcription.getConvertToDigitalDate());
+				row.createCell(59).setCellValue(getTranscriptStatus(transcription.getIsProductionMasterFileStatus()));
+				
+				row.createCell(60).setCellValue(transcription.getTechnicalSpecification());
+				row.createCell(61).setCellValue(transcription.getMasterFileLocation());
+				row.createCell(62).setCellValue(transcription.getAccessFileLocation());
+				row.createCell(63).setCellValue(getBooleanValue(transcription.getSentOut()));
 
 			}
 
@@ -236,7 +235,7 @@ public class ExcelService {
 					transcription.setPublisher(checklCellForString(row.getCell(11)));
 
 					transcription.setCollectionName(row.getCell(12).getStringCellValue());
-					transcription.setSubseriesName(checklCellForString(row.getCell(13)));
+					transcription.setSeriesName(checklCellForString(row.getCell(13)));
 
 					transcription.setCoverageSpatial(checklCellForString(row.getCell(14)));
 					transcription.setCoverageTemporal(checklCellForString(row.getCell(15)));
@@ -261,7 +260,7 @@ public class ExcelService {
 					transcription.setVideoEquipmentUsed(checklCellForString(row.getCell(31)));
 					transcription.setInterviewerNote(checklCellForString(row.getCell(32)));
 					transcription.setSentOut(checklCellForBooelan(row.getCell(33)));
-					transcription.setIsAccessMediaStatus(checklCellForAccessMediaStatus(row.getCell(34)));
+					transcription.setIsProductionMasterFileStatus(checklCellForAccessMediaStatus(row.getCell(34)));
 
 					transcription.setIsBornDigital(checklCellForBooelan((row.getCell(35))));
 					transcription.setIsOnline(checklCellForBooelan(row.getCell(36)));

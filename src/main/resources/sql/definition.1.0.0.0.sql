@@ -361,3 +361,6 @@ CHANGE COLUMN `DraftSentDate` `DraftSentDate` VARCHAR(10) NULL DEFAULT NULL ,
 CHANGE COLUMN `FinalSentDate` `FinalSentDate` VARCHAR(10) NULL DEFAULT NULL ;
 
 
+ALTER TABLE `oralcmsdb`.`transcriptions` 
+DROP COLUMN `IsRosettaForm`;
+

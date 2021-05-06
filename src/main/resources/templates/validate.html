@@ -20,11 +20,39 @@
 		</div>
 		<div class="col-md-6">
 			<button id="subjectvaidate" type="submit"
-				class="btn btn-primary btn-block ">Validate subjects</button>
+				class="btn btn-primary btn-block ">Validate</button>
 
 		</div>
 
 	</div>
+
+	<div class="row form-group">
+
+		<div class="col-md-6  ">
+			Validate <b>Collections</b>
+		</div>
+		<div class="col-md-6">
+			<form method="post" th:action="@{/collections/validate}">
+				<button type="submit" class="btn btn-primary btn-block ">Validate</button>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="row form-group">
+
+		<div class="col-md-6  ">
+			Validate <b>Series</b>
+		</div>
+		<div class="col-md-6">
+			<form method="post" th:action="@{/series/validate}">
+				<button id="seriesvaidate" type="submit"
+					class="btn btn-primary btn-block ">Series</button>
+			</form>
+		</div>
+
+	</div>
+
 	<div class="row  form-group"></div>
 
 	<div class="row  form-group" id="submitSubjectRow"
@@ -49,52 +77,22 @@
 		</form>
 	</div>
 
-	<!-- <div class="row">
+	<div class="row  form-group" id="subjectNoRecordsRow"
+		style="visibility: hidden;">
 
-		<div class="col-md-6">
-			Download all <b>collections</b> as an excel file.
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-3">
+				<h3>Subject records are up to date.</h3>
+			</div>
 		</div>
-		<div class="col-md-6">
 
-
-
-			<form method="post" th:action="@{/collections/export}">
-
-				<div class="form-group ">
-					<button type="submit" class="btn btn-primary btn-block ">Collection
-					</button>
-				</div>
-			</form>
-		</div>
+		<div class="row  form-group"></div>
 	</div>
 
-	<div class="row">
+	</body>
 
-		<div class="col-md-6">
-			Download all <b>subseries</b> as an excel file.
-		</div>
-		<div class="col-md-6">
+	<div th:replace="common/footer :: footer"></div>
 
-
-
-			<form method="post" th:action="@{/subseries/export}">
-
-				<div class="form-group ">
-					<button type="submit" class="btn btn-primary btn-block ">Subseries
-					</button>
-				</div>
-			</form>
-
-
-		</div>
-	</div> -->
-
-</div>
-
-</body>
-
-<div th:replace="common/footer :: footer"></div>
-
-<div th:replace="common/header :: body-bottom-scripts"></div>
-
+	<div th:replace="common/header :: body-bottom-scripts"></div>
 </html>

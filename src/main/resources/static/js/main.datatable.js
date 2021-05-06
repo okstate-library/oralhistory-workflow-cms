@@ -23,7 +23,7 @@ function callTransactionQueueAjaxRequest() {
 			
 			const checkBoxBooleanColumn = [5];
 			
-			const checkBoxColumn = [4,6,7,8,9,10,11,12];
+			const checkBoxColumn = [4,6,7,8,9,10,11];
 			
 			function exists(arr, search) {
 			    return arr.some(row => row.includes(search));
@@ -96,7 +96,6 @@ function callTransactionQueueAjaxRequest() {
 			 
 			        $("#prioritySelect").change(function () {
 		            
-		                
 		                var select = $(this).val() ;
 			        	 
 			        	 if(select === "reset")
@@ -141,26 +140,30 @@ function callTransactionQueueAjaxRequest() {
 						orderCellsTop: true,
 				        fixedHeader: true,
 						"columnDefs": [
-						      {  "width": "90px", "targets": 0 },
-						      { "width": "90px", "targets": 1 },
-						      { "width": "40px", "targets": 2 },
-						      { "width": "15px", "targets": 3 },
-						      { "width": "50px", "targets": 4 },
-						      { "width": "10px", "targets": 5 },
-						      { "width": "10px", "targets": 6 },
-						      { "width": "10px", "targets": 7 },
-						      { "width": "10px", "targets": 8 },
-						      { "width": "10px", "targets": 9 },
-						      { "width": "10px", "targets": 10 },
-						      { "width": "10px", "targets": 11 },
-						      { "width": "10px", "targets": 12 }
+						      {  "width": "90px",title: "Interviewee(s)" , "targets": 0 },
+						      { "width": "90px", title: "Interviewer(s)" ,"targets": 1 },
+						      { "width": "40px", title: "Interview date(s)" ,"targets": 2 },
+						      { "width": "15px", title: "Code" ,"targets": 3 },
+						      { "width": "40px",title: "Transcriber assigned" , "targets": 4 },
+						      { "width": "15px",title: "Priority" , "targets": 5 },
+						      { "width": "10px", title: "Audit check" ,"targets": 6 },
+						      { "width": "10px", title: "First edit" ,"targets": 7 },
+						      { "width": "15px",title: "Second edit" , "targets": 8 },
+						      { "width": "10px",title: "Draft sent" , "targets": 9 },
+						      { "width": "10px",title: "Corrections" , "targets": 10 },
+						      { "width": "10px",title: "Final edit" , "targets": 11 },
+						      { "width": "10px",title: "Media edit" , "targets": 12 },
+						      { "width": "1px",  title: "Subject" , "targets": 13 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Keywords" , "targets": 14 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Description" , "targets": 15 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Coverage Spatial" , "targets": 16 ,searchable: true, visible: false},
+					          { "width": "1px",  title: "Coverage Temporal " , "targets": 17 ,searchable: true,visible: false},
 						    ],
 						    columns : [
 
 						{
 							"data" : "interviewee",
 							'render' : getLink,
-							'sortable': false,
 						}, {
 							"data" : "interviewer"
 						}, {
@@ -187,7 +190,20 @@ function callTransactionQueueAjaxRequest() {
 						}, {
 							"data" : "finalEditCompleted"
 						},{
-							"data" : "finalSentDate"
+							"data" : "isProductionMasterFileStatus",
+							render : getBooleanImage,
+							class  : 'text-center' ,
+							'sortable': false
+						},{
+							"data" : "subject"
+						},{
+							"data" : "keywords"
+						},{
+							"data" : "description"
+						},{
+							"data" : "coverageSpatial"
+						},{
+							"data" : "coverageTemporal"
 						}, ],
 						
 						"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
@@ -220,8 +236,8 @@ function callTransactionQueueAjaxRequest() {
 var browseCollectionOptions = [];
 var browseCollectionOptionTexts = [];
 
-var browseSubserieOptions = [];
-var browseSubserieOptionTexts = [];
+var browseSeriesOptions = [];
+var browseSeriesOptionTexts = [];
 
 var browseInterviewerOptionTexts = [];
 
@@ -237,8 +253,8 @@ $("#reset_selection").click(function(){
 	browseCollectionOptions = [];
 	browseCollectionOptionTexts = [];
 	
-	browseSubserieOptions = [];
-	browseSubserieOptionTexts = [];
+	browseSeriesOptions = [];
+	browseSeriesOptionTexts = [];
 	
 	browseInterviewerOptionTexts = [];
 	
@@ -295,9 +311,9 @@ function callBrowseRequest() {
 
 					});
 	
-	// Subseries Section
+	// Series Section
 	
-	$('.browseSubserieOption')
+	$('.browseSeriesOption')
 	.click(
 			
 			function() {
@@ -307,21 +323,21 @@ function callBrowseRequest() {
 				var optionText = $(this).attr('name');
 
 				if (this.checked) {
-					browseSubserieOptions.push(optionValue);
-					browseSubserieOptionTexts.push(optionText);
+					browseSeriesOptions.push(optionValue);
+					browseSeriesOptionTexts.push(optionText);
 				} else {
-					var index = browseSubserieOptions
+					var index = browseSeriesOptions
 							.indexOf(optionValue);
 
 					if (index !== -1) {
-						browseSubserieOptions.splice(index, 1);
+						browseSeriesOptions.splice(index, 1);
 					}
 
-					var indexText = browseSubserieOptionTexts
+					var indexText = browseSeriesOptionTexts
 							.indexOf(optionText);
 
 					if (indexText !== -1) {
-						browseSubserieOptionTexts
+						browseSeriesOptionTexts
 								.splice(indexText, 1);
 					}
 				}
@@ -329,8 +345,6 @@ function callBrowseRequest() {
 				setupSelections();
 
 				callBrowseAjaxRequest();
-				
-				// selectBrowseSubseries();
 
 			});
 	
@@ -450,36 +464,42 @@ function callBrowseAjaxRequest() {
 		url : '/browse/data',
 		data : {
 			"collections" : browseCollectionOptions.toString(),
-			"subseries" : browseSubserieOptions.toString(),
+			"series" : browseSeriesOptions.toString(),
 			"interviewers" : browseInterviewerOptionTexts.toString(),
 			"subjects" : browseSubjectOptionTexts.toString(),
 			"onlineoffline" : browseOnlineOfflineOptionTexts,
 			"darkarchive" :browseDarkArchiveOptionTexts,
 			
 		},
+		
 		 beforeSend: function () { // Before we send the request
 			$('#loader').removeClass('hidden')
 			},
 		 success : function(data) {
 
-			
 			$('#browseDataTable').dataTable().fnDestroy();
 
 			var table = $('#browseDataTable').DataTable(
 					{
 						scrollX: false,
-						buttons : [ 'excel', 'pdf' ],
+						buttons : [ 'excel', 'pdf'],
 						dom: 'Blfrtip',
 						data : data.transcriptions,
 						"columnDefs": [
-						      {  "width": "90px", "targets": 0 },
-						      { "width": "90px", "targets": 1 },
-						      { "width": "15px", "targets": 2 },
-						      { "width": "40px", "targets": 3 },
-						      { "width": "100px", "targets": 4 },
-						      { "width": "10px", "targets": 5 },
-						      { "width": "10px", "targets": 6 },
-						      { "width": "10px", "targets": 7 }
+							  
+						      {  "width": "90px", title: "Interviewee(s)" , "targets": 0 },
+						      { "width": "90px", title: "Interviewer(s)" ,  "targets": 1 },
+						      { "width": "8px", title: "Code" ,  "targets": 2 },
+						      { "width": "15px",  title: "Interview date(s)" , "targets": 3 },
+						      { "width": "100px",  title: "Collection/ Series" , "targets": 4 },
+						      { "width": "25px", title: "Sent out" ,  "targets": 5 },
+						      { "width": "15px", title: "Online" ,  "targets": 6 },
+						      { "width": "25px", title: "Restriction" ,  "targets": 7 },
+						      { "width": "1px",  title: "Subject" , "targets": 8 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Keywords" , "targets": 9 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Description" , "targets": 10 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Coverage Spatial" , "targets": 11 ,searchable: true, visible: false},
+					          { "width": "1px",  title: "Coverage Temporal " , "targets": 12 ,searchable: true,visible: false},
 						    ],
 						columns : [
 
@@ -487,16 +507,33 @@ function callBrowseAjaxRequest() {
 							"data" : "interviewee",
 							'render' : getLink
 						}, {
-							"data" : "interviewer"
+							"data" : "interviewer",
+							"render" : function( data, type, full ) {
+								  data = data.split(';')
+								     .map(w => w + '; ')
+								     .join(' ')
+								  return data;                         
+								}
 						}, {
 							"data" : "projectCode"
-						}, {
-							"data" : "interviewDates"
-						}, {
+						}, 
+						{
+							"data" : "interviewDates",
+// "render" : function( data, type, full ) {
+// data = data.split(';')
+// .map(w => w + ';')
+// .join(' ')
+// return data;
+// }
+// "render": function(data, type) {
+// return type === 'sort' ? data : moment(data).format("YYYYMMDD");
+// }
+						}, 
+						{
 							"data" : data,// "collectionName",
 							render : getShortText,
 						}, {
-							"data" : "transcriptStatus",
+							"data" : "sentOut",
 							render : getBooleanImage,
 							class  : 'text-center' ,
 							'sortable': false
@@ -510,25 +547,73 @@ function callBrowseAjaxRequest() {
 							render : getBooleanImage,
 							class  : 'text-center' ,
 							'sortable': false
+						},{
+							"data" : "subject"
+						},{
+							"data" : "keywords"
+						},{
+							"data" : "description"
+						},{
+							"data" : "coverageSpatial"
+						},{
+							"data" : "coverageTemporal"
 						}, ],
 						sort : [ 0, 'desc' ],
 						"lengthMenu" : [ [ 10, 100, 50, 100, 200, -1 ],
 								[ 10, 100, 50, 100, 200, "All" ] ],
-						"pageLength" : 10
+						"pageLength" : 10,
+						"select" : {
+					            style: 'multi'
+					        }
 					});
 
-			$('#browseDataTable').on(
-					'click',
-					'tbody td',
-					function() {
-
-						var obj = $(this).closest('tr').find('td:eq(0) a')
-								.attr('href');
-
-						window.open(obj, '_blank');
-					});
 			
+			$("#browseSubmit").click( function(){
+			             
+				var ids = [];
+			              
+     			var rows_selected = table.rows('.selected').data().toArray()
+     
+     			      
+     			// Iterate over all selected rows.
+     			$.each(rows_selected, function(index, rowId){
+     			      ids.push(rowId["id"]);
+     			});
+     			     
+     			if(ids.length > 0){
+    			     window.location = '/bulkmodify?ids=' + ids;
+        			}else
+        				{
+        				alert('Select at least one record')
+        				}
+  			
+				// //var url = 'http://example.com/vote/' + ids;
+				// var form = $('<form action="/bulkmodify" method="post">' +
+				// '<input type="text" name="ids" value="' + ids + '" />' +
+				// '</form>');
+				// $('body').append(form);
+				// form.submit();
+
+     			   
+			});
 			
+			   
+			if(data.searchWord != null)
+			{
+				table.search(data.searchWord).draw();
+			}
+			 
+// $('#browseDataTable').on(
+// 'click',
+// 'tbody td',
+// function() {
+//
+// var obj = $(this).closest('tr').find('td:eq(0) a')
+// .attr('href');
+//
+// window.open(obj, '_blank');
+// });
+//			
 			
 			// Collections
 			 
@@ -553,27 +638,27 @@ function callBrowseAjaxRequest() {
 			 
 			 $('#collections-dropdown').empty();
 			 
-			// Subseries
-			$('#browseSubseries').empty();
+			// Series
+			$('#browseSeries').empty();
 
-			for (var i = 0; i < data.subseries.length; i++) {
+			for (var i = 0; i < data.series.length; i++) {
 				
-				var subseries = data.subseries[i];
+				var aseries = data.series[i];
 				
 				
 						option = "<label class='dropdown-item small' " +
-						"title='" + subseries.identification +  "'>" +
-						"<input class='browseSubserieOption' type='checkbox'" +
-						"name='" + subseries.name +  "'" +
-						"value='" + subseries.id +  "'" +
-						"id='browseSubserieOption-" + subseries.id +  "'>"
-						+ " " +subseries.name + " </label> <br /> ";
+						"title='" + aseries.identification +  "'>" +
+						"<input class='browseSeriesOption' type='checkbox'" +
+						"name='" + aseries.name +  "'" +
+						"value='" + aseries.id +  "'" +
+						"id='browseSeriesOption-" + aseries.id +  "'>"
+						+ " " +aseries.name + " </label> <br /> ";
 						
 								
-				$('#browseSubseries').append(option);
+				$('#browseSeries').append(option);
 			}
 			
-			accordianVisibility('#subseriesCard',data.subseries);
+			accordianVisibility('#seriesCard',data.series);
 			
 
 			// Interviewers
@@ -665,6 +750,15 @@ function callBrowseAjaxRequest() {
 	});
 }
 
+function AddNewRIKDialog(e,dt, node, config)
+{
+	alert(JSON.stringify(e));
+	// alert(JSON.stringify(dt));
+	alert(JSON.stringify(node));
+	alert(JSON.stringify(config));
+	
+}
+
 function accordianVisibility(card , data)
 {
 	if (data.length == 0)
@@ -682,7 +776,7 @@ function setupSelections()
 	
 	document.getElementById("browseSelections").innerHTML = 
 		(browseCollectionOptionTexts.length == 0 ? "" :"<b>Collections </b> <i>" + browseCollectionOptionTexts.toString() + "</i><br/>")
-		+ (browseSubserieOptionTexts.length == 0 ? "" :"<b>Subseries</b> <i>" + browseSubserieOptionTexts.toString()  + "</i><br/>")
+		+ (browseSeriesOptionTexts.length == 0 ? "" :"<b>Series</b> <i>" + browseSeriesOptionTexts.toString()  + "</i><br/>")
 		+ (browseInterviewerOptionTexts.length == 0 ? "" :"<b>Interviewers </b> <i>" + browseInterviewerOptionTexts.toString() + "</i><br/>")
 		+ (browseSubjectOptionTexts.length == 0 ? "" :"<b>Subjects </b> <i>" + browseSubjectOptionTexts.toString() + "</i><br/>")
 		+ (browseOnlineOfflineOptionTexts == "" ? "" :"<b>Status</b> <i>" + browseOnlineOfflineOptionTexts + "</i><br/>")
@@ -691,10 +785,7 @@ function setupSelections()
 
 function getShortText(data) {
 	
-	return  data.collectionName  + (data.subseriesName != "N/A" ? "/ " + data.subseriesName : "") ;
-	// return "<p title='" + data + "'>" + (data.length > 20 ?
-	// data.collectionName.substr(0, 17) +"..." : data.collectionName ) +
-	// "</p>";
+	return  data.collectionName  + (data.seriesName != "N/A" ? "/ " + data.seriesName : "") ;
 }
 
 function getBooleanImage(data, type, full, meta) {
@@ -707,7 +798,7 @@ function getBooleanImage(data, type, full, meta) {
 
 function getLink(index, row, data) {
 
-	return '<a href="modifyinterview/' + data.id
+	return '<a target="_blank" href="modifyinterview/' + data.id
 			+ '">' + data.interviewee + '</a>'
 }
 

@@ -13,57 +13,276 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-6">
-
-			<form method="post" th:action="@{/collections/update}">
-				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
+	<form method="post" th:action="@{/collections/update}">
 
 
-				<div class="form-group">
-					<label> Repository Name</label>
-					<div class="cols-sm-10">
-						<select class="form-control" name="RepositoryId" required>
-							<option value="">Select Repository</option>
+		<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
 
-							<option th:each="repo : ${repositories}" th:value="${repo.Id}"
-								th:text="${repo.RepositoryName}"
-								th:selected="${repo.Id} == *{collectiondetails?.RepositoryId}"></option>
-						</select>
-					</div>
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label> Select Repository</label>
+				<div class="cols-sm-10">
+					<select class="form-control" name="RepositoryId" required>
+						<option value="">Select Repository</option>
+
+						<option th:each="repo : ${repositories}" th:value="${repo.Id}"
+							th:text="${repo.RepositoryName}"
+							th:selected="${repo.Id} == *{collectiondetails?.RepositoryId}"></option>
+					</select>
 				</div>
 
+			</div>
 
+			<div class="col-md-2 form-group"></div>
 
-				<div class="form-group">
-					<label for="firstName"> Collection Name</label>
-					<div class="cols-sm-10">
-						<input type="text" class="form-control"
-							th:value="*{collectiondetails?.CollectionName}"
-							name="CollectionName" required="required" />
+			<div class="col-md-5 form-group">
+				<label for="firstName"> Collection Name</label>
+				<div class="cols-sm-10">
+					<input type="text" class="form-control"
+						th:value="*{collectiondetails?.CollectionName}"
+						name="CollectionName" required="required" />
 
-					</div>
 				</div>
 
+			</div>
+		</div>
 
+		<div class="row  row-striped">
 
-				<div class="form-group ">
-					<button type="submit" class="btn btn-primary btn-block ">Submit</button>
-				</div>
-			</form>
+			<div class="col-md-5 form-group">
+				<label class="control-label">Code</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Code}"
+					id="Code" name="Code" />
+			</div>
 
-			<form method="post" th:action="@{/collections/delete}"
-				th:if="${collectiondetails?.Id > 0}">
-				<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
-				<div class="form-group ">
-					<button type="submit" class="btn btn-warning btn-block ">Delete</button>
-				</div>
-			</form>
+			<div class="col-md-2 form-group"></div>
 
+			<div class="col-md-5 form-group">
+				<label class="control-label">Dates</label> <input type="text"
+					class="form-control dates" th:value="*{collectiondetails?.Dates}"
+					id="Dates" name="Dates" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Note</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Note}"
+					id="Code" name="Note" />
+			</div>
 
 
 		</div>
-	</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Description</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Description}"
+					id="Description" name="Description" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Subjects</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Subjects}"
+					id="Subjects" name="Subjects" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Keywords</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Keywords}"
+					id="Keywords" name="Keywords" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Scope And Content</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.ScopeAndContent}"
+					id="ScopeAndContent" name="ScopeAndContent" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Custodial History</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.CustodialHistory}"
+					id="CustodialHistory" name="CustodialHistory" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Acquisition info</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.Acquisitioninfo}"
+					id="Acquisitioninfo" name="Acquisitioninfo" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Number Of Interviews</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.NumberOfInterviews}"
+					id="NumberOfInterviews" name="NumberOfInterviews" />
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Language</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Language}"
+					id="Language" name="Language" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Publisher</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Publisher}"
+					id="Publisher" name="Publisher" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Rights</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Rights}"
+					id="Rights" name="Rights" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Preservation Note</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.PreservationNote}"
+					id="PreservationNote" name="PreservationNote" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Format</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Format}"
+					id="Format" name="Format" />
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Type</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Type}"
+					id="Type" name="Type" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Access Restrictions</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.AccessRestrictions}"
+					id="AccessRestrictions" name="AccessRestrictions" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Preferred Citation</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.PreferredCitation}"
+					id="PreferredCitation" name="PreferredCitation" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Related Collection</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.RelatedCollection}"
+					id="RelatedCollection" name="RelatedCollection" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Project Process</label> <input
+					type="text" class="form-control"
+					th:value="*{collectiondetails?.ProjectProcess}" id="ProjectProcess"
+					name="ProjectProcess" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Creator</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Creator}"
+					id="Creator" name="Creator" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Contributors</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Contributors}"
+					id="Contributors" name="Contributors" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Sponsors</label> <input type="text"
+					class="form-control" th:value="*{collectiondetails?.Sponsors}"
+					id="Sponsors" name="Sponsors" />
+
+			</div>
+		</div>
+
+		<div class="row row-striped"></div>
+
+		<div class="form-group" th:if="${user.authorized.contains(5)}">
+			<button type="submit" class="btn btn-primary btn-block ">Submit</button>
+		</div>
+
+	</form>
+
+	<form method="post" th:action="@{/collections/delete}"
+		th:if="${aseriesdetails?.Id > 0 && user.authorized.contains(5)}">
+		<input type="hidden" name="id" th:value="*{collectiondetails?.Id}" />
+		<div class="form-group ">
+			<button type="submit" class="btn btn-warning btn-block ">Delete</button>
+		</div>
+	</form>
+
 </div>
 
 

@@ -30,9 +30,10 @@
 				<div class="card accordin-card">
 					<div class="accordion-header accordin-heading" id="headingOne">
 						<h5 class="mb-0">
-							<button class="btn btn-link" data-toggle="collapse"
-								data-target="#collapseOne" aria-expanded="true"
-								aria-controls="collapseOne">Select Collection</button>
+							<button class="btn btn-link accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseOne"
+								aria-expanded="true" aria-controls="collapseOne">Select
+								Collection</button>
 						</h5>
 					</div>
 
@@ -45,27 +46,29 @@
 						</div>
 					</div>
 				</div>
-				<div id="subseriesCard" class="card">
+				<div id="seriesCard" class="card">
 					<div class="card-header accordin-heading" id="headingTwo">
 						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse"
-								data-target="#collapseTwo" aria-expanded="false"
-								aria-controls="collapseTwo">Select Subseries</button>
+							<button class="btn btn-link collapsed accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseTwo"
+								aria-expanded="false" aria-controls="collapseTwo">Select
+								Series</button>
 						</h5>
 					</div>
 					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
 						data-parent="#accordion">
 						<div class="card-body">
-							<div id="browseSubseries" class="accordin-body"></div>
+							<div id="browseSeries" class="accordin-body"></div>
 						</div>
 					</div>
 				</div>
 				<div class="card accordin-card">
 					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse"
-								data-target="#collapseThree" aria-expanded="false"
-								aria-controls="collapseThree">Select Interviewers</button>
+							<button class="btn btn-link collapsed accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseThree"
+								aria-expanded="false" aria-controls="collapseThree">Select
+								Interviewers</button>
 						</h5>
 					</div>
 					<div id="collapseThree" class="collapse"
@@ -80,9 +83,10 @@
 				<div id="subjectCard" class="card">
 					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse"
-								data-target="#collapseFour" aria-expanded="false"
-								aria-controls="collapseFour">Select Subjects</button>
+							<button class="btn btn-link collapsed accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseFour"
+								aria-expanded="false" aria-controls="collapseFour">Select
+								Subjects</button>
 						</h5>
 					</div>
 					<div id="collapseFour" class="collapse"
@@ -95,9 +99,10 @@
 				<div class="card accordin-card">
 					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse"
-								data-target="#collapseFive" aria-expanded="false"
-								aria-controls="collapseFive">Select Online Status</button>
+							<button class="btn btn-link collapsed accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseFive"
+								aria-expanded="false" aria-controls="collapseFive">Select
+								Online Status</button>
 						</h5>
 					</div>
 					<div id="collapseFive" class="collapse"
@@ -113,9 +118,10 @@
 					th:if="${user != null && user.authorized.contains(8)}">
 					<div class="card-header accordin-heading" id="headingThree">
 						<h5 class="mb-0">
-							<button class="btn btn-link collapsed" data-toggle="collapse"
-								data-target="#collapseSix" aria-expanded="false"
-								aria-controls="collapseSix">Select Dark Archive</button>
+							<button class="btn btn-link collapsed accordin-heading-button"
+								data-toggle="collapse" data-target="#collapseSix"
+								aria-expanded="false" aria-controls="collapseSix">Select
+								Dark Archive</button>
 						</h5>
 					</div>
 					<div id="collapseSix" class="collapse"
@@ -127,29 +133,38 @@
 				</div>
 			</div>
 		</div>
+
+
 		<div class="col-md-10">
 
 			<div class="table-responsive">
+				<button th:if="${user.authorized.contains(5)}" type="submit" id="browseSubmit" class="btn pull-right"
+				>Bulk edit</button>
+				
 				<table id="browseDataTable"
 					class="table table-bordered table-hover table-striped">
 					<thead>
-						<tr>
-							<th title="Interviewees">Interviewees</th>
-							<th title="Interviewers">Interviewers</th>
-							<th title="Project Code">Code</th>
-							<th title="Dates">Dates</th>
-							<th title="Collection">Collection/ Subseries</th>
-							<th style="font-size: 9px; text-align: center;"
-								title="Transcribed">Transcribed</th>
-							<th title="Online/Offline">Online</th>
-							<th style="font-size: 9px; text-align: center;"
-								title="Restriction">Restriction</th>
-
+						<tr
+							style="word-wrap: break-word; font-size: 12px; align-content: center; background-color: gray;">
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
 						</tr>
 					</thead>
 
 				</table>
 			</div>
+
 		</div>
 	</div>
 
@@ -167,14 +182,14 @@
 		callBrowseRequest();
 	});
 
-	$("#browseSubseries").on("click", function(event) {
+	$("#browseSeries").on("click", function(event) {
 		callBrowseRequest();
 	});
 
 	$("#browseInterviewers").on("click", function(event) {
 		callBrowseRequest();
 	});
-	
+
 	$("#browseSubjects").on("click", function(event) {
 		callBrowseRequest();
 	});

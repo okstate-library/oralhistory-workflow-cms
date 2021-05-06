@@ -15,6 +15,7 @@
 		<div class="col-md-2">
 
 			<form method="post" th:action="@{/delete}"
+				onsubmit="return confirm('Do you really want to delete this record?');"
 				th:if="${user != null && user.authorized.contains(7)}">
 				<input type="hidden" id="Id" name="Id"
 					th:value="*{interviewdetails?.Id}" />
@@ -27,7 +28,7 @@
 		<li class="active"><a data-toggle="tab" href="#general">General</a></li>
 		<li><a data-toggle="tab" href="#transcript">Transcript</a></li>
 		<li><a data-toggle="tab" href="#media">Media</a></li>
-		<li><a data-toggle="tab" href="#metadata">Meta data</a></li>
+		<li><a data-toggle="tab" href="#metadata">Metadata</a></li>
 		<li><a data-toggle="tab" href="#miscellaneous">Miscellaneous</a></li>
 	</ul>
 
@@ -46,23 +47,32 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label class="control-label">Transcribed</label> <input type="text"
-						readonly="readonly" class="form-control"
-						th:value="*{interviewdetails?.TranscriptStatus == 0 ? 'In progress' : 'Completed'}" />
-
+					<label class="control-label">CONTENTdm URL</label> <a
+						th:if="${interviewdetails?.CONTENTdmURL != null}"
+						th:href="*{interviewdetails?.CONTENTdmURL}" target="_blank"
+						class="form-control">[[${interviewdetails?.CONTENTdmURL}]]</a>
 				</div>
+
 			</div>
 
 			<div class="row">
 
 
-				<div class="col-md-12 form-group">
+				<div class="col-md-5 form-group">
 					<label class="control-label">Interviewee(s)</label> <input
 						type="text" readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.Interviewee}" />
 				</div>
 
+				<div class="col-md-2 form-group"></div>
 
+
+				<div class="col-md-5 form-group">
+					<label class="control-label">Transcribed</label> <input type="text"
+						readonly="readonly" class="form-control"
+						th:value="*{interviewdetails?.TranscriptStatus == 0 ? 'In progress' : 'Completed'}" />
+
+				</div>
 
 			</div>
 
@@ -107,9 +117,9 @@
 				<div class="col-md-2 form-group"></div>
 
 				<div class="col-md-5 form-group">
-					<label class="control-label">Access media status</label> <input
-						type="text" readonly="readonly" class="form-control"
-						th:value="*{interviewdetails?.IsAccessMediaStatus == 0 ? 'No' : 'Yes'}" />
+					<label class="control-label">Production Master File Status</label>
+					<input type="text" readonly="readonly" class="form-control"
+						th:value="*{interviewdetails?.IsProductionMasterFileStatus == 0 ? 'In progress' : 'Complete'}" />
 
 				</div>
 			</div>
@@ -155,18 +165,23 @@
 
 			<div class="row">
 				<div class="col-md-12 form-group">
-					<label class="control-label">Collection</label> <input type="text"
-						readonly="readonly" class="form-control"
-						th:value="*{interviewdetails?.getCollection().CollectionName}" />
+					<label class="control-label">Collection</label> <a
+						th:href="@{'/collections/' + ${interviewdetails?.getCollection().Id}}"
+						target="_blank" class="form-control">[[${interviewdetails?.getCollection().CollectionName}]]</a>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-md-12 form-group">
-					<label class="control-label">Subseries</label> <input type="text"
-						readonly="readonly" class="form-control"
-						th:value="*{interviewdetails?.getsubseries().SubseriesName}" />
+					<label class="control-label">Series</label> <input
+						th:if="${interviewdetails?.getseries().SeriesName == 'N/A'}"
+						type="text" readonly="readonly" class="form-control"
+						th:value="*{interviewdetails?.getseries().SeriesName}" /> <a
+						th:if="${interviewdetails?.getseries().SeriesName != 'N/A'}"
+						th:href="@{'/series/' + ${interviewdetails?.getseries().Id}}"
+						target="_blank" class="form-control">[[${interviewdetails?.getseries().SeriesName}]]</a>
 				</div>
+
 			</div>
 
 			<div class="row">
@@ -175,6 +190,7 @@
 						readonly="readonly" class="form-control"
 						th:value="*{interviewdetails?.subject}" />
 				</div>
+
 			</div>
 
 			<div class="row">
@@ -358,7 +374,7 @@
 
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
-						<label class="control-label">Meta data Draft</label> <input
+						<label class="control-label">Metadata Draft</label> <input
 							type="text" class="form-control" name="MetadataDraft"
 							th:value="*{interviewdetails?.MetadataDraft}" />
 					</div>
@@ -384,7 +400,7 @@
 
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
-						<label class="control-label">Reason of priority</label>
+						<label class="control-label">Reason for priority</label>
 
 						<textarea class="form-control" name="ReasonForPriority"
 							th:inline="text">[[${interviewdetails?.ReasonForPriority}]]</textarea>
@@ -523,23 +539,22 @@
 					</div>
 					<div class="col-md-1"></div>
 					<div class="col-md-4 form-group">
-						<label class="control-label">Digitization Date</label> <label
-							class="control-label">Date</label> <input type="text"
-							class="form-control date" name="ConvertToDigitalDate"
+						<label class="control-label">Digitization Date</label> <input
+							type="text" class="form-control date" name="ConvertToDigitalDate"
 							th:value="*{interviewdetails?.ConvertToDigitalDate}" />
 					</div>
 				</div>
 				<div class="row row-striped">
 
 					<div class="col-md-3 form-group">
-						<label class="control-label">Access media status</label>
+						<label class="control-label">Production Master File Status</label>
 						<div class="form-control">
 							<span> <input
-								th:checked="*{interviewdetails?.IsAccessMediaStatus == 1 ? true : false}"
-								name="IsAccessMediaStatus" type="radio" value="1" /> <label>Complete</label>
+								th:checked="*{interviewdetails?.IsProductionMasterFileStatus == 1 ? true : false}"
+								name="IsProductionMasterFileStatus" type="radio" value="1" /> <label>Complete</label>
 							</span> <span> <input
-								th:checked="*{interviewdetails?.IsAccessMediaStatus == 1 ? false : true}"
-								name="IsAccessMediaStatus" type="radio" value="0" /> <label>In
+								th:checked="*{interviewdetails?.IsProductionMasterFileStatus == 1 ? false : true}"
+								name="IsProductionMasterFileStatus" type="radio" value="0" /> <label>In
 									progress</label>
 							</span>
 
@@ -642,7 +657,7 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label class="control-label">Digital date</label> <input
+						<label class="control-label">Date Digital</label> <input
 							type="text" class="form-control date" name="ConvertToDigitalDate"
 							th:value="*{interviewdetails?.ConvertToDigitalDate}" />
 
@@ -651,13 +666,12 @@
 
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
-						<label class="control-label">Subjects</label> <br />
-						
-						<select
-							class="form-control" id="subjects-dropdown"
-							multiple="multiple" th:name="Subject" required>
+						<label class="control-label">Subjects</label> <br /> <select
+							class="form-control" id="subjects-dropdown" multiple="multiple"
+							th:name="Subject" required>
 							<option th:each="subject : ${subjects}"
-								th:value="${subject.SubjectName}" th:text="${subject.SubjectName}"></option>
+								th:value="${subject.SubjectName}"
+								th:text="${subject.SubjectName}"></option>
 						</select>
 					</div>
 				</div>
@@ -707,7 +721,7 @@
 
 					<div class="col-md-5 form-group">
 						<label class="control-label">Collection</label> <select
-							onchange="selectSebseries()" class="form-control"
+							onchange="selectSeriesByCollection()" class="form-control"
 							id="collectitonDropDown" name="CollectionId">
 							<option th:value="0">Select Collection</option>
 
@@ -722,14 +736,13 @@
 					<div class="col-md-2 form-group"></div>
 
 					<div class="col-md-5 form-group">
-						<label class="control-label">Subseries</label> <select
-							onchange="selectProvince()" class="form-control"
-							id="subseriesDropDown" th:name="member.province_id">
-							<option th:value="0">Select Subserie</option>
+						<label class="control-label">Series</label> <select
+							class="form-control" id="seriesDropDown">
+							<option th:value="0">Select Series</option>
 
-							<option th:each="subserie : ${subseries}"
-								th:value="${subserie.Id}" th:text="${subserie.SubseriesName}"
-								th:selected="${subserie.Id} == *{interviewdetails?.getsubseries().Id}"></option>
+							<option th:each="aseries : ${series}" th:value="${aseries.Id}"
+								th:text="${aseries.SeriesName}"
+								th:selected="${aseries.Id} == *{interviewdetails?.getseries().Id}"></option>
 						</select>
 
 					</div>
@@ -892,7 +905,7 @@
 
 					<div class="col-md-2 form-group">
 
-						<label for="password" class="control-label">Is Rosetta</label>
+						<label for="password" class="control-label">In Rosetta</label>
 						<div class="form-control">
 							<span> <input type="radio"
 								th:checked="*{interviewdetails?.IsRosetta == 1 ? true : false}"
@@ -908,25 +921,7 @@
 
 					</div>
 
-					<div class="col-md-5 form-group"></div>
-					<div class="col-md-2 form-group">
 
-						<label for="password" class="control-label">Is Rosetta
-							Form</label>
-						<div class="form-control">
-							<span> <input type="radio"
-								th:checked="*{interviewdetails?.IsRosettaForm == 1 ? true : false}"
-								name="IsRosettaForm" value="1" /> <label>Yes</label>
-							</span> <span> <input
-								th:checked="*{interviewdetails?.IsRosettaForm == 1 ? false : true}"
-								name="IsRosettaForm" type="radio" value="0" /> <label>No</label>
-							</span>
-
-
-						</div>
-
-
-					</div>
 				</div>
 
 				<div class="row row-striped">
@@ -1065,6 +1060,15 @@
 
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
+						<label class="control-label">CONTENTdm URL</label> <input
+							type="text" class="form-control" name="CONTENTdmURL"
+							th:value="*{interviewdetails?.CONTENTdmURL}" />
+					</div>
+				</div>
+
+
+				<div class="row row-striped">
+					<div class="col-md-12 form-group">
 						<label class="control-label">Location of interview</label> <input
 							type="text" class="form-control" name="TranscriptLocation"
 							th:value="*{interviewdetails?.TranscriptLocation}" />
@@ -1148,23 +1152,22 @@
 <script th:inline="javascript">
 	$(document).ready(function() {
 		$('#interviewers-dropdown').multiselect({
-	        enableFiltering: true,
-	        enableCaseInsensitiveFiltering: true,
+			enableFiltering : true,
+			enableCaseInsensitiveFiltering : true,
 			delimiter : '; ',
 			delimiterText : '; ',
-			maxHeight: 450 ,
+			maxHeight : 450,
 		});
 
 		$('#subjects-dropdown').multiselect({
-	        enableFiltering: true,
-	        enableCaseInsensitiveFiltering: true,
+			enableFiltering : true,
+			enableCaseInsensitiveFiltering : true,
 			delimiter : '; ',
 			delimiterText : '; ',
-			maxHeight: 450,
-			numberDisplayed: 10,
+			maxHeight : 450,
+			numberDisplayed : 10,
 		});
-		
-		
+
 	});
 
 	/*<![CDATA[*/
@@ -1174,14 +1177,12 @@
 	/*]]>*/
 
 	// Setting the interviewers in the drop down.
-	
 	$.each(interviewers.split(";"), function(i, e) {
-		
+
 		$("#interviewers-dropdown option[value='" + e.trim() + "']").prop(
 				"selected", true);
 	});
-	
-	
+
 	/*<![CDATA[*/
 
 	var subjects = /*[[${interviewdetails.Subject}]]*/"";
@@ -1189,13 +1190,10 @@
 	/*]]>*/
 
 	// Setting the interviewers in the drop down.
-	
 	$.each(subjects.split(";"), function(i, e) {
-		
+
 		$("#subjects-dropdown option[value='" + e.trim() + "']").prop(
 				"selected", true);
 	});
-	
-	
 </script>
 </html>

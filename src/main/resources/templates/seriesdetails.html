@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header ">Series Details</h1>
+		</div>
+	</div>
+
+	<form method="post" th:action="@{/series/update}" >
+
+
+		<input type="hidden" id="Id" name="Id"
+			th:value="*{aseriesdetails?.Id}" />
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label> Select Collection</label>
+				<div class="cols-sm-10">
+					<select class="form-control" id="collectitonDropDown"
+						name="CollectionId" required>
+						<option value="">Select Collection</option>
+
+						<option th:each="collection : ${collections}"
+							th:value="${collection.Id}"
+							th:text="${collection.CollectionName}"
+							th:selected="${collection.Id} == *{aseriesdetails?.CollectionId}"></option>
+					</select>
+				</div>
+
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label for="firstName"> Series Name</label>
+				<div class="cols-sm-10">
+					<input type="text" class="form-control"
+						th:value="*{aseriesdetails?.SeriesName}" id="SeriesName"
+						name="SeriesName" required="required" />
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Code</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Code}" id="Code"
+					name="Code" />
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Dates</label> <input type="text"
+					class="form-control dates" th:value="*{aseriesdetails?.Dates}"
+					id="Dates" name="Dates" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Note</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Note}" id="Code"
+					name="Note" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Description</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Description}"
+					id="Description" name="Description" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Subjects</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Subjects}"
+					id="Subjects" name="Subjects" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Keywords</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Keywords}"
+					id="Keywords" name="Keywords" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Scope And Content</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.ScopeAndContent}" id="ScopeAndContent"
+					name="ScopeAndContent" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Custodial History</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.CustodialHistory}"
+					id="CustodialHistory" name="CustodialHistory" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Acquisition info</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.Acquisitioninfo}" id="Acquisitioninfo"
+					name="Acquisitioninfo" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Number Of Interviews</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.NumberOfInterviews}"
+					id="NumberOfInterviews" name="NumberOfInterviews" />
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Language</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Language}"
+					id="Language" name="Language" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Publisher</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Publisher}"
+					id="Publisher" name="Publisher" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-12 form-group">
+				<label class="control-label">Rights</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Rights}"
+					id="Rights" name="Rights" />
+			</div>
+
+
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Preservation Note</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.PreservationNote}"
+					id="PreservationNote" name="PreservationNote" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Format</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Format}"
+					id="Format" name="Format" />
+			</div>
+
+			<div class="col-md-2 form-group"></div>
+
+			<div class="col-md-5 form-group">
+				<label class="control-label">Type</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Type}" id="Type"
+					name="Type" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Access Restrictions</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.AccessRestrictions}"
+					id="AccessRestrictions" name="AccessRestrictions" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Preferred Citation</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.PreferredCitation}"
+					id="PreferredCitation" name="PreferredCitation" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Related Collection</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.RelatedCollection}"
+					id="RelatedCollection" name="RelatedCollection" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Project Process</label> <input
+					type="text" class="form-control"
+					th:value="*{aseriesdetails?.ProjectProcess}" id="ProjectProcess"
+					name="ProjectProcess" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Creator</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Creator}"
+					id="Creator" name="Creator" />
+
+			</div>
+		</div>
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Contributors</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Contributors}"
+					id="Contributors" name="Contributors" />
+
+			</div>
+		</div>
+
+		<div class="row  row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Sponsors</label> <input type="text"
+					class="form-control" th:value="*{aseriesdetails?.Sponsors}"
+					id="Sponsors" name="Sponsors" />
+
+			</div>
+		</div>
+
+		<div class="row row-striped"></div>
+
+		<div class="form-group" th:if="${user.authorized.contains(5)}">
+			<button type="submit" class="btn btn-primary btn-block ">Submit</button>
+		</div>
+
+	</form>
+
+	<form method="post" th:action="@{/series/delete}"
+		th:if="${aseriesdetails?.Id > 0 && user.authorized.contains(5)}">
+		<input type="hidden" name="id" th:value="*{aseriesdetails?.Id}" />
+		<div class="form-group ">
+			<button type="submit" class="btn btn-warning btn-block ">Delete</button>
+		</div>
+	</form>
+
+
+
+</div>
+
+
+</body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</html>

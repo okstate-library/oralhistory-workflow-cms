@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
@@ -95,18 +96,20 @@ public class CollectionController extends MainController {
 
 		if (collection.getId() > 0) {
 
-			newCollection = collectionService.findById(collection.getId()).orElse(null);
+			newCollection = collection;
 
-			newCollection.setRepositoryId(collection.getRepositoryId());
-			newCollection.setCollectionName(collection.getCollectionName());
+			Collection oldCollection = collectionService.findById(collection.getId()).orElse(null);
+
+			newCollection.setCreatedBy(oldCollection.getCreatedBy());
+			newCollection.setCreatedDate(oldCollection.getCreatedDate());
 
 		} else {
 			newCollection = collection;
 
 			newCollection.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
 			newCollection.setCreatedDate(DateUtil.getTodaySqlDate());
-		}
 
+		}
 		newCollection.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
 		newCollection.setUpdatedDate(DateUtil.getTodaySqlDate());
 
@@ -155,6 +158,29 @@ public class CollectionController extends MainController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
 				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
 
+	}
+
+	@RequestMapping(value = "/validate", method = RequestMethod.POST)
+	public String validate(Model model, HttpServletRequest request, Principal principal) throws IOException {
+
+		User user = userService.findByUsername(principal.getName());
+
+		List<Collection> collections = collectionService.findAll();
+
+		for (Collection collection : collections) {
+			List<Transcription> transcriptions = trancriptionService.findByCollectinoId(collection.getId());
+
+			collection.setNumberOfInterviews(((short) transcriptions.size()));
+			collection.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+			collection.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+			collectionService.saveCollection(collection);
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Collection records validated!";
+
+		return "redirect:/validate";
 	}
 
 }

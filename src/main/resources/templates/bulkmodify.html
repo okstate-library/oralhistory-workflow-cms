@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head th:replace="common/header :: common-header" />
+<body roleId="page-top" data-spy="scroll"
+	data-target=".navbar-fixed-top">
+<head th:replace="common/header :: navbar" />
+
+<div class="container">
+
+	<div class="row">
+
+
+		<div class="col-md-10 form-group">
+			<h2
+				th:text=" ${#lists.size(transcriptions)} +  ' records in bulk modification'">...</h2>
+			<table>
+				<tr th:each="transcription: ${transcriptions}">
+					<td th:text="${transcription.title}"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="tab-pane fade-in active">
+
+		<form class="form-horizontal" method="post" th:action="@{/bulkmodify}">
+
+			<div class="row row-striped">
+
+				<div class="col-md-5 form-group">
+					<label class="control-label"> Sent out</label>
+
+					<div class="form-control">
+						<span> <input type="radio" name="SentOut" value="1" /> <label>Yes</label>
+						</span> <span> <input name="SentOut" type="radio" value="0" /> <label>No</label>
+						</span>
+					</div>
+				</div>
+
+				<div class="col-md-2 form-group"></div>
+
+				<div class="col-md-5 form-group">
+					<label class="control-label">Production Master File Status</label>
+					<div class="form-control">
+						<span> <input name="IsProductionMasterFileStatus"
+							type="radio" value="1" /> <label>Complete</label>
+						</span> <span> <input name="IsProductionMasterFileStatus"
+							type="radio" value="0" /> <label>In progress</label>
+						</span>
+
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="row row-striped">
+
+				<div class="col-md-5 form-group">
+
+					<label for="password" class="control-label">Online</label>
+					<div class="form-control">
+
+						<span> <input type="radio" name="IsOnline" value="1" /> <label>Yes</label>
+						</span> <span> <input name="IsOnline" type="radio" value="0" /> <label>No</label>
+						</span>
+
+
+					</div>
+
+				</div>
+
+				<div class="col-md-2 form-group"></div>
+
+				<div class="col-md-5 form-group">
+
+					<label for="password" class="control-label">In Rosetta</label>
+					<div class="form-control">
+						<span> <input type="radio" name="IsRosetta" value="1" /> <label>Yes</label>
+						</span> <span> <input name="IsRosetta" type="radio" value="0" />
+							<label>No</label>
+						</span>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group ">
+				<button type="submit"
+					class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+			</div>
+		</form>
+	</div>
+
+
+</div>
+
+</body>
+
+<div th:replace="common/footer :: footer"></div>
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+
+</html>

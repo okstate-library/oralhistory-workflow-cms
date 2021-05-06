@@ -1,16 +1,10 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
-import java.security.Principal;
-import java.text.ParseException;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.okstatelibrary.oralhistoryworkflowcms.entity.User;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.ErrorType;
-import com.okstatelibrary.oralhistoryworkflowcms.service.UserService;
 
 @Controller
 @RequestMapping("")

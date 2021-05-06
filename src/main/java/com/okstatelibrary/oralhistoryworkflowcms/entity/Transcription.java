@@ -116,44 +116,44 @@ public class Transcription { // implements Serializable
 		this.CollectionName = value;
 	}
 
-	private int SubseriesId;
+	private int SeriesId;
 
-	public int getSubseriesId() {
-		return this.SubseriesId;
+	public int getSeriesId() {
+		return this.SeriesId;
 	}
 
-	public void setSubseriesId(int value) {
-		this.SubseriesId = value;
+	public void setSeriesId(int value) {
+		this.SeriesId = value;
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "SubseriesId", insertable = false, updatable = false)
-	private Subserie subserie;
+	@JoinColumn(name = "SeriesId", insertable = false, updatable = false)
+	private Series series;
 
 	@JsonBackReference
-	public Subserie getsubseries() {
-		return this.subserie;
+	public Series getseries() {
+		return this.series;
 	}
 
-	public void setSubseries(Subserie value) {
-		this.subserie = value;
+	public void setSeries(Series value) {
+		this.series = value;
 	}
 
 	@Transient
-	private String SubseriesName;
+	private String SeriesName;
 
 	@Transient
-	public String getSubseriesName() {
+	public String getSeriesName() {
 
-		if (this.subserie != null) {
-			SubseriesName = this.subserie.getSubseriesName();
+		if (this.series != null) {
+			SeriesName = this.series.getSeriesName();
 		}
-		return SubseriesName;
+		return SeriesName;
 	}
 
 	@Transient
-	public void setSubseriesName(String value) {
-		this.SubseriesName = value;
+	public void setSeriesName(String value) {
+		this.SeriesName = value;
 	}
 
 	private String Interviewee;
@@ -326,6 +326,16 @@ public class Transcription { // implements Serializable
 		this.CoverageTemporal = value;
 	}
 
+	private String CONTENTdmURL;
+
+	public String getCONTENTdmURL() {
+		return this.CONTENTdmURL;
+	}
+
+	public void setCONTENTdmURL(String value) {
+		this.CONTENTdmURL = value;
+	}
+	
 	private String Rights;
 
 	public String getRights() {
@@ -396,15 +406,15 @@ public class Transcription { // implements Serializable
 		this.IsRosetta = value;
 	}
 
-	private byte IsRosettaForm;
-
-	public byte getIsRosettaForm() {
-		return this.IsRosettaForm;
-	}
-
-	public void setIsRosettaForm(byte value) {
-		this.IsRosettaForm = value;
-	}
+//	private byte IsRosettaForm;
+//
+//	public byte getIsRosettaForm() {
+//		return this.IsRosettaForm;
+//	}
+//
+//	public void setIsRosettaForm(byte value) {
+//		this.IsRosettaForm = value;
+//	}
 
 	private byte IsRestriction;
 
@@ -698,14 +708,14 @@ public class Transcription { // implements Serializable
 		this.ConvertToDigitalDate = value;
 	}
 
-	private byte IsAccessMediaStatus;
+	private byte IsProductionMasterFileStatus;
 
-	public byte getIsAccessMediaStatus() {
-		return this.IsAccessMediaStatus;
+	public byte getIsProductionMasterFileStatus() {
+		return this.IsProductionMasterFileStatus;
 	}
 
-	public void setIsAccessMediaStatus(byte value) {
-		this.IsAccessMediaStatus = value;
+	public void setIsProductionMasterFileStatus(byte value) {
+		this.IsProductionMasterFileStatus = value;
 	}
 
 	private String TechnicalSpecification;

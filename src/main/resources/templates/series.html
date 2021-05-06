@@ -7,11 +7,11 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-10">
-			<h1 class="page-header">Subseries</h1>
+			<h1 class="page-header">Series</h1>
 		</div>
 		<div class="col-lg-2">
 			<h1 class="page-header">
-				<a class="btn  btn-info" th:href="@{/subseries/add}">Add Subserie</a>
+				<a class="btn  btn-info" th:href="@{/series/add}">Add a Series</a>
 			</h1>
 		</div>
 	</div>
@@ -24,16 +24,16 @@
 					<tr>
 
 						<th>Collection Name</th>
-						<th>Subseries Name</th>
+						<th>Series Name</th>
 						<th>Details</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr data-th-each="subserie : ${subseries}">
-						<td data-th-text="${subserie.collection.CollectionName}">...</td>
-						<td data-th-text="${subserie.SubseriesName}">...</td>
+					<tr data-th-each="aseries : ${series}">
+						<td data-th-text="${aseries.collection.CollectionName}">...</td>
+						<td data-th-text="${aseries.SeriesName}">...</td>
 
-						<td><a th:href="${'/subseries/' + subserie.Id}">View</a></td>
+						<td><a th:href="${'/series/' + aseries.Id}">View</a></td>
 					</tr>
 				</tbody>
 			</table>

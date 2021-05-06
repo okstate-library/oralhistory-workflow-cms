@@ -92,8 +92,6 @@ public class UserController extends MainController {
 
 			if (userService.checkEmailExists(user.getEmail())) {
 
-				System.out.println("Email exists.");
-
 				this.errorType = ErrorType.ERROR;
 				this.message = "Email exists.";
 
@@ -101,8 +99,6 @@ public class UserController extends MainController {
 			}
 
 			if (userService.checkUsernameExists(user.getUsername())) {
-
-				System.out.println("username exists.");
 
 				this.errorType = ErrorType.ERROR;
 				this.message = "User name exists.";

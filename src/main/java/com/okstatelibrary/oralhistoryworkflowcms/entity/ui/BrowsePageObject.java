@@ -17,17 +17,17 @@ public class BrowsePageObject {
 	}
 
 	/**
-	 * @return the subseries
+	 * @return the series
 	 */
-	public List<CheckBoxObject> getSubseries() {
-		return subseries;
+	public List<CheckBoxObject> getSeries() {
+		return series;
 	}
 
 	/**
-	 * @param subseries the subseries to set
+	 * @param series the series to set
 	 */
-	public void setSubseries(List<CheckBoxObject> subseries) {
-		this.subseries = subseries;
+	public void setSeries(List<CheckBoxObject> series) {
+		this.series = series;
 	}
 
 	/**
@@ -100,16 +100,32 @@ public class BrowsePageObject {
 		this.subjects = subjects;
 	}
 
+	/**
+	 * @return the searchWord
+	 */
+	public String getSearchWord() {
+		return searchWord;
+	}
+
+	/**
+	 * @param searchWord the searchWord to set
+	 */
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
+	}
+
 	private List<CheckBoxObject> collections;
 
 	private List<CheckBoxObject> interviewers;
 
-	private List<CheckBoxObject> subseries;
+	private List<CheckBoxObject> series;
 	
 	private List<CheckBoxObject> subjects;
 	
 	private List<CheckBoxObject> statusOnline;
 	
 	private List<CheckBoxObject> darkArchieve;
+	
+	private String searchWord;
 
 }

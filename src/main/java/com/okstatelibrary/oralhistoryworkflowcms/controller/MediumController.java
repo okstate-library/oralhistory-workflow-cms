@@ -88,8 +88,6 @@ public class MediumController extends MainController {
 	@PostMapping("/delete")
 	public String delete(@ModelAttribute("mediums") Medium medium, Model model) {
 
-		System.out.print("medium.getMediumName()" + medium.getMediumName());
-
 		if (transcriptionService.isRecordsExistsByOriginalMedium(medium.getMediumName())) {
 
 			this.errorType = ErrorType.WARNING;

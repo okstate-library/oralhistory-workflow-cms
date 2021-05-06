@@ -1,7 +1,9 @@
 package com.okstatelibrary.oralhistoryworkflowcms.util;
 
 public class StringUtil {
-	
+
+	public static String NotAvaliable = "n/a";
+
 	/*
 	 * 
 	 */

@@ -1959,9 +1959,9 @@ INSERT INTO temp_trans( code, Name) VALUES ('WOL_048','MiniDV');
 UPDATE transcriptions , temp_trans
 SET
 transcriptions.OriginalMedium = temp_trans.Name  
-WHERE transcriptions.ProjectCode = temp_trans.code
+WHERE transcriptions.ProjectCode = temp_trans.code;
 
-DROP TABLE `oralcmsdb_prod`.`temp_trans`;
+DROP TABLE `temp_trans`;
 
 ALTER TABLE transcriptions DROP COLUMN OriginalMediumType;
 
@@ -1973,4 +1973,92 @@ ALTER TABLE transcriptions DROP COLUMN Place;
 
 UPDATE oralcmsdb.subjects
 SET subjectName = CONCAT(UCASE(LEFT(subjectName, 1)), 
-                             SUBSTRING(subjectName, 2));
+
+-- **************************
+-- subseries rename to series
+-- **************************
+
+ALTER TABLE `subseries` 
+CHANGE COLUMN `SubseriesName` `SeriesName` VARCHAR(250) NOT NULL , RENAME TO  `series` ;
+
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `SubseriesId` `SeriesId` INT NOT NULL ;
+
+ALTER TABLE `transcriptions` 
+CHANGE COLUMN `IsAccessMediaStatus` `IsProductionMasterFileStatus` TINYINT(1) NOT NULL DEFAULT '0' ;
+
+ALTER TABLE `transcriptions` 
+ADD COLUMN `CONTENTdmURL` VARCHAR(200) NULL AFTER `CoverageTemporal`;
+
+
+-- **************************
+-- Collection table modification
+-- **************************
+
+ALTER TABLE `collections` 
+DROP COLUMN `ProcessedBy`,
+DROP COLUMN `PublicationNote`,
+DROP COLUMN `CopiesLocation`,
+DROP COLUMN `OriginalLocation`,
+DROP COLUMN `SeparatedMaterial`,
+DROP COLUMN `PublicationRights`,
+DROP COLUMN `Size`,
+DROP COLUMN `Number`;
+
+ALTER TABLE `collections` 
+ADD COLUMN `Code` VARCHAR(50) NULL AFTER `CollectionName`,
+ADD COLUMN `LandingPageUrl` VARCHAR(250) NULL AFTER `Keywords`,
+ADD COLUMN `NumberOfInterviews` SMALLINT(2) NULL AFTER `Acquisitioninfo`,
+ADD COLUMN `Publisher` VARCHAR(250) NULL AFTER `Language`,
+ADD COLUMN `Format` VARCHAR(100) NULL AFTER `Rights`,
+ADD COLUMN `Type` VARCHAR(100) NULL AFTER `Format`,
+ADD COLUMN `ProjectProcess` VARCHAR(250) NULL AFTER `RelatedCollection`;
+
+ALTER TABLE `collections` 
+CHANGE COLUMN `Description` `Description` TEXT NULL DEFAULT NULL AFTER `Note`,
+CHANGE COLUMN `Rights` `Rights` TEXT NULL DEFAULT NULL AFTER `Publisher`,
+CHANGE COLUMN `Language` `Language` VARCHAR(20) NULL DEFAULT NULL,
+CHANGE COLUMN `NumberOfInterviews` `NumberOfInterviews` SMALLINT NULL DEFAULT 0 ;
+
+
+UPDATE `collections`
+SET 
+    `NumberOfInterviews` = 0
+    
+    
+-- **************************
+-- series table modification
+-- **************************
+
+ALTER TABLE `series` 
+DROP COLUMN `ProcessedBy`,
+DROP COLUMN `PublicationNote`,
+DROP COLUMN `CopiesLocation`,
+DROP COLUMN `OriginalLocation`,
+DROP COLUMN `SeparatedMaterial`,
+DROP COLUMN `PublicationRights`,
+DROP COLUMN `Size`,
+DROP COLUMN `Number`;
+
+ALTER TABLE `series` 
+ADD COLUMN `Code` VARCHAR(50) NULL AFTER `SeriesName`,
+ADD COLUMN `LandingPageUrl` VARCHAR(250) NULL AFTER `Keywords`,
+ADD COLUMN `NumberOfInterviews` SMALLINT(2) NULL AFTER `Acquisitioninfo`,
+ADD COLUMN `Publisher` VARCHAR(250) NULL AFTER `Language`,
+ADD COLUMN `Format` VARCHAR(100) NULL AFTER `Rights`,
+ADD COLUMN `Type` VARCHAR(100) NULL AFTER `Format`,
+ADD COLUMN `ProjectProcess` VARCHAR(250) NULL AFTER `RelatedCollection`;
+
+
+ALTER TABLE `series` 
+CHANGE COLUMN `Description` `Description` TEXT NULL DEFAULT NULL AFTER `Note`,
+CHANGE COLUMN `Rights` `Rights` TEXT NULL DEFAULT NULL AFTER `Publisher`,
+CHANGE COLUMN `Language` `Language` VARCHAR(20) NULL DEFAULT NULL,
+CHANGE COLUMN `NumberOfInterviews` `NumberOfInterviews` SMALLINT NULL DEFAULT 0 ;
+
+
+UPDATE `series`
+SET 
+    `NumberOfInterviews` = 0
+    

@@ -36,18 +36,18 @@ public class Collection {
 
 	@OneToMany(mappedBy = "collection")
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private Set<Subserie> subseries;
+	private Set<Series> series;
 
 	@JsonManagedReference
-	public Set<Subserie> getSubseries() {
-		return this.subseries;
+	public Set<Series> getSeries() {
+		return this.series;
 	}
 
-	public void setSubseries(Set<Subserie> value) {
-		this.subseries = value;
+	public void setSeries(Set<Series> value) {
+		this.series = value;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "RepositoryId", insertable = false, updatable = false)
 	private Repository repository;
 
@@ -92,14 +92,14 @@ public class Collection {
 		this.CollectionName = value;
 	}
 
-	private String Number;
+	private String Code;
 
-	public String getNumber() {
-		return this.Number;
+	public String getCode() {
+		return this.Code;
 	}
 
-	public void setNumber(String value) {
-		this.Number = value;
+	public void setCode(String value) {
+		this.Code = value;
 	}
 
 	private String Dates;
@@ -122,6 +122,16 @@ public class Collection {
 		this.Note = value;
 	}
 
+	private String Description;
+
+	public String getDescription() {
+		return this.Description;
+	}
+
+	public void setDescription(String value) {
+		this.Description = value;
+	}
+
 	private String Subjects;
 
 	public String getSubjects() {
@@ -142,14 +152,14 @@ public class Collection {
 		this.Keywords = value;
 	}
 
-	private String Description;
+	private String LandingPageUrl;
 
-	public String getDescription() {
-		return this.Description;
+	public String getLandingPageUrl() {
+		return this.LandingPageUrl;
 	}
 
-	public void setDescription(String value) {
-		this.Description = value;
+	public void setLandingPageUrl(String value) {
+		this.LandingPageUrl = value;
 	}
 
 	private String ScopeAndContent;
@@ -172,16 +182,6 @@ public class Collection {
 		this.CustodialHistory = value;
 	}
 
-	private String Size;
-
-	public String getSize() {
-		return this.Size;
-	}
-
-	public void setSize(String value) {
-		this.Size = value;
-	}
-
 	private String Acquisitioninfo;
 
 	public String getAcquisitioninfo() {
@@ -190,6 +190,17 @@ public class Collection {
 
 	public void setAcquisitioninfo(String value) {
 		this.Acquisitioninfo = value;
+	}
+
+	private short NumberOfInterviews;
+
+	public short getNumberOfInterviews() {
+		return this.NumberOfInterviews;
+	}
+
+	public void setNumberOfInterviews(short value) {
+		
+		this.NumberOfInterviews = value;
 	}
 
 	private String Language;
@@ -202,14 +213,14 @@ public class Collection {
 		this.Language = value;
 	}
 
-	private String PreservationNote;
+	private String Publisher;
 
-	public String getPreservationNote() {
-		return this.PreservationNote;
+	public String getPublisher() {
+		return this.Publisher;
 	}
 
-	public void setPreservationNote(String value) {
-		this.PreservationNote = value;
+	public void setPublisher(String value) {
+		this.Publisher = value;
 	}
 
 	private String Rights;
@@ -222,6 +233,36 @@ public class Collection {
 		this.Rights = value;
 	}
 
+	private String PreservationNote;
+
+	public String getPreservationNote() {
+		return this.PreservationNote;
+	}
+
+	public void setPreservationNote(String value) {
+		this.PreservationNote = value;
+	}
+
+	private String Format;
+
+	public String getFormat() {
+		return this.Format;
+	}
+
+	public void setFormat(String value) {
+		this.Format = value;
+	}
+
+	private String Type;
+
+	public String getType() {
+		return this.Type;
+	}
+
+	public void setType(String value) {
+		this.Type = value;
+	}
+
 	private String AccessRestrictions;
 
 	public String getAccessRestrictions() {
@@ -230,16 +271,6 @@ public class Collection {
 
 	public void setAccessRestrictions(String value) {
 		this.AccessRestrictions = value;
-	}
-
-	private String PublicationRights;
-
-	public String getPublicationRights() {
-		return this.PublicationRights;
-	}
-
-	public void setPublicationRights(String value) {
-		this.PublicationRights = value;
 	}
 
 	private String PreferredCitation;
@@ -262,44 +293,14 @@ public class Collection {
 		this.RelatedCollection = value;
 	}
 
-	private String SeparatedMaterial;
+	private String ProjectProcess;
 
-	public String getSeparatedMaterial() {
-		return this.SeparatedMaterial;
+	public String getProjectProcess() {
+		return this.ProjectProcess;
 	}
 
-	public void setSeparatedMaterial(String value) {
-		this.SeparatedMaterial = value;
-	}
-
-	private String OriginalLocation;
-
-	public String getOriginalLocation() {
-		return this.OriginalLocation;
-	}
-
-	public void setOriginalLocation(String value) {
-		this.OriginalLocation = value;
-	}
-
-	private String CopiesLocation;
-
-	public String getCopiesLocation() {
-		return this.CopiesLocation;
-	}
-
-	public void setCopiesLocation(String value) {
-		this.CopiesLocation = value;
-	}
-
-	private String PublicationNote;
-
-	public String getPublicationNote() {
-		return this.PublicationNote;
-	}
-
-	public void setPublicationNote(String value) {
-		this.PublicationNote = value;
+	public void setProjectProcess(String value) {
+		this.ProjectProcess = value;
 	}
 
 	private String Creator;
@@ -320,16 +321,6 @@ public class Collection {
 
 	public void setContributors(String value) {
 		this.Contributors = value;
-	}
-
-	private String ProcessedBy;
-
-	public String getProcessedBy() {
-		return this.ProcessedBy;
-	}
-
-	public void setProcessedBy(String value) {
-		this.ProcessedBy = value;
 	}
 
 	private String Sponsors;
@@ -383,47 +374,45 @@ public class Collection {
 	}
 
 	public Collection() {
-
 	}
 
-	public Collection(short id) {
-		this.Id = id;
+	public Collection(short Id) {
+		this.Id = Id;
 	}
 
-	public Collection(short Id, short RepositoryId, String CollectionName, String Number, String Dates, String Note,
-			String Subjects, String Keywords, String Description, String ScopeAndContent, String CustodialHistory,
-			String Size, String Acquisitioninfo, String Language, String PreservationNote, String Rights,
-			String AccessRestrictions, String PublicationRights, String PreferredCitation, String RelatedCollection,
-			String SeparatedMaterial, String OriginalLocation, String CopiesLocation, String PublicationNote,
-			String Creator, String Contributors, String ProcessedBy, String Sponsors, int CreatedBy,
-			java.sql.Date CreatedDate, int UpdatedBy, java.sql.Date UpdatedDate) {
+	public Collection(short Id, short RepositoryId, String CollectionName, String Code, String Dates, String Note,
+			String Description, String Subjects, String Keywords, String LandingPageUrl, String ScopeAndContent,
+			String CustodialHistory, String Acquisitioninfo, short NumberOfInterviews, String Language,
+			String Publisher, String Rights, String PreservationNote, String Format, String Type,
+			String AccessRestrictions, String PreferredCitation, String RelatedCollection, String ProjectProcess,
+			String Creator, String Contributors, String Sponsors, int CreatedBy, java.sql.Date CreatedDate,
+			int UpdatedBy, java.sql.Date UpdatedDate) {
 		this.Id = Id;
 		this.RepositoryId = RepositoryId;
 		this.CollectionName = CollectionName;
-		this.Number = Number;
+		this.Code = Code;
 		this.Dates = Dates;
 		this.Note = Note;
+		this.Description = Description;
 		this.Subjects = Subjects;
 		this.Keywords = Keywords;
-		this.Description = Description;
+		this.LandingPageUrl = LandingPageUrl;
 		this.ScopeAndContent = ScopeAndContent;
 		this.CustodialHistory = CustodialHistory;
-		this.Size = Size;
 		this.Acquisitioninfo = Acquisitioninfo;
+		this.NumberOfInterviews = NumberOfInterviews;
 		this.Language = Language;
-		this.PreservationNote = PreservationNote;
+		this.Publisher = Publisher;
 		this.Rights = Rights;
+		this.PreservationNote = PreservationNote;
+		this.Format = Format;
+		this.Type = Type;
 		this.AccessRestrictions = AccessRestrictions;
-		this.PublicationRights = PublicationRights;
 		this.PreferredCitation = PreferredCitation;
 		this.RelatedCollection = RelatedCollection;
-		this.SeparatedMaterial = SeparatedMaterial;
-		this.OriginalLocation = OriginalLocation;
-		this.CopiesLocation = CopiesLocation;
-		this.PublicationNote = PublicationNote;
+		this.ProjectProcess = ProjectProcess;
 		this.Creator = Creator;
 		this.Contributors = Contributors;
-		this.ProcessedBy = ProcessedBy;
 		this.Sponsors = Sponsors;
 		this.CreatedBy = CreatedBy;
 		this.CreatedDate = CreatedDate;
