@@ -42,3 +42,8 @@ java -jar target/oralhistory-workflow-cms-2.0.1.jar
 ```
 
 Check the URL "http://localhost:8080".
+
+###### OKState Libraries would also appreciate recognition if you use this code.
+
+If need any help(development feature, hosting,..) contact our developers
+
