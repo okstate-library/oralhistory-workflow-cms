@@ -27,7 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String[] PUBLIC_MATCHERS = {
 			// "/webjars/**",
 			"/css/**", "/js/**", "/images/**", "/", "/index",
-//            "/api/currenttraffic",           
+            "/api/interviews", 
+            "/api/interview/*", 
+            
 //            "/error/**/*",
 //            "/console/**"
 	};

@@ -42,8 +42,7 @@ public class SeriesServiceImpl implements SeriesService {
 			seriesList.add(findById(id).orElse(null));
 		}
 
-		return seriesList.stream().sorted(Comparator.comparing(Series::getSeriesName))
-				.collect(Collectors.toList());
+		return seriesList.stream().sorted(Comparator.comparing(Series::getSeriesName)).collect(Collectors.toList());
 	}
 
 	@Cacheable(cacheNames = "findBySeriesIdCache")
@@ -94,10 +93,8 @@ public class SeriesServiceImpl implements SeriesService {
 	public Series findByName(short collectionId, String seriesName) {
 
 		if (seriesName != null && !seriesName.isEmpty()) {
-			return findAll().stream()
-					.filter(u -> u.getSeriesName().toLowerCase().contains(seriesName.toLowerCase())
-							&& u.getCollectionId() == collectionId)
-					.findFirst().get();
+			return findAll().stream().filter(u -> u.getSeriesName().toLowerCase().contains(seriesName.toLowerCase())
+					&& u.getCollectionId() == collectionId).findFirst().orElse(null);
 		} else {
 			return findAll().stream().filter(u -> u.getCollectionId() == collectionId).findFirst().get();
 		}

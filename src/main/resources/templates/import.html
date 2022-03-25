@@ -47,14 +47,33 @@
 	<div id="accordion">
 		<div class="card" style="background: #f2f2f2;">
 			<div class="accordion-header" id="headingOne">
-				<h5 class="mb-0">
-					<button class="btn btn-link" data-toggle="collapse"
-						data-target="#collapseOne" aria-expanded="true"
-						aria-controls="collapseOne">Rules and Regulations</button>
+				<h2 class="mb-0">Error details.</h2>
+
+				<h5>
+					<b>Project code not exists</b>
 				</h5>
+
+				<div th:text="${projectCodeNulls}"></div>
+
+				<h5>
+					<b>Project code record exists</b>
+				</h5>
+
+				<div th:text="${projectCodeExists}"></div>
+
+				<h5>
+					<b>Collection name not exists</b>
+				</h5>
+
+				<div th:text="${collectionNames}"></div>
+				<h5>
+					<b>Series name not exists</b>
+				</h5>
+
+				<div th:text="${seriesNames}"></div>
 			</div>
 
-			<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+			<!-- <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
 				data-parent="#accordion">
 				<div class="card-body">
 
@@ -303,7 +322,7 @@
 					</div>
 
 				</div>
-			</div>
+			</div> -->
 		</div>
 
 

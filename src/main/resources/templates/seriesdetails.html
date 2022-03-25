@@ -13,7 +13,7 @@
 		</div>
 	</div>
 
-	<form method="post" th:action="@{/series/update}" >
+	<form method="post" th:action="@{/series/update}">
 
 
 		<input type="hidden" id="Id" name="Id"
@@ -72,9 +72,12 @@
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Note</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Note}" id="Code"
-					name="Note" />
+				<label class="control-label">Note</label>
+
+				<textarea class="form-control" id="Note" name="Note" rows="5"
+					th:inline="text">[[${aseriesdetails?.Note}]]</textarea>
+
+
 			</div>
 
 
@@ -82,9 +85,11 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Description</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Description}"
-					id="Description" name="Description" />
+				<label class="control-label">Description</label>
+
+				<textarea class="form-control" id="Description" name="Description"
+					rows="5" th:inline="text">[[${aseriesdetails?.Description}]]</textarea>
+
 
 			</div>
 		</div>
@@ -111,10 +116,10 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Scope And Content</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.ScopeAndContent}" id="ScopeAndContent"
-					name="ScopeAndContent" />
+				<label class="control-label">Scope And Content</label>
+
+				<textarea class="form-control" id="ScopeAndContent"
+					name="ScopeAndContent" rows="5" th:inline="text">[[${aseriesdetails?.ScopeAndContent}]]</textarea>
 
 			</div>
 		</div>
@@ -122,10 +127,10 @@
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Custodial History</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.CustodialHistory}"
-					id="CustodialHistory" name="CustodialHistory" />
+				<label class="control-label">Custodial History</label>
+
+				<textarea class="form-control" id="CustodialHistory"
+					name="CustodialHistory" rows="5" th:inline="text">[[${aseriesdetails?.CustodialHistory}]]</textarea>
 			</div>
 
 
@@ -133,10 +138,10 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Acquisition info</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.Acquisitioninfo}" id="Acquisitioninfo"
-					name="Acquisitioninfo" />
+				<label class="control-label">Acquisition info</label>
+
+				<textarea class="form-control" id="Acquisitioninfo"
+					name="Acquisitioninfo" rows="5" th:inline="text">[[${aseriesdetails?.Acquisitioninfo}]]</textarea>
 
 			</div>
 		</div>
@@ -162,19 +167,18 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Publisher</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Publisher}"
-					id="Publisher" name="Publisher" />
-
+				<label class="control-label">Publisher</label>
+				<textarea class="form-control" id="Publisher"
+					name="Publisher" rows="5" th:inline="text">[[${aseriesdetails?.Publisher}]]</textarea>
 			</div>
 		</div>
 
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Rights</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Rights}"
-					id="Rights" name="Rights" />
+				<label class="control-label">Rights</label>
+				<textarea class="form-control" id="Rights" name="Rights" rows="5"
+					th:inline="text">[[${aseriesdetails?.Rights}]]</textarea>
 			</div>
 
 
@@ -182,10 +186,9 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Preservation Note</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.PreservationNote}"
-					id="PreservationNote" name="PreservationNote" />
+				<label class="control-label">Preservation Note</label>
+				<textarea class="form-control" id="PreservationNote"
+					name="PreservationNote" rows="5" th:inline="text">[[${aseriesdetails?.PreservationNote}]]</textarea>
 
 			</div>
 		</div>
@@ -210,19 +213,19 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Access Restrictions</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.AccessRestrictions}"
-					id="AccessRestrictions" name="AccessRestrictions" />
+				<label class="control-label">Access Restrictions</label>
+
+				<textarea class="form-control" id="AccessRestrictions"
+					name="AccessRestrictions" rows="5" th:inline="text">[[${aseriesdetails?.AccessRestrictions}]]</textarea>
 
 			</div>
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Preferred Citation</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.PreferredCitation}"
-					id="PreferredCitation" name="PreferredCitation" />
+				<label class="control-label">Preferred Citation</label>
+
+				<textarea class="form-control" id="PreferredCitation"
+					name="PreferredCitation" rows="5" th:inline="text">[[${aseriesdetails?.PreferredCitation}]]</textarea>
 
 			</div>
 		</div>
@@ -237,35 +240,42 @@
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Project Process</label> <input
-					type="text" class="form-control"
-					th:value="*{aseriesdetails?.ProjectProcess}" id="ProjectProcess"
-					name="ProjectProcess" />
+				<label class="control-label">Project Process</label>
+
+				<textarea class="form-control" id="ProjectProcess"
+					name="ProjectProcess" rows="5" th:inline="text">[[${aseriesdetails?.ProjectProcess}]]</textarea>
+
 
 			</div>
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Creator</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Creator}"
-					id="Creator" name="Creator" />
+				<label class="control-label">Creator</label>
+
+				<textarea class="form-control" id="Creator" name="Creator" rows="5"
+					th:inline="text">[[${aseriesdetails?.Creator}]]</textarea>
+
 
 			</div>
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Contributors</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Contributors}"
-					id="Contributors" name="Contributors" />
+				<label class="control-label">Contributors</label>
+
+				<textarea class="form-control" id="Contributors" name="Contributors"
+					rows="5" th:inline="text">[[${aseriesdetails?.Contributors}]]</textarea>
+
 
 			</div>
 		</div>
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Sponsors</label> <input type="text"
-					class="form-control" th:value="*{aseriesdetails?.Sponsors}"
-					id="Sponsors" name="Sponsors" />
+				<label class="control-label">Sponsors</label>
+
+				<textarea class="form-control" id="Sponsors" name="Sponsors"
+					rows="5" th:inline="text">[[${aseriesdetails?.Sponsors}]]</textarea>
+
 
 			</div>
 		</div>

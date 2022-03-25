@@ -26,7 +26,7 @@ import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
 
-@Controller
+@Controller 
 @RequestMapping("collections")
 public class CollectionController extends MainController {
 
@@ -81,6 +81,8 @@ public class CollectionController extends MainController {
 
 		model.addAttribute("collectiondetails", collection);
 
+		System.out.println(collection.getDescription());
+		
 		model.addAttribute("repositories", repositoryService.findAll());
 		model.addAttribute("collectiondetails", collection);
 

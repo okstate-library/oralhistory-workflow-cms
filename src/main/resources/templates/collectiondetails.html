@@ -5,7 +5,7 @@
 	data-target=".navbar-fixed-top">
 <head th:replace="common/header :: navbar" />
 
-<div class="container">
+<div class="container" th:if="${collectiondetails != null}">
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -69,9 +69,12 @@
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Note</label> <input type="text"
-					class="form-control" th:value="*{collectiondetails?.Note}"
-					id="Code" name="Note" />
+				<label class="control-label">Note</label>
+
+
+				<textarea class="form-control" id="Note" name="Note" rows="5"
+					th:inline="text">[[${collectiondetails?.Note}]]</textarea>
+
 			</div>
 
 
@@ -79,9 +82,10 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Description</label> <input type="text"
-					class="form-control" th:value="*{collectiondetails?.Description}"
-					id="Description" name="Description" />
+				<label class="control-label">Description</label>
+
+				<textarea class="form-control" id="Description" name="Description"
+					rows="5" th:inline="text">[[${collectiondetails?.Description}]]</textarea>
 
 			</div>
 		</div>
@@ -108,10 +112,11 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Scope And Content</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.ScopeAndContent}"
-					id="ScopeAndContent" name="ScopeAndContent" />
+				<label class="control-label">Scope And Content</label>
+
+				<textarea class="form-control" id="ScopeAndContent"
+					name="ScopeAndContent" rows="5" th:inline="text">[[${collectiondetails?.ScopeAndContent}]]</textarea>
+
 
 			</div>
 		</div>
@@ -119,10 +124,12 @@
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Custodial History</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.CustodialHistory}"
-					id="CustodialHistory" name="CustodialHistory" />
+				<label class="control-label">Custodial History</label>
+
+				<textarea class="form-control" id="CustodialHistory"
+					name="CustodialHistory" rows="5" th:inline="text">[[${collectiondetails?.CustodialHistory}]]</textarea>
+
+
 			</div>
 
 
@@ -130,10 +137,11 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Acquisition info</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.Acquisitioninfo}"
-					id="Acquisitioninfo" name="Acquisitioninfo" />
+				<label class="control-label">Acquisition info</label>
+
+				<textarea class="form-control" id="Acquisitioninfo"
+					name="Acquisitioninfo" rows="5" th:inline="text">[[${collectiondetails?.Acquisitioninfo}]]</textarea>
+
 
 			</div>
 		</div>
@@ -159,9 +167,13 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Publisher</label> <input type="text"
-					class="form-control" th:value="*{collectiondetails?.Publisher}"
-					id="Publisher" name="Publisher" />
+				<label class="control-label">Publisher</label>
+
+
+				<textarea class="form-control" id="Publisher" name="Publisher"
+					rows="5" th:inline="text">[[${collectiondetails?.Publisher}]]</textarea>
+
+
 
 			</div>
 		</div>
@@ -169,9 +181,11 @@
 		<div class="row  row-striped">
 
 			<div class="col-md-12 form-group">
-				<label class="control-label">Rights</label> <input type="text"
-					class="form-control" th:value="*{collectiondetails?.Rights}"
-					id="Rights" name="Rights" />
+				<label class="control-label">Rights</label>
+
+				<textarea class="form-control" id="Rights" name="Rights" rows="5"
+					th:inline="text">[[${collectiondetails?.Rights}]]</textarea>
+
 			</div>
 
 
@@ -179,10 +193,10 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Preservation Note</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.PreservationNote}"
-					id="PreservationNote" name="PreservationNote" />
+				<label class="control-label">Preservation Note</label>
+				<textarea class="form-control" id="PreservationNote"
+					name="PreservationNote" rows="5" th:inline="text">[[${collectiondetails?.PreservationNote}]]</textarea>
+
 
 			</div>
 		</div>
@@ -207,19 +221,21 @@
 
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Access Restrictions</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.AccessRestrictions}"
-					id="AccessRestrictions" name="AccessRestrictions" />
+				<label class="control-label">Access Restrictions</label>
+
+				<textarea class="form-control" id="AccessRestrictions"
+					name="AccessRestrictions" rows="5" th:inline="text">[[${collectiondetails?.AccessRestrictions}]]</textarea>
+
 
 			</div>
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Preferred Citation</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.PreferredCitation}"
-					id="PreferredCitation" name="PreferredCitation" />
+				<label class="control-label">Preferred Citation</label>
+
+				<textarea class="form-control" id="PreferredCitation"
+					name="PreferredCitation" rows="5" th:inline="text">[[${collectiondetails?.PreferredCitation}]]</textarea>
+
 
 			</div>
 		</div>
@@ -234,10 +250,11 @@
 		</div>
 		<div class="row  row-striped">
 			<div class="col-md-12 form-group">
-				<label class="control-label">Project Process</label> <input
-					type="text" class="form-control"
-					th:value="*{collectiondetails?.ProjectProcess}" id="ProjectProcess"
-					name="ProjectProcess" />
+				<label class="control-label">Project Process</label>
+
+				<textarea class="form-control" id="ProjectProcess"
+					name="ProjectProcess" rows="5" th:inline="text">[[${collectiondetails?.ProjectProcess}]]</textarea>
+
 
 			</div>
 		</div>

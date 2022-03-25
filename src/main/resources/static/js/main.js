@@ -1,4 +1,7 @@
 (function($) {
+	
+
+	document.getElementById("year").innerHTML = new Date().getFullYear();
 	// $.toggleShowPassword = function(options) {
 	// var settings = $.extend({
 	// field : "#password",
@@ -263,6 +266,9 @@ function selectSeriesByCollection() {
 		data : {
 			"collectionId" : collectionId
 		},
+		 beforeSend: function () { // Before we send the request
+				$('#loader').removeClass('hidden')
+				},
 		success : function(data) {
 
 			var seriesDropDown = $('#seriesDropDown'), option = "";
@@ -271,7 +277,7 @@ function selectSeriesByCollection() {
 
 			if (data.length > 1) {
 
-				option = option + "<option value=''> Select Series </option>";
+				option = option + "<option value=''> Select a Series </option>";
 
 			}
 
@@ -281,6 +287,8 @@ function selectSeriesByCollection() {
 			}
 
 			seriesDropDown.append(option);
+			
+			$('#loader').addClass('hidden');
 		},
 		error : function(xhr, status, error) {
 			var err = eval("(" + xhr.responseText + ")");

@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -120,7 +122,7 @@ public class TranscriptionController extends MainController {
 		model.addAttribute("user", user);
 
 		this.messageSetup(model);
-		
+
 		return "validate";
 	}
 
@@ -187,7 +189,9 @@ public class TranscriptionController extends MainController {
 			browsePageObject.setInterviewers(ConvertInterviewersToCheckBoxObject(
 					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
 
-			browsePageObject.setSubjects(ConvertSubjectsToCheckBoxObject(subjectService.findAll()));
+			// browsePageObject.setSubjects(ConvertSubjectsToCheckBoxObject(subjectService.findAll()));
+
+			browsePageObject.setSubjects(getDistinctSubjects(transcriptionService.findAll()));
 
 			browsePageObject.setStatusOnline(ConvertStatusOnlineToCheckBoxObject());
 
@@ -587,6 +591,9 @@ public class TranscriptionController extends MainController {
 		User user = userService.findByUsername(principal.getName());
 		model.addAttribute("user", user);
 
+		model.addAttribute("collections", collectionService.findAll());
+		model.addAttribute("series", seriesService.findAll());
+
 		List<Transcription> transcriptionList = new ArrayList<Transcription>();
 
 		HttpSession session = request.getSession();
@@ -616,6 +623,11 @@ public class TranscriptionController extends MainController {
 		for (String id : ids.split(",")) {
 
 			Transcription newTranscription = transcriptionService.findById(Integer.parseInt(id)).orElse(null);
+
+			if (transcription.getCollectionId() > 0 && transcription.getSeriesId() > 0) {
+				newTranscription.setCollectionId(transcription.getCollectionId());
+				newTranscription.setSeriesId(transcription.getSeriesId());
+			}
 
 			newTranscription.setSentOut(transcription.getSentOut());
 			newTranscription.setIsProductionMasterFileStatus(transcription.getIsProductionMasterFileStatus());
@@ -655,11 +667,13 @@ public class TranscriptionController extends MainController {
 		Transcription transcription = transcriptionService.findById(Integer.parseInt(id)).orElse(null);
 
 		if (transcription != null) {
+
 			// Master data for drop downs
 			model.addAttribute("collections", collectionService.findAll());
 			model.addAttribute("series", seriesService.findAll());
 			model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
 			model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
+			model.addAttribute("interviews", transcriptionService.findAll(true));
 
 			model.addAttribute("transcribers",
 					predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
@@ -710,6 +724,9 @@ public class TranscriptionController extends MainController {
 
 		// DraftSentDate
 		newTranscription.setDraftSentDate(transcription.getDraftSentDate());
+
+		// Is Narrator Received
+		newTranscription.setIsNarratorRevisionReceived(transcription.getIsNarratorRevisionReceived());
 
 		// EditWithCorrectionCompleted
 		newTranscription.setEditWithCorrectionCompleted(transcription.getEditWithCorrectionCompleted());
@@ -799,6 +816,11 @@ public class TranscriptionController extends MainController {
 
 		// InterviewDates
 		newTranscription.setInterviewDates(transcription.getInterviewDates());
+
+		// RelatedInterviews
+		newTranscription.setRelatedInterviews(StringUtil.isNotNullOrNotEmpty(transcription.getRelatedInterviews())
+				? transcription.getRelatedInterviews().replaceAll(",", "; ")
+				: "");
 
 		// Date digital.
 		newTranscription.setConvertToDigitalDate(transcription.getConvertToDigitalDate());
@@ -1071,8 +1093,16 @@ public class TranscriptionController extends MainController {
 		// normalize the file path
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
+		List<String> projectCodeNulls = new ArrayList<String>();
+		List<String> projectCodeExists = new ArrayList<String>();
+		List<String> collectionNames = new ArrayList<String>();
+		List<String> seriesNames = new ArrayList<String>();
+
+		int insertRecordCount = 0;
+
 		// save the file on the local file system
 		try {
+
 			Path path = Paths.get(UPLOAD_DIR + fileName);
 
 			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -1083,35 +1113,74 @@ public class TranscriptionController extends MainController {
 			model.addAttribute("user", user);
 
 			if (transcriptions != null && transcriptions.size() > 1) {
+
+				int index = 0;
+
 				for (Transcription transcription : transcriptions) {
 
-					// Setup collection using collection name
-					Collection collection = collectionService.findByName(transcription.getCollectionName());
+					try {
 
-					if (collection != null) {
-						transcription.setCollectionId(collection.getId());
-					} else {
-						transcription.setCollectionId((short) 1);
+						index++;
+
+						if (transcription.getProjectCode() == null) {
+
+							projectCodeNulls.add(index + "");
+						} else
+
+						{
+							if (transcriptionService.isProjectCodeExists(transcription.getProjectCode())) {
+
+								projectCodeExists.add(transcription.getProjectCode());
+
+								// errorMessage += "Row id " + index + " project code exists.";
+
+							} else {
+								// Setup collection using collection name
+								Collection collection = collectionService.findByName(transcription.getCollectionName());
+
+								if (collection == null) {
+
+									collectionNames.add(transcription.getCollectionName());
+
+								} else {
+									transcription.setCollectionId(collection.getId());
+
+									Series aseries = seriesService.findByName(collection.getId(),
+											transcription.getSeriesName());
+
+									if (aseries != null) {
+
+										transcription.setSeriesId(aseries.getId());
+
+										transcription.setCreatedDate(DateUtil.getTodaySqlDate());
+										transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
+
+										transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
+										transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+										transcriptionService.save(transcription);
+
+										insertRecordCount++;
+
+									} else {
+
+										seriesNames.add(transcription.getSeriesName());
+
+									}
+								}
+
+							}
+
+						}
+
+					} catch (Exception e) {
+
+						System.out.println(index + "Error found " + e.getMessage() + " " + e.toString());
+
 					}
-
-					// Setup Series using series name
-					Series aseries = seriesService.findByName(collection.getId(), transcription.getSeriesName());
-
-					if (aseries != null) {
-						transcription.setSeriesId(aseries.getId());
-					} else {
-						transcription.setSeriesId((short) 1);
-					}
-
-					transcription.setCreatedDate(DateUtil.getTodaySqlDate());
-					transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
-
-					transcription.setCreatedBy(Integer.parseInt(user.getUserId().toString()));
-					transcription.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
-
-					transcriptionService.save(transcription);
 				}
 			}
+
 		} catch (
 
 		IOException e) {
@@ -1119,10 +1188,14 @@ public class TranscriptionController extends MainController {
 		}
 
 		this.errorType = ErrorType.SUCESS;
-		this.message = "You successfully uploaded " + fileName + '!';
+		this.message = insertRecordCount + " number of record successfully import ";
+
+		model.addAttribute("projectCodeNulls", String.join(",", projectCodeNulls));
+		model.addAttribute("projectCodeExists", String.join(",", (new HashSet<String>(projectCodeExists)).toString()));
+		model.addAttribute("collectionNames", String.join(",", (new HashSet<String>(collectionNames)).toString()));
+		model.addAttribute("seriesNames", String.join(",", (new HashSet<String>(seriesNames)).toString()));
 
 		this.messageSetup(model);
-
 		return "import";
 	}
 

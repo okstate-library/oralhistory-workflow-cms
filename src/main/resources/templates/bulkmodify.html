@@ -85,6 +85,41 @@
 				</div>
 			</div>
 
+			<div class="row row-striped">
+
+				<div class="col-md-5 form-group">
+
+					<label for="password" class="control-label">Collection</label> <select
+						class="form-control" id="collectitonDropDown"
+						onchange="selectSeriesByCollection()" name="CollectionId">
+						<option value="">Select Collection</option>
+
+						<option th:each="collection : ${collections}"
+							th:value="${collection.Id}"
+							th:text="${collection.CollectionName}"></option>
+					</select>
+
+
+
+				</div>
+
+				<div class="col-md-2 form-group"></div>
+
+				<div class="col-md-5 form-group">
+
+					<label for="password" class="control-label">Series</label> <select
+						class="form-control" id="seriesDropDown" th:name="SeriesId"
+						>
+						<option value="">Select a Series</option>
+
+						<option th:each="aseries : ${series}" th:value="${aseries.Id}"
+							th:text="${aseries.SeriesName}"></option>
+					</select>
+
+
+				</div>
+			</div>
+
 			<div class="form-group ">
 				<button type="submit"
 					class="btn btn-primary btn-lg btn-block login-button">Submit</button>

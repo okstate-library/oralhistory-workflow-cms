@@ -145,7 +145,7 @@ public class ExcelService {
 				row.createCell(27).setCellValue(transcription.getTranscript());
 				row.createCell(28).setCellValue(transcription.getFileName());
 				row.createCell(29).setCellValue(getBooleanValue(transcription.getIsOnline()));
-				
+
 				row.createCell(30).setCellValue(getBooleanValue(transcription.getIsRosetta()));
 				row.createCell(31).setCellValue(getBooleanValue(transcription.getIsRestriction()));
 				row.createCell(32).setCellValue(transcription.getRestrictionNote());
@@ -156,7 +156,7 @@ public class ExcelService {
 				row.createCell(37).setCellValue(transcription.getEquipmentNumber());
 				row.createCell(38).setCellValue(transcription.getInterviewerNote());
 				row.createCell(39).setCellValue(transcription.getGeneralNote());
-				
+
 				row.createCell(40).setCellValue(getBooleanValue(transcription.getReleaseForm()));
 				row.createCell(41).setCellValue(transcription.getTranscriberAssigned());
 				row.createCell(42).setCellValue(transcription.getAuditCheckCompleted());
@@ -167,8 +167,8 @@ public class ExcelService {
 				row.createCell(47).setCellValue(transcription.getEditWithCorrectionCompleted());
 				row.createCell(48).setCellValue(transcription.getFinalEditCompleted());
 				row.createCell(49).setCellValue(transcription.getFinalSentDate());
-				
-				row.createCell(50).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));			
+
+				row.createCell(50).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));
 				row.createCell(51).setCellValue(transcription.getMetadataDraft());
 				row.createCell(52).setCellValue(transcription.getTranscriptNote());
 				row.createCell(53).setCellValue(getBooleanValue(transcription.getIsAudioFormat()));
@@ -178,7 +178,7 @@ public class ExcelService {
 				row.createCell(57).setCellValue(getBooleanValue(transcription.getIsConvertToDigital()));
 				row.createCell(58).setCellValue(transcription.getConvertToDigitalDate());
 				row.createCell(59).setCellValue(getTranscriptStatus(transcription.getIsProductionMasterFileStatus()));
-				
+
 				row.createCell(60).setCellValue(transcription.getTechnicalSpecification());
 				row.createCell(61).setCellValue(transcription.getMasterFileLocation());
 				row.createCell(62).setCellValue(transcription.getAccessFileLocation());
@@ -211,6 +211,7 @@ public class ExcelService {
 			java.util.Iterator<Row> rowIterator = sheet.iterator();
 
 			boolean isFirstRow = true;
+			int rowCount = 0;
 
 			while (rowIterator.hasNext()) {
 
@@ -218,7 +219,7 @@ public class ExcelService {
 
 				Row row = rowIterator.next();
 
-				if (!isFirstRow) {
+				if (!isFirstRow && row != null) {
 
 					transcription.setTitle(row.getCell(0).getStringCellValue());
 					transcription.setInterviewee(row.getCell(1).getStringCellValue());
@@ -246,7 +247,7 @@ public class ExcelService {
 					transcription.setTranscriberAssigned(checklCellForString(row.getCell(19)));
 					transcription.setTranscriptNote(checklCellForString(row.getCell(20)));
 					transcription.setEquipmentNumber(checklCellForNumeric(row.getCell(21)));
-					transcription.setMetadataDraft(row.getCell(22).getStringCellValue());
+					transcription.setMetadataDraft(checklCellForString(row.getCell(22)));
 
 					transcription.setTranscriptLocation(checklCellForString(row.getCell(23)));
 					transcription.setInterviewerDescription(checklCellForString(row.getCell(24)));
@@ -266,6 +267,15 @@ public class ExcelService {
 					transcription.setIsOnline(checklCellForBooelan(row.getCell(36)));
 					transcription.setIsConvertToDigital(checklCellForBooelan(row.getCell(37)));
 					transcription.setRelationIsPartOf(checklCellForString(row.getCell(38)));
+					transcription.setRelationIsPartOf(checklCellForString(row.getCell(38)));
+
+					transcription.setGeneralNote(checklCellForString(row.getCell(39)));
+					transcription.setTranscriptStatus(checklCellForAccessMediaStatus(row.getCell(40)));
+					transcription.setIsAudioFormat(checklCellForBooelan(row.getCell(41)));
+					transcription.setIsVideoFormat(checklCellForBooelan(row.getCell(42)));
+					transcription.setOriginalMedium(checklCellForString(row.getCell(43)));
+
+					transcription.setIsRosetta(checklCellForBooelan(row.getCell(44)));
 
 					transcriptions.add(transcription);
 
@@ -276,7 +286,9 @@ public class ExcelService {
 
 			file.close();
 		} catch (Exception e) {
+
 			e.printStackTrace();
+
 		}
 
 		return transcriptions;

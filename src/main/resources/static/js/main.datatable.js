@@ -142,7 +142,9 @@ function callTransactionQueueAjaxRequest() {
 						"columnDefs": [
 						      {  "width": "90px",title: "Interviewee(s)" , "targets": 0 },
 						      { "width": "90px", title: "Interviewer(s)" ,"targets": 1 },
-						      { "width": "40px", title: "Interview date(s)" ,"targets": 2 },
+						      { "width": "40px", title: "Interview date(s)" ,"targets": 2 ,"render": function(data, type) {
+					                return type === 'sort' ? moment(data).format("YYYY-MM-DD") : data ;
+					            } },
 						      { "width": "15px", title: "Code" ,"targets": 3 },
 						      { "width": "40px",title: "Transcriber assigned" , "targets": 4 },
 						      { "width": "15px",title: "Priority" , "targets": 5 },
@@ -490,7 +492,9 @@ function callBrowseAjaxRequest() {
 						      {  "width": "90px", title: "Interviewee(s)" , "targets": 0 },
 						      { "width": "90px", title: "Interviewer(s)" ,  "targets": 1 },
 						      { "width": "8px", title: "Code" ,  "targets": 2 },
-						      { "width": "15px",  title: "Interview date(s)" , "targets": 3 },
+						      { "width": "15px",  title: "Interview date(s)" , "targets": 3,"render": function(data, type) {
+					                return type === 'sort' ? moment(data).format("YYYY-MM-DD") : data ;
+					            } },
 						      { "width": "100px",  title: "Collection/ Series" , "targets": 4 },
 						      { "width": "25px", title: "Sent out" ,  "targets": 5 },
 						      { "width": "15px", title: "Online" ,  "targets": 6 },
@@ -559,8 +563,8 @@ function callBrowseAjaxRequest() {
 							"data" : "coverageTemporal"
 						}, ],
 						sort : [ 0, 'desc' ],
-						"lengthMenu" : [ [ 10, 100, 50, 100, 200, -1 ],
-								[ 10, 100, 50, 100, 200, "All" ] ],
+						"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
+								[ 10, 50, 100, 200, "All" ] ],
 						"pageLength" : 10,
 						"select" : {
 					            style: 'multi'

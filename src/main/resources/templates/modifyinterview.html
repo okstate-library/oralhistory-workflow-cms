@@ -50,7 +50,8 @@
 					<label class="control-label">CONTENTdm URL</label> <a
 						th:if="${interviewdetails?.CONTENTdmURL != null}"
 						th:href="*{interviewdetails?.CONTENTdmURL}" target="_blank"
-						class="form-control">[[${interviewdetails?.CONTENTdmURL}]]</a>
+						th:title="*{interviewdetails?.CONTENTdmURL}"
+						class="form-control w100C" >[[${interviewdetails?.CONTENTdmURL}]]</a>
 				</div>
 
 			</div>
@@ -312,6 +313,23 @@
 						</div>
 					</div>
 
+					<div class="col-md-2 form-group"></div>
+
+					<div class="col-md-5 form-group">
+
+						<label class="control-label"> Narrator Revisions Received</label>
+
+						<div class="form-control">
+							<span> <input type="radio"
+								th:checked="*{interviewdetails?.IsNarratorRevisionReceived == 1 ? true : false}"
+								name="IsNarratorRevisionReceived" value="1" /> <label>Yes</label>
+							</span> <span> <input
+								th:checked="*{interviewdetails?.IsNarratorRevisionReceived == 1 ? false : true}"
+								name="IsNarratorRevisionReceived" type="radio" value="0" /> <label>No</label>
+							</span>
+						</div>
+
+					</div>
 				</div>
 
 				<div class="row row-striped">
@@ -402,7 +420,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Reason for priority</label>
 
-						<textarea class="form-control" name="ReasonForPriority"
+						<textarea class="form-control" name="ReasonForPriority" rows="5"
 							th:inline="text">[[${interviewdetails?.ReasonForPriority}]]</textarea>
 					</div>
 				</div>
@@ -418,7 +436,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Transcript note</label>
 
-						<textarea class="form-control" name="TranscriptNote"
+						<textarea class="form-control" name="TranscriptNote" rows="5"
 							th:inline="text">[[${interviewdetails?.TranscriptNote}]]</textarea>
 					</div>
 				</div>
@@ -427,7 +445,8 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Initial note</label>
 
-						<textarea class="form-control" name="InitialNote" th:inline="text">[[${interviewdetails?.InitialNote}]]</textarea>
+						<textarea class="form-control" name="InitialNote" rows="5"
+							th:inline="text">[[${interviewdetails?.InitialNote}]]</textarea>
 					</div>
 				</div>
 
@@ -665,7 +684,7 @@
 				</div>
 
 				<div class="row row-striped">
-					<div class="col-md-12 form-group">
+					<div class="col-md-5 form-group">
 						<label class="control-label">Subjects</label> <br /> <select
 							class="form-control" id="subjects-dropdown" multiple="multiple"
 							th:name="Subject" required>
@@ -674,13 +693,28 @@
 								th:text="${subject.SubjectName}"></option>
 						</select>
 					</div>
+
+					<div class="col-md-2 form-group"></div>
+
+					<div class="col-md-5 form-group">
+						<label class="control-label">Related Interviews</label> <br /> <select
+							class="form-control" id="interviews-dropdown" multiple="multiple"
+							th:name="RelatedInterviews">
+							<option th:each="interview : ${interviews}"
+								th:value="${interview.Id}"
+								th:text="${interview.Interviewee + interview.InterviewDates }"></option>
+						</select>
+
+					</div>
+
 				</div>
 
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
 						<label class="control-label">Keywords</label>
 
-						<textarea class="form-control" name="Keywords" th:inline="text">[[${interviewdetails?.Keywords}]]</textarea>
+						<textarea class="form-control" name="Keywords" rows="5"
+							th:inline="text">[[${interviewdetails?.Keywords}]]</textarea>
 					</div>
 				</div>
 
@@ -688,7 +722,8 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Description</label>
 
-						<textarea class="form-control" name="Description" th:inline="text">[[${interviewdetails?.Description}]]</textarea>
+						<textarea class="form-control" name="Description" rows="5"
+							th:inline="text">[[${interviewdetails?.Description}]]</textarea>
 					</div>
 				</div>
 
@@ -696,7 +731,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Scope and Contents</label>
 
-						<textarea class="form-control" name="ScopeAndContents"
+						<textarea class="form-control" name="ScopeAndContents" rows="5"
 							th:inline="text">[[${interviewdetails?.ScopeAndContents}]]</textarea>
 					</div>
 				</div>
@@ -705,7 +740,8 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Rights</label>
 
-						<textarea class="form-control" name="Rights" th:inline="text">[[${interviewdetails?.Rights}]]</textarea>
+						<textarea class="form-control" name="Rights" rows="5"
+							th:inline="text">[[${interviewdetails?.Rights}]]</textarea>
 					</div>
 				</div>
 
@@ -947,7 +983,7 @@
 				<div class="row row-striped">
 					<div class="col-md-12 form-group">
 						<label class="control-label">Restriction note</label>
-						<textarea class="form-control" name="RestrictionNote"
+						<textarea class="form-control" name="RestrictionNote" rows="5"
 							th:inline="text">[[${interviewdetails?.RestrictionNote}]]</textarea>
 					</div>
 				</div>
@@ -977,7 +1013,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Dark archive note</label>
 
-						<textarea class="form-control" name="DarkArchiveNote"
+						<textarea class="form-control" name="DarkArchiveNote" rows="5"
 							th:inline="text">[[${interviewdetails?.DarkArchiveNote}]]</textarea>
 					</div>
 
@@ -1080,7 +1116,7 @@
 						<label class="control-label">Interviewer description</label>
 
 						<textarea class="form-control" name="InterviewerDescription"
-							th:inline="text">[[${interviewdetails?.InterviewerDescription}]]</textarea>
+							rows="5" th:inline="text">[[${interviewdetails?.InterviewerDescription}]]</textarea>
 					</div>
 				</div>
 
@@ -1088,7 +1124,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Interviewer keywords</label>
 
-						<textarea class="form-control" name="InterviewerKeywords"
+						<textarea class="form-control" name="InterviewerKeywords" rows="5"
 							th:inline="text">[[${interviewdetails?.InterviewerKeywords}]]</textarea>
 					</div>
 				</div>
@@ -1097,7 +1133,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Interviewer subjects</label>
 
-						<textarea class="form-control" name="InterviewerSubjects"
+						<textarea class="form-control" name="InterviewerSubjects" rows="5"
 							th:inline="text">[[${interviewdetails?.InterviewerSubjects}]]</textarea>
 					</div>
 				</div>
@@ -1106,7 +1142,7 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">Interviewer notes</label>
 
-						<textarea class="form-control" name="InterviewerNote"
+						<textarea class="form-control" name="InterviewerNote" rows="5"
 							th:inline="text">[[${interviewdetails?.InterviewerNote}]]</textarea>
 					</div>
 				</div>
@@ -1115,7 +1151,8 @@
 					<div class="col-md-12 form-group">
 						<label class="control-label">General notes</label>
 
-						<textarea class="form-control" name="GeneralNote" th:inline="text">[[${interviewdetails?.GeneralNote}]]</textarea>
+						<textarea class="form-control" name="GeneralNote" rows="5"
+							th:inline="text">[[${interviewdetails?.GeneralNote}]]</textarea>
 					</div>
 				</div>
 
@@ -1167,6 +1204,15 @@
 			maxHeight : 450,
 			numberDisplayed : 10,
 		});
+		
+		$('#interviews-dropdown').multiselect({
+			enableFiltering : true,
+			enableCaseInsensitiveFiltering : true,
+			delimiter : '; ',
+			delimiterText : '; ',
+			maxHeight : 450,
+			numberDisplayed : 10,
+		});
 
 	});
 
@@ -1195,5 +1241,20 @@
 		$("#subjects-dropdown option[value='" + e.trim() + "']").prop(
 				"selected", true);
 	});
+	
+	
+	/*<![CDATA[*/
+
+	var relatedInterviews = /*[[${interviewdetails.RelatedInterviews}]]*/"";
+
+	/*]]>*/
+
+	// Setting the interviewers in the drop down.
+	$.each(relatedInterviews.split(";"), function(i, e) {
+
+		$("#interviews-dropdown option[value='" + e.trim() + "']").prop(
+				"selected", true);
+	});
+	
 </script>
 </html>

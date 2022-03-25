@@ -717,6 +717,16 @@ public class Transcription { // implements Serializable
 	public void setIsProductionMasterFileStatus(byte value) {
 		this.IsProductionMasterFileStatus = value;
 	}
+	
+	private byte IsNarratorRevisionReceived;
+
+	public byte getIsNarratorRevisionReceived() {
+		return this.IsNarratorRevisionReceived;
+	}
+
+	public void setIsNarratorRevisionReceived(byte value) {
+		this.IsNarratorRevisionReceived = value;
+	}
 
 	private String TechnicalSpecification;
 
@@ -768,6 +778,16 @@ public class Transcription { // implements Serializable
 		this.SentOut = value;
 	}
 
+	private String RelatedInterviews;
+
+	public String getRelatedInterviews() {
+		return RelatedInterviews;
+	}
+
+	public void setRelatedInterviews(String value) {
+		this.RelatedInterviews = value;
+	}
+	
 	private int CreatedBy;
 
 	public int getCreatedBy() {
