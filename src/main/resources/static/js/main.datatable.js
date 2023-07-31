@@ -137,6 +137,7 @@ function callTransactionQueueAjaxRequest() {
 						buttons : [ 'excel', 'pdf' ],
 						dom: 'Blfrtip',
 						data : data,
+						order: [[2, 'desc']],
 						orderCellsTop: true,
 				        fixedHeader: true,
 						"columnDefs": [
@@ -509,7 +510,7 @@ function callBrowseAjaxRequest() {
 
 						{
 							"data" : "interviewee",
-							'render' : getLink
+							'render' : getLinkForBrowse
 						}, {
 							"data" : "interviewer",
 							"render" : function( data, type, full ) {
@@ -801,6 +802,12 @@ function getBooleanImage(data, type, full, meta) {
 }
 
 function getLink(index, row, data) {
+
+	return '<a target="_blank" onclick="return false;" href="modifyinterview/' + data.id
+			+ '">' + data.interviewee + '</a>'
+}
+
+function getLinkForBrowse(index, row, data) {
 
 	return '<a target="_blank" href="modifyinterview/' + data.id
 			+ '">' + data.interviewee + '</a>'

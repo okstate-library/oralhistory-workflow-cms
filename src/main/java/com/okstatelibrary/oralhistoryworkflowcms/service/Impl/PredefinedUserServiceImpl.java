@@ -11,7 +11,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.okstatelibrary.oralhistoryworkflowcms.entity.Medium;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.PredefinedUser;
 import com.okstatelibrary.oralhistoryworkflowcms.repository.PredefineRepository;
 import com.okstatelibrary.oralhistoryworkflowcms.service.PredefinedUserService;

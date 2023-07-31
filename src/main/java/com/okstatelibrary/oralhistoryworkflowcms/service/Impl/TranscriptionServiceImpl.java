@@ -1,6 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +30,9 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public List<Transcription> findAll(boolean isTranscripted) {
-		return transcriptionRepository.findAll().stream()
-				.filter(u -> u.getSentOut()== (byte) (isTranscripted ? 1 : 0)).collect(Collectors.toList());
+	public List<Transcription> findAll(boolean isSentOut) {
+		return transcriptionRepository.findAll().stream().filter(u -> u.getSentOut() == (byte) (isSentOut ? 1 : 0))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	public List<Transcription> findRecentlyAdded(long userId) {
 
 		List<Transcription> list = this.findAll().stream().filter(u -> u.getCreatedBy() == userId)
+				.sorted(Comparator.comparing(Transcription::getUpdatedDate).reversed()).limit(10)
 				.collect(Collectors.toList());
 
 		if (list != null || list.size() > 0) {
@@ -119,13 +121,12 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	@Override
 	public boolean isRecordsExistsBySuject(String subjectName) {
 
-		List<Transcription> list = this.findAll().stream()
-				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getSubject()) ? u.getSubject().contains(subjectName)
-						: false)
+		List<Transcription> list = this.findAll().stream().filter(
+				u -> StringUtil.isNotNullOrNotEmpty(u.getSubject()) ? u.getSubject().contains(subjectName) : false)
 				.collect(Collectors.toList());
 
 		return list != null && list.size() > 0 ? true : false;
-		
+
 	}
 
 	@Override
@@ -151,7 +152,8 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	public boolean isRecordsExistsByOriginalMedium(String medium) {
 
 		List<Transcription> list = this.findAll().stream()
-				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getOriginalMedium()) ? u.getOriginalMedium().contains(medium)
+				.filter(u -> StringUtil.isNotNullOrNotEmpty(u.getOriginalMedium())
+						? u.getOriginalMedium().contains(medium)
 						: false)
 				.collect(Collectors.toList());
 
@@ -367,7 +369,9 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 			for (String subject : allsubjects) {
 
-				subjectPredicates.add(c -> c.getSubject() != null ?  c.getSubject().toLowerCase().contains(subject.toLowerCase()) : true);
+				subjectPredicates
+						.add(c -> c.getSubject() != null ? c.getSubject().toLowerCase().contains(subject.toLowerCase())
+								: true);
 			}
 		}
 
@@ -432,7 +436,8 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 				boolean isFoundReplace = false;
 
-				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle())
+						&& transcription.getTitle().contains(find)) {
 					transcription.setTitle(transcription.getTitle().replace(find, replace));
 					isFoundReplace = true;
 				}
@@ -467,7 +472,8 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				break;
 			case Title:
 
-				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle()) && transcription.getTitle().contains(find)) {
+				if (StringUtil.isNotNullOrNotEmpty(transcription.getTitle())
+						&& transcription.getTitle().contains(find)) {
 					transcription.setTitle(transcription.getTitle().replace(find, replace));
 
 					transcriptionRepository.save(transcription);
@@ -510,6 +516,12 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 		return recordCount;
 
+	}
+
+	@Override
+	public List<Transcription> findPublic() {
+		return transcriptionRepository.findAll().stream().filter(u -> u.getIsPublic() == (byte) (1))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.okstatelibrary.oralhistoryworkflowcms.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -38,6 +39,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +55,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 import com.okstatelibrary.oralhistoryworkflowcms.entity.ui.*;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.*;
@@ -188,8 +192,6 @@ public class TranscriptionController extends MainController {
 
 			browsePageObject.setInterviewers(ConvertInterviewersToCheckBoxObject(
 					predefinedUserService.findAllByType(PredefinedUserType.INTERVIEWER.getCode())));
-
-			// browsePageObject.setSubjects(ConvertSubjectsToCheckBoxObject(subjectService.findAll()));
 
 			browsePageObject.setSubjects(getDistinctSubjects(transcriptionService.findAll()));
 
@@ -416,20 +418,6 @@ public class TranscriptionController extends MainController {
 		return checkBoxObjectList;
 	}
 
-	private List<CheckBoxObject> ConvertSubjectsToCheckBoxObject(List<Subject> subjects) {
-
-		List<CheckBoxObject> checkBoxObjectList = new ArrayList<CheckBoxObject>();
-
-		for (Subject subject : subjects) {
-
-			checkBoxObjectList
-					.add(new CheckBoxObject(subject.getId(), subject.getSubjectName(), subject.getSubjectName()));
-
-		}
-
-		return checkBoxObjectList;
-	}
-
 	// Utility function
 	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
@@ -561,6 +549,33 @@ public class TranscriptionController extends MainController {
 				transcription.setType(collection.getType());
 			}
 
+			// Read the JSON file that contains default values and fill the
+			// new interview record.
+			Gson gson = new Gson();
+
+			JsonReader reader = null;
+
+			File file = null;
+
+			try {
+
+				file = ResourceUtils.getFile("classpath:static/assets/defaultvalues.json");
+
+				reader = new JsonReader(new FileReader(file));
+
+				DefaultValues data = gson.fromJson(reader, DefaultValues.class);
+
+				transcription.setRights(data.getRights());
+				transcription.setPublisher(data.getPublisher());
+				transcription.setFormat(data.getFormat());
+				transcription.setType(data.getType());
+				transcription.setLanguage(data.getLanguage());
+
+			} catch (FileNotFoundException e) {
+
+				e.printStackTrace();
+			}
+
 			Transcription trans = transcriptionService.save(transcription);
 
 			if (trans != null && trans.getId() > 0) {
@@ -629,6 +644,7 @@ public class TranscriptionController extends MainController {
 				newTranscription.setSeriesId(transcription.getSeriesId());
 			}
 
+			newTranscription.setIsPublic(transcription.getIsPublic());
 			newTranscription.setSentOut(transcription.getSentOut());
 			newTranscription.setIsProductionMasterFileStatus(transcription.getIsProductionMasterFileStatus());
 			newTranscription.setIsOnline(transcription.getIsOnline());
@@ -704,8 +720,8 @@ public class TranscriptionController extends MainController {
 
 		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
 
-		// Title
-		newTranscription.setTranscriptStatus(transcription.getTranscriptStatus());
+//		// Title
+//		newTranscription.setTranscriptStatus(transcription.getTranscriptStatus());
 
 		// Transcriber Assigned
 		newTranscription.setTranscriberAssigned(transcription.getTranscriberAssigned());
@@ -749,9 +765,6 @@ public class TranscriptionController extends MainController {
 		// ReasonForPriority
 		newTranscription.setReasonForPriority(transcription.getReasonForPriority());
 
-		// TranscriptLocation
-		newTranscription.setTranscriptLocation(transcription.getTranscriptLocation());
-
 		// TranscriptNote
 		newTranscription.setTranscriptNote(transcription.getTranscriptNote());
 
@@ -767,9 +780,24 @@ public class TranscriptionController extends MainController {
 
 		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
 
-		// Media
+		// Recording format
 		newTranscription.setIsAudioFormat(transcription.getIsAudioFormat());
 		newTranscription.setIsVideoFormat(transcription.getIsVideoFormat());
+
+		// Equipment Number
+		newTranscription.setEquipmentNumber(transcription.getEquipmentNumber());
+
+		// Audio and video equipment used
+		newTranscription.setAudioEquipmentUsed(transcription.getAudioEquipmentUsed());
+		newTranscription.setVideoEquipmentUsed(transcription.getVideoEquipmentUsed());
+
+		// Audio and video original duration
+		newTranscription.setOriginalAudioDuration(transcription.getOriginalAudioDuration());
+		newTranscription.setOriginalVideoDuration(transcription.getOriginalVideoDuration());
+
+		// Audio and video edited duration
+		newTranscription.setEditedAudioDuration(transcription.getEditedAudioDuration());
+		newTranscription.setEditedVideoDuration(transcription.getEditedVideoDuration());
 
 		// Born digital
 		newTranscription.setIsBornDigital(transcription.getIsBornDigital());
@@ -788,13 +816,25 @@ public class TranscriptionController extends MainController {
 			newTranscription.setConvertToDigitalDate(transcription.getConvertToDigitalDate());
 		}
 
+		// Digitization Note
+		newTranscription.setDigitizationNote(transcription.getDigitizationNote());
+
+		// Transcript Size
+		newTranscription.setTranscriptSize(transcription.getTranscriptSize());
+
+		// Images details
+		newTranscription.setNumberOfImages(transcription.getNumberOfImages());
+		newTranscription.setImagesNote(transcription.getImagesNote());
+
+		// Documents details
+		newTranscription.setNumberOfDocuments(transcription.getNumberOfDocuments());
+		newTranscription.setDocumentsNote(transcription.getDocumentsNote());
+
 		// Access media status
 		newTranscription.setIsProductionMasterFileStatus(transcription.getIsProductionMasterFileStatus());
 
 		// Specification and file locations
 		newTranscription.setTechnicalSpecification(transcription.getTechnicalSpecification());
-		newTranscription.setMasterFileLocation(transcription.getMasterFileLocation());
-		newTranscription.setAccessFileLocation(transcription.getAccessFileLocation());
 
 		return submitTranscription(newTranscription);
 	}
@@ -851,9 +891,6 @@ public class TranscriptionController extends MainController {
 		// ProjectCode
 		newTranscription.setProjectCode(transcription.getProjectCode());
 
-		// Identifier
-		newTranscription.setIdentifier(transcription.getIdentifier());
-
 		// CoverageTemporal
 		newTranscription.setCoverageTemporal(transcription.getCoverageTemporal());
 
@@ -887,11 +924,17 @@ public class TranscriptionController extends MainController {
 		// IsOnline
 		newTranscription.setIsOnline(transcription.getIsOnline());
 
+		// OnlineDate
+		newTranscription.setOnlineDate(transcription.getOnlineDate());
+
 		// IsRosetta
 		newTranscription.setIsRosetta(transcription.getIsRosetta());
 
 		// Release Form
 		newTranscription.setReleaseForm(transcription.getReleaseForm());
+
+		// IsPublic
+		newTranscription.setIsPublic(transcription.getIsPublic());
 
 		// Is Restriction
 		newTranscription.setIsRestriction(transcription.getIsRestriction());
@@ -905,22 +948,29 @@ public class TranscriptionController extends MainController {
 		// Dark Archive Note
 		newTranscription.setDarkArchiveNote(transcription.getDarkArchiveNote());
 
-		// Recording format
-		newTranscription.setIsAudioFormat(transcription.getIsAudioFormat());
-		newTranscription.setIsVideoFormat(transcription.getIsVideoFormat());
-
-		// Equipment Number
-		newTranscription.setEquipmentNumber(transcription.getEquipmentNumber());
-
-		// Audio and video equipment used
-		newTranscription.setAudioEquipmentUsed(transcription.getAudioEquipmentUsed());
-		newTranscription.setVideoEquipmentUsed(transcription.getVideoEquipmentUsed());
-
 		// CONTENTdmURL
 		newTranscription.setCONTENTdmURL(transcription.getCONTENTdmURL());
 
+		// YouTube URL
+		newTranscription.setYouTubeURL(transcription.getYouTubeURL());
+
+		// OHMS URL
+		newTranscription.setOHMSURL(transcription.getOHMSURL());
+
 		// TranscriptLocation
 		newTranscription.setTranscriptLocation(transcription.getTranscriptLocation());
+
+		// General Note
+		newTranscription.setGeneralNote(transcription.getGeneralNote());
+
+		return submitTranscription(newTranscription);
+	}
+
+	@RequestMapping(value = "/modifyfieldnotes", method = RequestMethod.POST)
+	public String modifyfieldnotes(@Valid Transcription transcription, BindingResult bindingResult, Model model,
+			Principal principal) throws ParseException {
+
+		Transcription newTranscription = transcriptionService.findById(transcription.getId()).orElse(null);
 
 		// Interviewer Description
 		newTranscription.setInterviewerDescription(transcription.getInterviewerDescription());
@@ -935,7 +985,7 @@ public class TranscriptionController extends MainController {
 		newTranscription.setInterviewerNote(transcription.getInterviewerNote());
 
 		// General Note
-		newTranscription.setGeneralNote(transcription.getGeneralNote());
+		newTranscription.setInterviewContext(transcription.getInterviewContext());
 
 		return submitTranscription(newTranscription);
 	}
@@ -943,7 +993,7 @@ public class TranscriptionController extends MainController {
 	private String submitTranscription(Transcription newTranscription) {
 
 		this.errorType = ErrorType.SUCESS;
-		this.message = "Interview details added successfully!";
+		this.message = "Interview details updated successfully!";
 
 		transcriptionService.save(newTranscription);
 
@@ -1093,7 +1143,7 @@ public class TranscriptionController extends MainController {
 		// normalize the file path
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-		List<String> projectCodeNulls = new ArrayList<String>();
+		List<String> requiredFeildsNullRecords = new ArrayList<String>();
 		List<String> projectCodeExists = new ArrayList<String>();
 		List<String> collectionNames = new ArrayList<String>();
 		List<String> seriesNames = new ArrayList<String>();
@@ -1122,12 +1172,16 @@ public class TranscriptionController extends MainController {
 
 						index++;
 
-						if (transcription.getProjectCode() == null) {
+						if (!StringUtil.isNotNullOrNotEmpty(transcription.getProjectCode())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewer())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewee())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewDates())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getCollectionName())
+								|| transcription.getReleaseForm() == (byte) -1) {
 
-							projectCodeNulls.add(index + "");
-						} else
+							requiredFeildsNullRecords.add(index + "");
 
-						{
+						} else {
 							if (transcriptionService.isProjectCodeExists(transcription.getProjectCode())) {
 
 								projectCodeExists.add(transcription.getProjectCode());
@@ -1143,6 +1197,7 @@ public class TranscriptionController extends MainController {
 									collectionNames.add(transcription.getCollectionName());
 
 								} else {
+
 									transcription.setCollectionId(collection.getId());
 
 									Series aseries = seriesService.findByName(collection.getId(),
@@ -1188,12 +1243,16 @@ public class TranscriptionController extends MainController {
 		}
 
 		this.errorType = ErrorType.SUCESS;
-		this.message = insertRecordCount + " number of record successfully import ";
+		this.message = insertRecordCount + " record(s) successfully import";
 
-		model.addAttribute("projectCodeNulls", String.join(",", projectCodeNulls));
+		String msg = (requiredFeildsNullRecords.size() > 0 ? "Excel index(es) " : "")
+				+ String.join(",", requiredFeildsNullRecords);
+
+		model.addAttribute("requiredFeildsNullRecords", msg);
 		model.addAttribute("projectCodeExists", String.join(",", (new HashSet<String>(projectCodeExists)).toString()));
 		model.addAttribute("collectionNames", String.join(",", (new HashSet<String>(collectionNames)).toString()));
-		model.addAttribute("seriesNames", String.join(",", (new HashSet<String>(seriesNames)).toString()));
+		// model.addAttribute("seriesNames", String.join(",", (new
+		// HashSet<String>(seriesNames)).toString()));
 
 		this.messageSetup(model);
 		return "import";

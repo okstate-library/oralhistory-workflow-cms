@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,6 +23,8 @@ import com.okstatelibrary.oralhistoryworkflowcms.entity.*;
 public class ExcelService {
 
 	public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+	static DataFormatter formatter = new DataFormatter();
 
 	public static ByteArrayInputStream collecctionsToExcel(List<Collection> collections) {
 
@@ -89,14 +92,13 @@ public class ExcelService {
 				"Interviewee", "Interviewer", "Title", "Description", "Subject", "Keywords", "Priority",
 				"Reason for priority", "Initial note", "Interviewer description", "Interviewer keywords",
 				"Interviewer subjects", "Scope and contents", "Format", "Type", "Publisher", "Relation is part of",
-				"Coverage spatial", "Coverage temporal", "Rights", "Language", "Identifier", "Transcript", "File name",
-				"Online", "Rosetta", "Rosetta form", "Restriction", "Restriction note", "Dark archive",
-				"Dark archive note", "Audio equipment used", "Video equipment used", "Equipment number",
-				"Interviewer note", "General note", "Release form", "Transcriber assigned", "Audit check", "First edit",
-				"Second edit", "Third edit", "Draft sent", "Edit with correction", "Final edit", "Final sent", "Status",
-				"Metadata draft", "Transcript note", "Audio format", "Video format", "Born digital", "Original Medium",
-				"Convert to digital", "Convert date", "Access media status", "Technical specification", "Master file",
-				"Access file", "Sent out" };
+				"Coverage spatial", "Coverage temporal", "Rights", "Language", "Transcript", "File name", "Online",
+				"Rosetta", "Restriction", "Restriction note", "Dark archive", "Dark archive note",
+				"Audio equipment used", "Video equipment used", "Equipment number", "Interviewer note", "General note",
+				"Release form", "Transcriber assigned", "Audit check", "First edit", "Second edit", "Third edit",
+				"Draft sent", "Edit with correction", "Final edit", "Final sent", "Metadata draft", "Transcript note",
+				"Audio format", "Video format", "Born digital", "Original Medium", "Convert to digital", "Convert date",
+				"Access media status", "Technical specification", "Sent out" };
 
 		try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
 			Sheet sheet = workbook.createSheet("transcriptions");
@@ -141,48 +143,44 @@ public class ExcelService {
 				row.createCell(23).setCellValue(transcription.getCoverageTemporal());
 				row.createCell(24).setCellValue(transcription.getRights());
 				row.createCell(25).setCellValue(transcription.getLanguage());
-				row.createCell(26).setCellValue(transcription.getIdentifier());
-				row.createCell(27).setCellValue(transcription.getTranscript());
-				row.createCell(28).setCellValue(transcription.getFileName());
-				row.createCell(29).setCellValue(getBooleanValue(transcription.getIsOnline()));
+				row.createCell(26).setCellValue(transcription.getTranscript());
+				row.createCell(27).setCellValue(transcription.getFileName());
+				row.createCell(28).setCellValue(getBooleanValue(transcription.getIsOnline()));
+				row.createCell(29).setCellValue(getBooleanValue(transcription.getIsRosetta()));
 
-				row.createCell(30).setCellValue(getBooleanValue(transcription.getIsRosetta()));
-				row.createCell(31).setCellValue(getBooleanValue(transcription.getIsRestriction()));
-				row.createCell(32).setCellValue(transcription.getRestrictionNote());
-				row.createCell(33).setCellValue(getBooleanValue(transcription.getIsDarkArchive()));
-				row.createCell(34).setCellValue(transcription.getDarkArchiveNote());
-				row.createCell(35).setCellValue(transcription.getAudioEquipmentUsed());
-				row.createCell(36).setCellValue(transcription.getVideoEquipmentUsed());
-				row.createCell(37).setCellValue(transcription.getEquipmentNumber());
-				row.createCell(38).setCellValue(transcription.getInterviewerNote());
-				row.createCell(39).setCellValue(transcription.getGeneralNote());
+				row.createCell(30).setCellValue(getBooleanValue(transcription.getIsRestriction()));
+				row.createCell(31).setCellValue(transcription.getRestrictionNote());
+				row.createCell(32).setCellValue(getBooleanValue(transcription.getIsDarkArchive()));
+				row.createCell(33).setCellValue(transcription.getDarkArchiveNote());
+				row.createCell(34).setCellValue(transcription.getAudioEquipmentUsed());
+				row.createCell(35).setCellValue(transcription.getVideoEquipmentUsed());
+				row.createCell(36).setCellValue(transcription.getEquipmentNumber());
+				row.createCell(37).setCellValue(transcription.getInterviewerNote());
+				row.createCell(38).setCellValue(transcription.getGeneralNote());
+				row.createCell(39).setCellValue(getBooleanValue(transcription.getReleaseForm()));
 
-				row.createCell(40).setCellValue(getBooleanValue(transcription.getReleaseForm()));
-				row.createCell(41).setCellValue(transcription.getTranscriberAssigned());
-				row.createCell(42).setCellValue(transcription.getAuditCheckCompleted());
-				row.createCell(43).setCellValue(transcription.getFirstEditCompleted());
-				row.createCell(44).setCellValue(transcription.getSecondEditCompleted());
-				row.createCell(45).setCellValue(transcription.getThirdEditCompleted());
-				row.createCell(46).setCellValue(transcription.getDraftSentDate());
-				row.createCell(47).setCellValue(transcription.getEditWithCorrectionCompleted());
-				row.createCell(48).setCellValue(transcription.getFinalEditCompleted());
-				row.createCell(49).setCellValue(transcription.getFinalSentDate());
+				row.createCell(40).setCellValue(transcription.getTranscriberAssigned());
+				row.createCell(41).setCellValue(transcription.getAuditCheckCompleted());
+				row.createCell(42).setCellValue(transcription.getFirstEditCompleted());
+				row.createCell(43).setCellValue(transcription.getSecondEditCompleted());
+				row.createCell(44).setCellValue(transcription.getThirdEditCompleted());
+				row.createCell(45).setCellValue(transcription.getDraftSentDate());
+				row.createCell(46).setCellValue(transcription.getEditWithCorrectionCompleted());
+				row.createCell(47).setCellValue(transcription.getFinalEditCompleted());
+				row.createCell(48).setCellValue(transcription.getFinalSentDate());
+				// row.createCell(49).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));
+				row.createCell(49).setCellValue(transcription.getMetadataDraft());
 
-				row.createCell(50).setCellValue(getTranscriptStatus(transcription.getTranscriptStatus()));
-				row.createCell(51).setCellValue(transcription.getMetadataDraft());
-				row.createCell(52).setCellValue(transcription.getTranscriptNote());
-				row.createCell(53).setCellValue(getBooleanValue(transcription.getIsAudioFormat()));
-				row.createCell(54).setCellValue(getBooleanValue(transcription.getIsVideoFormat()));
-				row.createCell(55).setCellValue(getBooleanValue(transcription.getIsBornDigital()));
-				row.createCell(56).setCellValue(transcription.getOriginalMedium());
-				row.createCell(57).setCellValue(getBooleanValue(transcription.getIsConvertToDigital()));
-				row.createCell(58).setCellValue(transcription.getConvertToDigitalDate());
-				row.createCell(59).setCellValue(getTranscriptStatus(transcription.getIsProductionMasterFileStatus()));
-
-				row.createCell(60).setCellValue(transcription.getTechnicalSpecification());
-				row.createCell(61).setCellValue(transcription.getMasterFileLocation());
-				row.createCell(62).setCellValue(transcription.getAccessFileLocation());
-				row.createCell(63).setCellValue(getBooleanValue(transcription.getSentOut()));
+				row.createCell(50).setCellValue(transcription.getTranscriptNote());
+				row.createCell(51).setCellValue(getBooleanValue(transcription.getIsAudioFormat()));
+				row.createCell(52).setCellValue(getBooleanValue(transcription.getIsVideoFormat()));
+				row.createCell(53).setCellValue(getBooleanValue(transcription.getIsBornDigital()));
+				row.createCell(54).setCellValue(transcription.getOriginalMedium());
+				row.createCell(55).setCellValue(getBooleanValue(transcription.getIsConvertToDigital()));
+				row.createCell(56).setCellValue(transcription.getConvertToDigitalDate());
+				row.createCell(57).setCellValue(getTranscriptStatus(transcription.getIsProductionMasterFileStatus()));
+				row.createCell(58).setCellValue(transcription.getTechnicalSpecification());
+				row.createCell(59).setCellValue(getBooleanValue(transcription.getSentOut()));
 
 			}
 
@@ -210,8 +208,11 @@ public class ExcelService {
 			// Iterate through each rows one by one
 			java.util.Iterator<Row> rowIterator = sheet.iterator();
 
+			String[] headings = { "Title", "Interviewees", "Interviewers", "Dates", "Project Code", "Collection",
+					"Description", "	Subjects", "Keywords", "Location of Interview", "Format", "	Type",
+					"Release Form" };
+
 			boolean isFirstRow = true;
-			int rowCount = 0;
 
 			while (rowIterator.hasNext()) {
 
@@ -221,61 +222,22 @@ public class ExcelService {
 
 				if (!isFirstRow && row != null) {
 
-					transcription.setTitle(row.getCell(0).getStringCellValue());
-					transcription.setInterviewee(row.getCell(1).getStringCellValue());
-					transcription.setInterviewer(row.getCell(2).getStringCellValue());
-					transcription.setInterviewDates(row.getCell(3).getStringCellValue());
-					transcription.setConvertToDigitalDate(checklCellForString(row.getCell(4)));
-					transcription.setSubject(checklCellForString(row.getCell(5)));
+					transcription.setTitle(getCellData(sheet, row, headings[0]));
+					transcription.setInterviewee(getCellData(sheet, row, headings[1]));
+					transcription.setInterviewer(getCellData(sheet, row, headings[2]));
+					transcription.setInterviewDates(getCellData(sheet, row, headings[3]));
+					transcription.setProjectCode(getCellData(sheet, row, headings[4]));
 
-					transcription.setKeywords(checklCellForString(row.getCell(6)));
-					transcription.setDescription(checklCellForString(row.getCell(7)));
-					transcription.setScopeAndContents(checklCellForString(row.getCell(8)));
-					transcription.setFormat(checklCellForString(row.getCell(9)));
-					transcription.setType(checklCellForString(row.getCell(10)));
-					transcription.setPublisher(checklCellForString(row.getCell(11)));
+					transcription.setCollectionName(getCellData(sheet, row, headings[5]));
+					transcription.setDescription(getCellData(sheet, row, headings[6]));
+					transcription.setSubject(getCellData(sheet, row, headings[7]));
+					transcription.setKeywords(getCellData(sheet, row, headings[8]));
+					transcription.setTranscriptLocation(getCellData(sheet, row, headings[9]));
 
-					transcription.setCollectionName(row.getCell(12).getStringCellValue());
-					transcription.setSeriesName(checklCellForString(row.getCell(13)));
+					transcription.setFormat(getCellData(sheet, row, headings[10]));
+					transcription.setType(getCellData(sheet, row, headings[11]));
 
-					transcription.setCoverageSpatial(checklCellForString(row.getCell(14)));
-					transcription.setCoverageTemporal(checklCellForString(row.getCell(15)));
-					transcription.setRights(checklCellForString(row.getCell(16)));
-					transcription.setLanguage(checklCellForString(row.getCell(17)));
-					transcription.setProjectCode(checklCellForString(row.getCell(18)));
-
-					transcription.setTranscriberAssigned(checklCellForString(row.getCell(19)));
-					transcription.setTranscriptNote(checklCellForString(row.getCell(20)));
-					transcription.setEquipmentNumber(checklCellForNumeric(row.getCell(21)));
-					transcription.setMetadataDraft(checklCellForString(row.getCell(22)));
-
-					transcription.setTranscriptLocation(checklCellForString(row.getCell(23)));
-					transcription.setInterviewerDescription(checklCellForString(row.getCell(24)));
-					transcription.setInterviewerKeywords(checklCellForString(row.getCell(25)));
-					transcription.setInterviewerSubjects(checklCellForString(row.getCell(26)));
-					transcription.setReleaseForm(checklCellForBooelan(row.getCell(27)));
-					transcription.setIsRestriction(checklCellForBooelan(row.getCell(28)));
-
-					transcription.setRestrictionNote(checklCellForString(row.getCell(29)));
-					transcription.setAudioEquipmentUsed(checklCellForString(row.getCell(30)));
-					transcription.setVideoEquipmentUsed(checklCellForString(row.getCell(31)));
-					transcription.setInterviewerNote(checklCellForString(row.getCell(32)));
-					transcription.setSentOut(checklCellForBooelan(row.getCell(33)));
-					transcription.setIsProductionMasterFileStatus(checklCellForAccessMediaStatus(row.getCell(34)));
-
-					transcription.setIsBornDigital(checklCellForBooelan((row.getCell(35))));
-					transcription.setIsOnline(checklCellForBooelan(row.getCell(36)));
-					transcription.setIsConvertToDigital(checklCellForBooelan(row.getCell(37)));
-					transcription.setRelationIsPartOf(checklCellForString(row.getCell(38)));
-					transcription.setRelationIsPartOf(checklCellForString(row.getCell(38)));
-
-					transcription.setGeneralNote(checklCellForString(row.getCell(39)));
-					transcription.setTranscriptStatus(checklCellForAccessMediaStatus(row.getCell(40)));
-					transcription.setIsAudioFormat(checklCellForBooelan(row.getCell(41)));
-					transcription.setIsVideoFormat(checklCellForBooelan(row.getCell(42)));
-					transcription.setOriginalMedium(checklCellForString(row.getCell(43)));
-
-					transcription.setIsRosetta(checklCellForBooelan(row.getCell(44)));
+					transcription.setReleaseForm(checklCellForBooelan(getCellData(sheet, row, headings[12])));
 
 					transcriptions.add(transcription);
 
@@ -294,59 +256,41 @@ public class ExcelService {
 		return transcriptions;
 	}
 
-	@SuppressWarnings("deprecation")
-	private static String checklCellForString(Cell c) {
+	public static String getCellData(XSSFSheet sheet, Row row, String colName) {
+		try {
 
-		if (c != null && c.getCellType() == Cell.CELL_TYPE_STRING && c.getStringCellValue().trim().length() > 0) {
+			int col_Num = -1;
 
-			return c.getStringCellValue();
+			Row headeRow = sheet.getRow(0);
+
+			for (int i = 0; i < headeRow.getLastCellNum(); i++) {
+
+				if (headeRow.getCell(i).getStringCellValue().trim().equals(colName.trim())) {
+					col_Num = i;
+					break;
+				}
+			}
+
+			return formatter.formatCellValue(row.getCell(col_Num));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";// "row " + rowNum + " or column " + colNum + " does not exist in Excel";
 		}
-
-		return null;
 	}
 
-	@SuppressWarnings("deprecation")
-	private static byte checklCellForAccessMediaStatus(Cell c) {
+	private static byte checklCellForBooelan(String cellValue) {
 
-		if (c != null && c.getCellType() == Cell.CELL_TYPE_STRING && c.getStringCellValue().trim().length() > 0) {
+		String cellValueLower = cellValue.toLowerCase();
 
-			String cellValue = c.getStringCellValue().toLowerCase();
-
-			if (cellValue.equals("in progress")) {
-				return (byte) 1;
-			}
+		if (cellValueLower.equals("yes") || cellValueLower.equals("y") || cellValueLower.equals("true")) {
+			return (byte) 1;
+		} else if (cellValueLower.equals("no") || cellValueLower.equals("n") || cellValueLower.equals("false")) {
 
 			return (byte) 0;
 		}
 
-		return (byte) 0;
-	}
-
-	@SuppressWarnings("deprecation")
-	private static byte checklCellForBooelan(Cell c) {
-
-		if (c != null && c.getCellType() == Cell.CELL_TYPE_STRING && c.getStringCellValue().trim().length() > 0) {
-
-			String cellValue = c.getStringCellValue().toLowerCase();
-
-			if (cellValue.equals("yes") || cellValue.equals("y")) {
-				return (byte) 1;
-			}
-
-			return (byte) 0;
-		}
-
-		return (byte) 0;
-	}
-
-	@SuppressWarnings("deprecation")
-	private static String checklCellForNumeric(Cell c) {
-
-		if (c != null && c.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			return String.valueOf(c.getNumericCellValue());
-		}
-
-		return null;
+		return (byte) -1;
 	}
 
 	private static String getBooleanValue(byte byteValue) {

@@ -12,7 +12,9 @@ public interface TranscriptionService {
 
 	List<Transcription> findAll();
 
-	List<Transcription> findAll(boolean isTranscripted);
+	List<Transcription> findPublic();
+	
+	List<Transcription> findAll(boolean isSentOut);
 
 	List<Transcription> findAll(String collectionIds, String seriesoptions, String intervieweroptions,
 			String subjects, String darkarchive, String onlineoffline);

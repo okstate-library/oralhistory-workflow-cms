@@ -180,20 +180,21 @@ public class User implements UserDetails {
 		// 6 - Settings
 		// 7 - Delete Interview records
 		// 8 - Dark archive in browse page
+		// 9 - General Tab modification of Collection and Series
 
 		if (this.roleId == 1) // USER
 		{
 			Integer[] sourceArray = { 1, 2, 3 };
 			authorizedList = Arrays.asList(sourceArray);
 
-		} else if (this.roleId == 2) // ADMIN
+		} else if (this.roleId == 2) // STAFF
 		{
 			Integer[] sourceArray = { 1, 2, 3, 4 };
 			authorizedList = Arrays.asList(sourceArray);
 
-		} else if (this.roleId == 3) // STAFF
+		} else if (this.roleId == 3) // ADMIN
 		{
-			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6, 7, 8 };
+			Integer[] sourceArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 			authorizedList = Arrays.asList(sourceArray);
 
 		}

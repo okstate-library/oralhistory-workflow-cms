@@ -256,6 +256,16 @@ public class Transcription { // implements Serializable
 		this.InterviewerSubjects = value;
 	}
 
+	private String InterviewContext;
+
+	public String getInterviewContext() {
+		return this.InterviewContext;
+	}
+
+	public void setInterviewContext(String value) {
+		this.InterviewContext = value;
+	}
+
 	private String ScopeAndContents;
 
 	public String getScopeAndContents() {
@@ -335,7 +345,27 @@ public class Transcription { // implements Serializable
 	public void setCONTENTdmURL(String value) {
 		this.CONTENTdmURL = value;
 	}
-	
+
+	private String OHMSURL;
+
+	public String getOHMSURL() {
+		return this.OHMSURL;
+	}
+
+	public void setOHMSURL(String value) {
+		this.OHMSURL = value;
+	}
+
+	private String YouTubeURL;
+
+	public String getYouTubeURL() {
+		return this.YouTubeURL;
+	}
+
+	public void setYouTubeURL(String value) {
+		this.YouTubeURL = value;
+	}
+
 	private String Rights;
 
 	public String getRights() {
@@ -354,16 +384,6 @@ public class Transcription { // implements Serializable
 
 	public void setLanguage(String value) {
 		this.Language = value;
-	}
-
-	private String Identifier;
-
-	public String getIdentifier() {
-		return this.Identifier;
-	}
-
-	public void setIdentifier(String value) {
-		this.Identifier = value;
 	}
 
 	private String Transcript;
@@ -394,6 +414,16 @@ public class Transcription { // implements Serializable
 
 	public void setIsOnline(byte value) {
 		this.IsOnline = value;
+	}
+
+	private String OnlineDate;
+
+	public String getOnlineDate() {
+		return this.OnlineDate;
+	}
+
+	public void setOnlineDate(String value) {
+		this.OnlineDate = value;
 	}
 
 	private byte IsRosetta;
@@ -606,15 +636,15 @@ public class Transcription { // implements Serializable
 		this.FinalSentDate = value;
 	}
 
-	private byte TranscriptStatus;
-
-	public byte getTranscriptStatus() {
-		return this.TranscriptStatus;
-	}
-
-	public void setTranscriptStatus(byte value) {
-		this.TranscriptStatus = value;
-	}
+//	private byte TranscriptStatus;
+//
+//	public byte getTranscriptStatus() {
+//		return this.TranscriptStatus;
+//	}
+//
+//	public void setTranscriptStatus(byte value) {
+//		this.TranscriptStatus = value;
+//	}
 
 	private String MetadataDraft;
 
@@ -654,6 +684,46 @@ public class Transcription { // implements Serializable
 
 	public void setIsVideoFormat(byte value) {
 		this.IsVideoFormat = value;
+	}
+
+	private String OriginalAudioDuration;
+
+	public String getOriginalAudioDuration() {
+		return this.OriginalAudioDuration;
+	}
+
+	public void setOriginalAudioDuration(String value) {
+		this.OriginalAudioDuration = value;
+	}
+
+	private String OriginalVideoDuration;
+
+	public String getOriginalVideoDuration() {
+		return this.OriginalVideoDuration;
+	}
+
+	public void setOriginalVideoDuration(String value) {
+		this.OriginalVideoDuration = value;
+	}
+
+	private String EditedAudioDuration;
+
+	public String getEditedAudioDuration() {
+		return this.EditedAudioDuration;
+	}
+
+	public void setEditedAudioDuration(String value) {
+		this.EditedAudioDuration = value;
+	}
+
+	private String EditedVideoDuration;
+
+	public String getEditedVideoDuration() {
+		return this.EditedVideoDuration;
+	}
+
+	public void setEditedVideoDuration(String value) {
+		this.EditedVideoDuration = value;
 	}
 
 	private byte IsBornDigital;
@@ -708,6 +778,66 @@ public class Transcription { // implements Serializable
 		this.ConvertToDigitalDate = value;
 	}
 
+	private String DigitizationNote;
+
+	public String getDigitizationNote() {
+		return this.DigitizationNote;
+	}
+
+	public void setDigitizationNote(String value) {
+		this.DigitizationNote = value;
+	}
+
+	private String TranscriptSize;
+
+	public String getTranscriptSize() {
+		return this.TranscriptSize;
+	}
+
+	public void setTranscriptSize(String value) {
+		this.TranscriptSize = value;
+	}
+
+	private String NumberOfImages;
+
+	public String getNumberOfImages() {
+		return this.NumberOfImages;
+	}
+
+	public void setNumberOfImages(String value) {
+		this.NumberOfImages = value;
+	}
+
+	private String ImagesNote;
+
+	public String getImagesNote() {
+		return this.ImagesNote;
+	}
+
+	public void setImagesNote(String value) {
+		this.ImagesNote = value;
+	}
+
+	private String NumberOfDocuments;
+
+	public String getNumberOfDocuments() {
+		return this.NumberOfDocuments;
+	}
+
+	public void setNumberOfDocuments(String value) {
+		this.NumberOfDocuments = value;
+	}
+
+	private String DocumentsNote;
+
+	public String getDocumentsNote() {
+		return this.DocumentsNote;
+	}
+
+	public void setDocumentsNote(String value) {
+		this.DocumentsNote = value;
+	}
+
 	private byte IsProductionMasterFileStatus;
 
 	public byte getIsProductionMasterFileStatus() {
@@ -717,7 +847,7 @@ public class Transcription { // implements Serializable
 	public void setIsProductionMasterFileStatus(byte value) {
 		this.IsProductionMasterFileStatus = value;
 	}
-	
+
 	private byte IsNarratorRevisionReceived;
 
 	public byte getIsNarratorRevisionReceived() {
@@ -736,26 +866,6 @@ public class Transcription { // implements Serializable
 
 	public void setTechnicalSpecification(String value) {
 		this.TechnicalSpecification = value;
-	}
-
-	private String MasterFileLocation;
-
-	public String getMasterFileLocation() {
-		return this.MasterFileLocation;
-	}
-
-	public void setMasterFileLocation(String value) {
-		this.MasterFileLocation = value;
-	}
-
-	private String AccessFileLocation;
-
-	public String getAccessFileLocation() {
-		return this.AccessFileLocation;
-	}
-
-	public void setAccessFileLocation(String value) {
-		this.AccessFileLocation = value;
 	}
 
 	private String TranscriptLocation;
@@ -787,7 +897,17 @@ public class Transcription { // implements Serializable
 	public void setRelatedInterviews(String value) {
 		this.RelatedInterviews = value;
 	}
-	
+
+	private byte IsPublic;
+
+	public byte getIsPublic() {
+		return this.IsPublic;
+	}
+
+	public void setIsPublic(byte value) {
+		this.IsPublic = value;
+	}
+
 	private int CreatedBy;
 
 	public int getCreatedBy() {
