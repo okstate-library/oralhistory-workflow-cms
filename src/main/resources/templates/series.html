@@ -25,6 +25,7 @@
 
 						<th>Collection Name</th>
 						<th>Series Name</th>
+						<th># of Interviews</th>
 						<th>Details</th>
 					</tr>
 				</thead>
@@ -32,7 +33,7 @@
 					<tr data-th-each="aseries : ${series}">
 						<td data-th-text="${aseries.collection.CollectionName}">...</td>
 						<td data-th-text="${aseries.SeriesName}">...</td>
-
+						<td data-th-text="${aseries.NumberOfInterviews}">...</td>
 						<td><a th:href="${'/series/' + aseries.Id}">View</a></td>
 					</tr>
 				</tbody>

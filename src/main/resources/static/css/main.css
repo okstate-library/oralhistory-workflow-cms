@@ -15,6 +15,19 @@ img {
 	margin-right: auto;
 }
 
+#subjects-dropdown {
+	width: 300px; /* Set the desired width */
+	height: 200px; /* Set the desired height */
+	/* Add any other desired styles */
+	background-color: #336699;
+}
+
+.datepicker {
+    width: 300px; /* Set the width to a specific value */
+    max-width: 100%; /* Ensure it doesn't exceed the screen width */
+}
+
+
 .form-basic {
 	max-width: 640px;
 	margin: 0 auto;
@@ -357,6 +370,7 @@ div.hide {
   text-align: center;
 } */
 #footer {
+	margin-top:20px;
 	border-top: 1px solid #e5e5e5;
 	color: #696969;
 	font-size: 0.7em;
@@ -640,6 +654,12 @@ table {
 .w100C:hover {  
     overflow: none;
     width: auto;
+}
+
+.container-border {
+  border-radius: 25px;
+  border: 1px solid #73AD21;
+  padding: 20px;
 }
 
 .dropdown-submenu{position:relative;}

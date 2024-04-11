@@ -34,8 +34,8 @@
 
 			<div class="col-md-5 form-group">
 
-				<label class="control-label">Location of Interview</label> <input type="text"
-					class="form-control" name="TranscriptLocation" />
+				<label class="control-label">Location of Interview</label> <input
+					type="text" class="form-control" name="TranscriptLocation" />
 			</div>
 		</div>
 
@@ -88,7 +88,8 @@
 				<div class="cols-sm-10">
 					<div class="input-group">
 						<select class="form-control" id="collectitonDropDown"
-							onchange="selectSeriesByCollection()" name="CollectionId" required>
+							onchange="selectSeriesByCollection()" name="CollectionId"
+							required>
 							<option value="">Select Collection</option>
 
 							<option th:each="collection : ${collections}"
@@ -107,8 +108,8 @@
 
 				<div class="input-group">
 
-					<select class="form-control" id="seriesDropDown"
-						th:name="SeriesId" required>
+					<select class="form-control" id="seriesDropDown" th:name="SeriesId"
+						required>
 						<option value="">Select a Series</option>
 
 						<option th:each="aseries : ${series}" th:value="${aseries.Id}"
@@ -159,6 +160,67 @@
 		</div>
 
 		<div class="row row-striped">
+			<div class="col-md-5 form-group">
+				<label for="password" class="control-label">Original
+					Audio Duration</label>
+				<!-- <div class="cols-sm-12"> -->
+					<div class="input-group">
+						<textarea rows="2" class="form-control"
+							name="OriginalAudioDuration" maxlength="100" th:inline="text"></textarea>
+					</div>
+
+				<!-- </div> -->
+			</div>
+
+			<div class="col-md-2"></div>
+			<div class="col-md-5 form-group">
+				<label for="password" class="control-label">Original
+					Video Duration</label>
+			<!-- 	<div class="cols-sm-12"> -->
+					<div class="input-group">
+						<textarea rows="2" class="form-control"
+							name="OriginalVideoDuration" maxlength="100" th:inline="text"></textarea>
+
+					</div>
+
+				<!-- </div> -->
+			</div>
+		</div>
+
+		<div class="row row-striped">
+			<div class="col-md-5 form-group">
+				<label for="password" class="cols-sm-2 control-label">Digital
+					camera equipment</label>
+				<div class="cols-sm-10">
+					<div class="input-group">
+						<select class="form-control" id="digitalCameraDropDown"
+							th:name="DigitalCameraUsed">
+							<option th:value="0">Select Digital Camera Equipment</option>
+							<option
+								th:each="digitalCameraEquipment : ${digitalCameraEquipments}"
+								th:value="${digitalCameraEquipment.EquipmentUsedName}"
+								th:text="${digitalCameraEquipment.EquipmentUsedName}"></option>
+						</select>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="col-md-2"></div>
+			<div class="col-md-5 form-group">
+				<label for="password" class="cols-sm-2 control-label"># of
+					Images</label>
+				<div class="cols-sm-10">
+					<div class="input-group">
+						<input type="text" class="form-control" name="NumberOfImages"
+							maxlength="10" />
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="row row-striped">
 			<div class="col-md-2 form-group">
 				<label for="password" class="control-label">Release form</label>
 				<div class="form-control">
@@ -177,9 +239,9 @@
 				<label for="password" class="control-label">Record format</label>
 				<div class="form-control">
 
-					<span> <input name="Format" type="checkbox" value="Audio" />
+					<span> <input name="IsAudioFormat" type="checkbox" value="1" />
 						<label>Audio</label>
-					</span> <span> <input name="Format" type="checkbox" value="Video" />
+					</span> <span> <input name="IsVideoFormat" type="checkbox" value="1" />
 						<label>Video</label>
 					</span>
 				</div>
@@ -273,6 +335,27 @@
 
 		</div>
 
+		<div class="row row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">General notes</label>
+
+				<textarea class="form-control" name="GeneralNote" rows="5"
+					th:inline="text">[[${interviewdetails?.GeneralNote}]]</textarea>
+			</div>
+		</div>
+
+
+
+		<div class="row row-striped">
+			<div class="col-md-12 form-group">
+				<label class="control-label">Media note</label>
+
+				<textarea class="form-control" name="MediaNote" rows="5"
+					th:inline="text">[[${interviewdetails?.MediaNote}]]</textarea>
+			</div>
+
+		</div>
+
 		<div class="row row-striped"></div>
 		<div class="form-group ">
 			<button type="submit"
@@ -293,14 +376,14 @@
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#interviewers-dropdown').multiselect({            
-            enableFiltering : true,
+		$('#interviewers-dropdown').multiselect({
+			enableFiltering : true,
 			enableCaseInsensitiveFiltering : true,
 			delimiter : '; ',
 			delimiterText : '; ',
 			maxHeight : 450,
 			numberDisplayed : 10,
-	    });
+		});
 	});
 </script>
 </html>

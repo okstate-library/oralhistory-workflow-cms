@@ -77,16 +77,12 @@ public class SeriesServiceImpl implements SeriesService {
 
 	}
 
-	public void flushCache() {
-		for (String cacheName : cacheManager.getCacheNames()) {
-			cacheManager.getCache(cacheName).clear();
-			// LOG.info("Flushing cache with name: " + cacheName);
-		}
-	}
-
 	@Override
 	public void deleteSeries(int serieId) {
+
 		seriesRepository.deleteById(serieId);
+
+		cacheManager.getCache("findAllSeriesCache").clear();
 	}
 
 	@Override

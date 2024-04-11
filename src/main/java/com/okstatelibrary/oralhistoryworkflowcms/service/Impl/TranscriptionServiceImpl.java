@@ -82,6 +82,10 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	@Override
 	public Transcription save(Transcription transcription) {
 		// TODO Auto-generated method stub
+		
+		System.out.println("getEditedAudioDuration - " + transcription.getEditedAudioDuration());
+
+		
 		return transcriptionRepository.save(transcription);
 	}
 

@@ -153,6 +153,7 @@ public class SeriesController extends MainController {
 
 			this.errorType = ErrorType.WARNING;
 			this.message = "Cannot delete series record, due to references!";
+			
 		} else {
 
 			seriesService.deleteSeries(series.getId());

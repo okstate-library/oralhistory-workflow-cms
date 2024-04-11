@@ -87,39 +87,52 @@
 	<div class="row">
 		<div class="col-md-5 form-group">
 
+			<button type="reset"  id="resetReport"
+				class="btn btn-success btn-md btn-block">Clear</button>
+		</div>
+		<div class="col-md-2"></div>
+		<div class="col-md-5 form-group">
+
 			<button type="submit" id="submitreport"
 				class="btn btn-primary btn-md btn-block">Submit</button>
 		</div>
 
 	</div>
 
-	<form method="post" id="reportDownloadForm"
-		th:action="@{/downloadreports}">
 
-		<div class="row">
-			<div class="col-md-12 form-group">
-				<h1 class="page-header">Search result</h1>
-			</div>
+
+	<div class="row">
+		<div class="col-md-12 form-group">
+			<h1 class="page-header">Search result</h1>
 		</div>
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-3">
-				<h3 id="recordCount"></h3>
-			</div>
-			<div class="col-md-2"></div>
-			<div class="col-md-3">
+	</div>
+
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-2">
+			<h3 id="recordCount"></h3>
+		</div>
+		<div class="col-md-2"></div>
+		<div class="col-md-2">
+
+			<form method="post" id="reportDownloadForm"
+				th:action="@{/downloadreports}">
 				<button type="submit" id="downloadReportButton"
-					class="btn btn-success btn-md btn-block"
-					style="visibility: hidden;" name="action" value="download">Download
-					records</button>
-			</div>
-			<div class="col-md-2"></div>
+					style="visibility: hidden;" class="btn btn-success btn-md"
+					name="action" value="download">Download records</button>
+			</form>
 		</div>
-
-	</form>
+		<div class="col-md-2">
+			<form method="post" id="reportDownloadForImportForm"
+				th:action="@{/downloadReportsForImport}">
+				<button type="submit" id="downloadReportForExportButton"
+					style="visibility: hidden;" class="btn btn-success btn-md"
+					name="action" value="download">Download records for import</button>
+			</form>
+		</div>
+	</div>
 
 </div>
-
 
 
 </body>

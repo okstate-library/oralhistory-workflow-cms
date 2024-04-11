@@ -25,6 +25,7 @@
 					<tr>
 						<th>Repository Name</th>
 						<th>Collection Name</th>
+						<th># of Interviews</th>
 						<th style="width: 50px">Details</th>
 					</tr>
 				</thead>
@@ -33,6 +34,7 @@
 
 						<td data-th-text="${collection.repository.RepositoryName}">...</td>
 						<td data-th-text="${collection.CollectionName}">...</td>
+						<td data-th-text="${collection.NumberOfInterviews}">...</td>
 						<td><a th:href="${'/collections/' + collection.Id}">View</a></td>
 					</tr>
 				</tbody>

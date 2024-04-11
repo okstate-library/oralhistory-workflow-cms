@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -453,6 +454,8 @@ public class TranscriptionController extends MainController {
 
 		model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
 		model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
+		model.addAttribute("digitalCameraEquipments",
+				equipmentService.findAllByType(EquipmentType.DIGITALCAMERA.getCode()));
 
 		model.addAttribute("transcribers",
 				predefinedUserService.findAllByType(PredefinedUserType.TRANSCRIBER.getCode()));
@@ -475,7 +478,7 @@ public class TranscriptionController extends MainController {
 
 		List<PredefinedUser> selectedList = new ArrayList<PredefinedUser>();
 
-		String[] selectedNames = new String[] { "Blackshear, Emily", "Daglaris, Patrick", "Finchum, Tanya",
+		String[] selectedNames = new String[] { "Brown, Autumn", "Craine, Tracy", "Daglaris, Patrick", "Finchum, Tanya",
 				"Little Thunder, Julie Pearson", "Milligan, Sarah", "Neurohr, Karen" };
 
 		List<String> namesList = Arrays.asList(selectedNames);
@@ -689,6 +692,9 @@ public class TranscriptionController extends MainController {
 			model.addAttribute("series", seriesService.findAll());
 			model.addAttribute("audioEquipments", equipmentService.findAllByType(EquipmentType.AUDIO.getCode()));
 			model.addAttribute("videoEquipments", equipmentService.findAllByType(EquipmentType.VIDEO.getCode()));
+			model.addAttribute("digitalCameraEquipments",
+					equipmentService.findAllByType(EquipmentType.DIGITALCAMERA.getCode()));
+
 			model.addAttribute("interviews", transcriptionService.findAll(true));
 
 			model.addAttribute("transcribers",
@@ -816,6 +822,8 @@ public class TranscriptionController extends MainController {
 			newTranscription.setConvertToDigitalDate(transcription.getConvertToDigitalDate());
 		}
 
+		newTranscription.setMediaNote(transcription.getMediaNote());
+
 		// Digitization Note
 		newTranscription.setDigitizationNote(transcription.getDigitizationNote());
 
@@ -823,6 +831,7 @@ public class TranscriptionController extends MainController {
 		newTranscription.setTranscriptSize(transcription.getTranscriptSize());
 
 		// Images details
+		newTranscription.setDigitalCameraUsed(transcription.getDigitalCameraUsed());
 		newTranscription.setNumberOfImages(transcription.getNumberOfImages());
 		newTranscription.setImagesNote(transcription.getImagesNote());
 
@@ -963,6 +972,12 @@ public class TranscriptionController extends MainController {
 		// General Note
 		newTranscription.setGeneralNote(transcription.getGeneralNote());
 
+		// Narrator Bio
+		newTranscription.setNarratorBio(transcription.getNarratorBio());
+
+		// Usage Information
+		newTranscription.setUsageInformation(transcription.getUsageInformation());
+
 		return submitTranscription(newTranscription);
 	}
 
@@ -980,6 +995,12 @@ public class TranscriptionController extends MainController {
 
 		// Interviewer Subjects
 		newTranscription.setInterviewerSubjects(transcription.getInterviewerSubjects());
+
+		// IsPotentiallySensitiveContent
+		newTranscription.setIsPotentiallySensitiveContent(transcription.getIsPotentiallySensitiveContent());
+
+		// SensitiveContentDescription
+		newTranscription.setSensitiveContentDescription(transcription.getSensitiveContentDescription());
 
 		// Interviewer Note
 		newTranscription.setInterviewerNote(transcription.getInterviewerNote());
@@ -1018,6 +1039,7 @@ public class TranscriptionController extends MainController {
 	public String reportPost(@RequestBody Report report, HttpServletRequest request) {
 
 		HttpSession session = request.getSession();
+
 		session.setAttribute("reportobj", report);
 
 		List<Transcription> transcriptions = getTranscriptions(report);
@@ -1029,9 +1051,20 @@ public class TranscriptionController extends MainController {
 	public ResponseEntity<Resource> downloadreports(HttpServletRequest request) throws IOException {
 
 		HttpSession session = request.getSession();
+
 		Report report = (Report) session.getAttribute("reportobj");
 
 		return downloadTranscriptions(getTranscriptions(report));
+	}
+
+	@PostMapping("/downloadReportsForImport")
+	public ResponseEntity<Resource> downloadReportsForImport(HttpServletRequest request) throws IOException {
+
+		HttpSession session = request.getSession();
+
+		Report report = (Report) session.getAttribute("reportobj");
+
+		return downloadTranscriptionsForImport(getTranscriptions(report));
 	}
 
 	private List<Transcription> getTranscriptions(Report report) {
@@ -1258,6 +1291,152 @@ public class TranscriptionController extends MainController {
 		return "import";
 	}
 
+	@PostMapping("/uploadExisting")
+	public String uploadExisting(@RequestParam("file") MultipartFile file, RedirectAttributes attributes, Model model,
+			Principal principal) {
+
+		String UPLOAD_DIR = "uploads";
+
+		// check if file is empty
+		if (file.isEmpty()) {
+			this.errorType = ErrorType.ERROR;
+			this.message = "Please select a file to upload!";
+
+			return "import";
+		}
+
+		// normalize the file path
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+		List<String> requiredFeildsNullRecords = new ArrayList<String>();
+		List<String> projectCodeExists = new ArrayList<String>();
+		List<String> collectionNames = new ArrayList<String>();
+		List<String> seriesNames = new ArrayList<String>();
+
+		int insertRecordCount = 0;
+
+		// save the file on the local file system
+		try {
+
+			Path path = Paths.get(UPLOAD_DIR + fileName);
+
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+			List<Transcription> transcriptions = ExcelService.getExistingTranscriptionFromExcel(path.toString());
+
+			User user = userService.findByUsername(principal.getName());
+			model.addAttribute("user", user);
+
+			if (transcriptions != null && transcriptions.size() >= 1) {
+
+				int index = 0;
+
+				for (Transcription transcription : transcriptions) {
+
+					try {
+
+						System.out.println("Interviewer" + transcription.getInterviewer());
+
+						index++;
+
+						if (!StringUtil.isNotNullOrNotEmpty(transcription.getProjectCode())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewer())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewee())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getInterviewDates())
+								|| !StringUtil.isNotNullOrNotEmpty(transcription.getCollectionName())
+								|| transcription.getReleaseForm() == (byte) -1) {
+
+							requiredFeildsNullRecords.add(index + "");
+
+						} else {
+
+							// Setup collection using collection name
+							Collection collection = collectionService.findByName(transcription.getCollectionName());
+
+							if (collection == null) {
+
+								collectionNames.add(transcription.getCollectionName());
+
+							} else {
+
+								// transcription.setCollectionId(collection.getId());
+
+								Series aseries = seriesService.findByName(collection.getId(),
+										transcription.getSeriesName());
+
+								if (aseries != null) {
+
+									Transcription existingTranscription = transcriptionService
+											.findById(transcription.getId()).orElse(null);
+
+									if (existingTranscription != null) {
+
+										existingTranscription.setCollectionId(collection.getId());
+										existingTranscription.setSeriesId(aseries.getId());
+										existingTranscription.setProjectCode(transcription.getProjectCode());
+										existingTranscription.setInterviewDates(transcription.getInterviewDates());
+										existingTranscription.setInterviewee(transcription.getInterviewee());
+
+										existingTranscription.setInterviewer(transcription.getInterviewer());
+										existingTranscription.setReleaseForm(transcription.getReleaseForm());
+										existingTranscription.setFormat(transcription.getFormat());
+										existingTranscription.setDescription(transcription.getDescription());
+										existingTranscription.setSubject(transcription.getSubject());
+
+										existingTranscription.setKeywords(transcription.getKeywords());
+										existingTranscription
+												.setTranscriptLocation(transcription.getTranscriptLocation());
+										existingTranscription.setType(transcription.getType());
+
+										existingTranscription.setUpdatedDate(DateUtil.getTodaySqlDate());
+										existingTranscription
+												.setUpdatedBy(Integer.parseInt(user.getUserId().toString()));
+
+										transcriptionService.save(existingTranscription);
+
+										insertRecordCount++;
+
+									}
+
+								} else {
+
+									seriesNames.add(transcription.getSeriesName());
+
+								}
+							}
+
+						}
+
+					} catch (Exception e) {
+
+						System.out.println(index + "Error found " + e.getMessage() + " " + e.toString());
+
+					}
+				}
+			}
+
+		} catch (
+
+		IOException e) {
+			e.printStackTrace();
+		}
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = insertRecordCount + " record(s) successfully import";
+
+		String msg = (requiredFeildsNullRecords.size() > 0 ? "Excel index(es) " : "")
+				+ String.join(",", requiredFeildsNullRecords);
+
+		model.addAttribute("requiredFeildsNullRecords", msg);
+		model.addAttribute("projectCodeExists", String.join(",", (new HashSet<String>(projectCodeExists)).toString()));
+		model.addAttribute("collectionNames", String.join(",", (new HashSet<String>(collectionNames)).toString()));
+		// model.addAttribute("seriesNames", String.join(",", (new
+		// HashSet<String>(seriesNames)).toString()));
+
+		this.messageSetup(model);
+		return "import";
+	}
+
 	private String setDelimeterdInterviewers(String interviewers) {
 
 		interviewers = interviewers.replaceAll(", ", "/");
@@ -1271,6 +1450,15 @@ public class TranscriptionController extends MainController {
 		String filename = "transcriptions.xlsx";
 
 		InputStreamResource file = new InputStreamResource(ExcelService.transcriptionToExcel(transcriptions));
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
+	}
+
+	private ResponseEntity<Resource> downloadTranscriptionsForImport(List<Transcription> transcriptions) {
+		String filename = "transcriptions.xlsx";
+
+		InputStreamResource file = new InputStreamResource(ExcelService.transcriptionToExcelForImport(transcriptions));
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
 				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);

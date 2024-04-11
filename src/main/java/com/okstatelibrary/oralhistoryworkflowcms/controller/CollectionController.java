@@ -26,7 +26,7 @@ import com.okstatelibrary.oralhistoryworkflowcms.service.*;
 import com.okstatelibrary.oralhistoryworkflowcms.util.DateUtil;
 import com.okstatelibrary.oralhistoryworkflowcms.util.ExcelService;
 
-@Controller 
+@Controller
 @RequestMapping("collections")
 public class CollectionController extends MainController {
 
@@ -35,6 +35,9 @@ public class CollectionController extends MainController {
 
 	@Autowired
 	private CollectionService collectionService;
+
+	@Autowired
+	private SeriesService seriesService;
 
 	@Autowired
 	private RepositoryService repositoryService;
@@ -81,9 +84,10 @@ public class CollectionController extends MainController {
 
 		model.addAttribute("collectiondetails", collection);
 
-		System.out.println(collection.getDescription());
-		
+		model.addAttribute("sersiesCount", seriesService.findAllbyCollectionId(collection.getId()).size());
+
 		model.addAttribute("repositories", repositoryService.findAll());
+
 		model.addAttribute("collectiondetails", collection);
 
 		return "collectiondetails";
@@ -139,6 +143,7 @@ public class CollectionController extends MainController {
 
 			this.errorType = ErrorType.WARNING;
 			this.message = "Cannot delete collection record, due to references!";
+
 		} else {
 			collectionService.deleteCollection(collection.getId());
 

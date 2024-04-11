@@ -39,7 +39,11 @@ public class EquipmentServiceImpl implements EquipmentService {
 
 	@Override
 	public List<Equipments> findAllByType(byte type) {
-		return this.findAll().stream().filter(e -> e.getEquipmentType() == type).collect(Collectors.toList());
+		return this.findAll().stream()
+				.sorted((p1, p2) -> (p1.getEquipmentUsedName()).compareTo(p2.getEquipmentUsedName()))
+				.filter(e -> e.getEquipmentType() == type).collect(Collectors.toList());
+		// .sort((o1, o2) ->
+		// o1.getEquipmentUsedName().compareTo(o2.getEquipmentUsedName()));
 	}
 
 	@Override

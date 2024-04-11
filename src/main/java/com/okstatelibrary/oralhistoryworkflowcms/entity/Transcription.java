@@ -506,6 +506,16 @@ public class Transcription { // implements Serializable
 		this.VideoEquipmentUsed = value;
 	}
 
+	private String DigitalCameraUsed;
+
+	public String getDigitalCameraUsed() {
+		return this.DigitalCameraUsed;
+	}
+
+	public void setDigitalCameraUsed(String value) {
+		this.DigitalCameraUsed = value;
+	}
+
 	private String EquipmentNumber;
 
 	public String getEquipmentNumber() {
@@ -534,6 +544,38 @@ public class Transcription { // implements Serializable
 
 	public void setGeneralNote(String value) {
 		this.GeneralNote = value;
+	}
+
+	private String NarratorBio;
+
+	/**
+	 * @return the narratorBio
+	 */
+	public String getNarratorBio() {
+		return NarratorBio;
+	}
+
+	/**
+	 * @param narratorBio the narratorBio to set
+	 */
+	public void setNarratorBio(String narratorBio) {
+		NarratorBio = narratorBio;
+	}
+
+	private String UsageInformation;
+
+	/**
+	 * @return the narratorBio
+	 */
+	public String getUsageInformation() {
+		return UsageInformation;
+	}
+
+	/**
+	 * @param narratorBio the narratorBio to set
+	 */
+	public void setUsageInformation(String usageInformation) {
+		UsageInformation = usageInformation;
 	}
 
 	private byte ReleaseForm;
@@ -778,6 +820,16 @@ public class Transcription { // implements Serializable
 		this.ConvertToDigitalDate = value;
 	}
 
+	private String MediaNote;
+
+	public String getMediaNote() {
+		return this.MediaNote;
+	}
+
+	public void setMediaNote(String value) {
+		this.MediaNote = value;
+	}
+
 	private String DigitizationNote;
 
 	public String getDigitizationNote() {
@@ -908,6 +960,38 @@ public class Transcription { // implements Serializable
 		this.IsPublic = value;
 	}
 
+	private byte IsPotentiallySensitiveContent;
+
+	/**
+	 * @return the isPotentiallySensitiveContent
+	 */
+	public byte getIsPotentiallySensitiveContent() {
+		return IsPotentiallySensitiveContent;
+	}
+
+	/**
+	 * @param isPotentiallySensitiveContent the isPotentiallySensitiveContent to set
+	 */
+	public void setIsPotentiallySensitiveContent(byte isPotentiallySensitiveContent) {
+		IsPotentiallySensitiveContent = isPotentiallySensitiveContent;
+	}
+
+	private String SensitiveContentDescription;
+
+	/**
+	 * @return the sensitiveContentDescription
+	 */
+	public String getSensitiveContentDescription() {
+		return SensitiveContentDescription;
+	}
+
+	/**
+	 * @param sensitiveContentDescription the sensitiveContentDescription to set
+	 */
+	public void setSensitiveContentDescription(String sensitiveContentDescription) {
+		SensitiveContentDescription = sensitiveContentDescription;
+	}
+
 	private int CreatedBy;
 
 	public int getCreatedBy() {
@@ -956,4 +1040,5 @@ public class Transcription { // implements Serializable
 	public String toString() {
 		return "Person [id=" + Id + "CollectionId " + CollectionId + " collection name=" + CollectionName + "]";
 	}
+
 }

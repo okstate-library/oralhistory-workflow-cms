@@ -1,5 +1,4 @@
 (function($) {
-	
 
 	document.getElementById("year").innerHTML = new Date().getFullYear();
 	// $.toggleShowPassword = function(options) {
@@ -76,6 +75,19 @@ $(document)
 												})
 
 									});
+					
+					$("#resetReport").click(function(event) {
+						
+						$("select").each(function() { this.selectedIndex = 0 });
+						
+						$("#location").val('');
+						$("#begindate").val('');
+						$("#enddate").val('');
+						
+						$('input:checkbox').removeAttr('checked');
+						
+						$('input[name=statusRadioButton]').prop('checked',false);
+					});
 
 					$("#submitreport")
 							.click(
@@ -146,10 +158,15 @@ $(document)
 														var reportButton = document
 																.getElementById("downloadReportButton");
 
+														var reportExistingButton = document
+																.getElementById("downloadReportForExportButton");
+
 														if (data > 0) {
 															reportButton.style.visibility = "visible";
+															reportExistingButton.style.visibility = "visible";
 														} else {
 															reportButton.style.visibility = "hidden";
+															reportExistingButton.style.visibility = "hidden";
 														}
 
 													},
@@ -206,7 +223,7 @@ $(document)
 
 															submitSubjectRow.style.visibility = "visible";
 															subjectNoRecordsRow.style.visibility = "hidden";
-															
+
 														} else {
 															submitSubjectRow.style.visibility = "hidden";
 															subjectNoRecordsRow.style.visibility = "visible";
@@ -230,29 +247,29 @@ $(document)
 
 									});
 
-//					$("#collectionvaidate")
-//							.click(
-//									function(event) {
-//
-//										$
-//												.ajax({
-//													type : "POST",
-//													contentType : "application/json",
-//													url : "/collections/validate",
-//													dataType : 'json',
-//													done(function (data) {
-//													    alert('success');
-//													})
-//													,
-//													error : function(e) {
-//														var err = eval("("
-//																+ xhr.responseText
-//																+ ")");
-//														alert(err.Message);
-//													}
-//												});
-//
-//									});
+					// $("#collectionvaidate")
+					// .click(
+					// function(event) {
+					//
+					// $
+					// .ajax({
+					// type : "POST",
+					// contentType : "application/json",
+					// url : "/collections/validate",
+					// dataType : 'json',
+					// done(function (data) {
+					// alert('success');
+					// })
+					// ,
+					// error : function(e) {
+					// var err = eval("("
+					// + xhr.responseText
+					// + ")");
+					// alert(err.Message);
+					// }
+					// });
+					//
+					// });
 
 				});
 
@@ -260,41 +277,43 @@ function selectSeriesByCollection() {
 
 	var collectionId = document.getElementById("collectitonDropDown").value;
 
-	$.ajax({
-		type : 'GET',
-		url : "../series/getSeries",
-		data : {
-			"collectionId" : collectionId
-		},
-		 beforeSend: function () { // Before we send the request
-				$('#loader').removeClass('hidden')
+	$
+			.ajax({
+				type : 'GET',
+				url : "../series/getSeries",
+				data : {
+					"collectionId" : collectionId
 				},
-		success : function(data) {
+				beforeSend : function() { // Before we send the request
+					$('#loader').removeClass('hidden')
+				},
+				success : function(data) {
 
-			var seriesDropDown = $('#seriesDropDown'), option = "";
+					var seriesDropDown = $('#seriesDropDown'), option = "";
 
-			seriesDropDown.empty();
+					seriesDropDown.empty();
 
-			if (data.length > 1) {
+					if (data.length > 1) {
 
-				option = option + "<option value=''> Select a Series </option>";
+						option = option
+								+ "<option value=''> Select a Series </option>";
 
-			}
+					}
 
-			for (var i = 0; i < data.length; i++) {
-				option = option + "<option value='" + data[i].id + "'>"
-						+ data[i].seriesName + "</option>";
-			}
+					for (var i = 0; i < data.length; i++) {
+						option = option + "<option value='" + data[i].id + "'>"
+								+ data[i].seriesName + "</option>";
+					}
 
-			seriesDropDown.append(option);
-			
-			$('#loader').addClass('hidden');
-		},
-		error : function(xhr, status, error) {
-			var err = eval("(" + xhr.responseText + ")");
-			alert(err.Message);
-		}
+					seriesDropDown.append(option);
 
-	});
+					$('#loader').addClass('hidden');
+				},
+				error : function(xhr, status, error) {
+					var err = eval("(" + xhr.responseText + ")");
+					alert(err.Message);
+				}
+
+			});
 
 }

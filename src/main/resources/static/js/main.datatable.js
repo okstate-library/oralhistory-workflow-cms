@@ -23,7 +23,7 @@ function callTransactionQueueAjaxRequest() {
 			
 			const checkBoxBooleanColumn = [5];
 			
-			const checkBoxColumn = [4,6,7,8,9,10,11];
+			const checkBoxColumn = [4,8,9,10,11,12,13];
 			
 			function exists(arr, search) {
 			    return arr.some(row => row.includes(search));
@@ -97,26 +97,27 @@ function callTransactionQueueAjaxRequest() {
 			        $("#prioritySelect").change(function () {
 		            
 		                var select = $(this).val() ;
-			        	 
+
 			        	 if(select === "reset")
 			        	 {
 			        		 table
-			                 .column(i) 
+			                 .column(i+1) 
 			                 .search( '^(?!\s*$).+', true, false)
 			                 .draw(); 
 			        		 
 			        	 }else if  (select === "true")
 			        	 { 
+//			        		 
 			        		 table
-			                 .column(i) 
-			                 .search( '1')
+			                 .column(i+1) 
+			                 .search('1')
 			                 .draw(); 
 			        		 
 			        	 }else
 		        		 {
 			        		 table
-			                 .column(i) 
-			                 .search( '0')
+			                 .column(i+1) 
+			                 .search('0')
 			                 .draw(); 
 		        		 }
 		                
@@ -147,20 +148,22 @@ function callTransactionQueueAjaxRequest() {
 					                return type === 'sort' ? moment(data).format("YYYY-MM-DD") : data ;
 					            } },
 						      { "width": "15px", title: "Code" ,"targets": 3 },
-						      { "width": "40px",title: "Transcriber assigned" , "targets": 4 },
-						      { "width": "15px",title: "Priority" , "targets": 5 },
-						      { "width": "10px", title: "Audit check" ,"targets": 6 },
-						      { "width": "10px", title: "First edit" ,"targets": 7 },
-						      { "width": "15px",title: "Second edit" , "targets": 8 },
-						      { "width": "10px",title: "Draft sent" , "targets": 9 },
-						      { "width": "10px",title: "Corrections" , "targets": 10 },
-						      { "width": "10px",title: "Final edit" , "targets": 11 },
-						      { "width": "10px",title: "Media edit" , "targets": 12 },
-						      { "width": "1px",  title: "Subject" , "targets": 13 ,searchable: true,visible: false},
-					          { "width": "1px",  title: "Keywords" , "targets": 14 ,searchable: true,visible: false},
-					          { "width": "1px",  title: "Description" , "targets": 15 ,searchable: true,visible: false},
-					          { "width": "1px",  title: "Coverage Spatial" , "targets": 16 ,searchable: true, visible: false},
-					          { "width": "1px",  title: "Coverage Temporal " , "targets": 17 ,searchable: true,visible: false},
+						      { "width": "40px", title: "Transcriber assigned" , "targets": 4 },
+						      { "width": "15px", title: "Priority" , "targets": 5 },
+						      { "width": "1px",  title: "Priority-2" , "targets": 6 ,visible: false},
+						      { "width": "15px", title: "Sensitive" ,"targets": 7 },
+						      { "width": "10px", title: "Audit check" ,"targets": 8 },
+						      { "width": "10px", title: "First edit" ,"targets": 9},
+						      { "width": "15px", title: "Second edit" , "targets": 10 },
+						      { "width": "10px", title: "Draft sent" , "targets": 11 },
+						      { "width": "10px", title: "Corrections" , "targets": 12 },
+						      { "width": "10px", title: "Final edit" , "targets": 13 },
+						      { "width": "10px", title: "Media edit" , "targets": 14 },
+						      { "width": "1px",  title: "Subject" , "targets": 15 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Keywords" , "targets": 16 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Description" , "targets": 17 ,searchable: true,visible: false},
+					          { "width": "1px",  title: "Coverage Spatial" , "targets": 18 ,searchable: true, visible: false},
+					          { "width": "1px",  title: "Coverage Temporal " , "targets": 19 ,searchable: true,visible: false},
 						    ],
 						    columns : [
 
@@ -177,12 +180,19 @@ function callTransactionQueueAjaxRequest() {
 							"data" : "transcriberAssigned"
 						}, {
 							"data" : "isPriority",
-// render : getBooleanImage,
-// class : 'text-center' ,
-							// 'sortable': false,
-						}, {
+							 render : getBooleanImage,
+							 class : 'text-center' ,
+							 'sortable': false,
+						},{
+							"data" : "isPriority",
+						},{ 
+							"data" : "isPotentiallySensitiveContent",
+							render : getBooleanImage,
+							class : 'text-center' ,
+							 'sortable': false,
+						},{
 							"data" : "auditCheckCompleted"
-						}, {
+						},{
 							"data" : "firstEditCompleted"
 						}, {
 							"data" : "secondEditCompleted"
@@ -197,7 +207,8 @@ function callTransactionQueueAjaxRequest() {
 							render : getBooleanImage,
 							class  : 'text-center' ,
 							'sortable': false
-						},{
+						},
+						{
 							"data" : "subject"
 						},{
 							"data" : "keywords"
@@ -207,7 +218,9 @@ function callTransactionQueueAjaxRequest() {
 							"data" : "coverageSpatial"
 						},{
 							"data" : "coverageTemporal"
-						}, ],
+						},
+						
+						],
 						
 						"lengthMenu" : [ [ 10, 50, 100, 200, -1 ],
 								[ 10, 50, 100, 200, "All" ] ],

@@ -1,7 +1,7 @@
 package com.okstatelibrary.oralhistoryworkflowcms.enums;
 
 public enum EquipmentType {
-	AUDIO((byte) 1), VIDEO((byte) 2);
+	AUDIO((byte) 1), VIDEO((byte) 2), DIGITALCAMERA((byte) 3);
 
 	/*
 	 * Important Note: Must have semicolon at the end when there is a enum field or
