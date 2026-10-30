@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
-<head th:replace="common/header :: common-header" />
+<head th:replace="~{common/header :: common-header}" />
+
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
-<head th:replace="common/header :: navbar" />
+
+<head th:replace="~{common/header :: navbar}" />
 
 <div class="container">
 
@@ -53,6 +55,20 @@
 
 	</div>
 
+	<div class="row form-group">
+
+		<div class="col-md-6  ">
+			Sync Interviews <b>Series</b>
+		</div>
+		<div class="col-md-6">
+			<form method="post" th:action="@{/browse/sync}">
+				<button id="seacrhValidate" type="submit"
+				        class="btn btn-primary btn-block ">Sync Interviews</button>
+			</form>
+		</div>
+
+	</div>
+
 	<div class="row  form-group"></div>
 
 	<div class="row  form-group" id="submitSubjectRow"
@@ -90,9 +106,12 @@
 		<div class="row  form-group"></div>
 	</div>
 
-	</body>
+</div>
 
-	<div th:replace="common/footer :: footer"></div>
+</body>
 
-	<div th:replace="common/header :: body-bottom-scripts"></div>
+	<div th:replace="~{common/footer :: footer}"></div>
+
+	<div th:replace="~{common/header :: body-bottom-scripts}"></div>
+
 </html>

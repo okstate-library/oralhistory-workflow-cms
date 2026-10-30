@@ -2061,4 +2061,8 @@ CHANGE COLUMN `NumberOfInterviews` `NumberOfInterviews` SMALLINT NULL DEFAULT 0 
 UPDATE `series`
 SET 
     `NumberOfInterviews` = 0
-    
+
+
+ALTER TABLE `oralcmsdb_dev`.`transcriptions`
+ADD COLUMN `AccessionDate` VARCHAR(100) NULL AFTER `EquipmentNumber`,
+ADD COLUMN `AccessionNote` TEXT NULL AFTER `AccessionDate`;

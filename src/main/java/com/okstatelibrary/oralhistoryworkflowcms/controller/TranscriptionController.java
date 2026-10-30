@@ -25,11 +25,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
+import com.okstatelibrary.oralhistoryworkflowcms.service.Impl.ElasticsearchSyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
@@ -73,6 +74,9 @@ public class TranscriptionController extends MainController {
 
 	@Autowired
 	private TranscriptionService transcriptionService;
+
+	@Autowired
+	private ElasticsearchSyncService elasticsearchSyncService;
 
 	@Autowired
 	private CollectionService collectionService;
@@ -522,6 +526,8 @@ public class TranscriptionController extends MainController {
 			transcription.setInterviewer(setDelimeterdInterviewers(transcription.getInterviewer()));
 
 			transcription.setInterviewDates(transcription.getInterviewDates());
+			transcription.setAccessionDate(transcription.getAccessionDate());
+			transcription.setAccessionNote(transcription.getAccessionNote());
 
 			transcription.setCreatedDate(DateUtil.getTodaySqlDate());
 			transcription.setUpdatedDate(DateUtil.getTodaySqlDate());
@@ -968,6 +974,12 @@ public class TranscriptionController extends MainController {
 
 		// TranscriptLocation
 		newTranscription.setTranscriptLocation(transcription.getTranscriptLocation());
+
+		// Accession Date
+		newTranscription.setAccessionDate(transcription.getAccessionDate());
+
+		// Accession Note
+		newTranscription.setAccessionNote(transcription.getAccessionNote());
 
 		// General Note
 		newTranscription.setGeneralNote(transcription.getGeneralNote());
@@ -1462,6 +1474,25 @@ public class TranscriptionController extends MainController {
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
 				.contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(file);
+	}
+
+
+	@RequestMapping(value = "/browse/sync", method = RequestMethod.POST)
+	public String sync(Model model, HttpServletRequest request, Principal principal) throws IOException {
+
+		System.out.println("browse/sync");
+
+		User user = userService.findByUsername(principal.getName());
+
+		//elasticsearchSyncService = new ElasticsearchSyncService();
+
+		elasticsearchSyncService.synchronizeData();
+
+
+		this.errorType = ErrorType.SUCESS;
+		this.message = "Series records validated!";
+
+		return "redirect:/validate";
 	}
 
 }

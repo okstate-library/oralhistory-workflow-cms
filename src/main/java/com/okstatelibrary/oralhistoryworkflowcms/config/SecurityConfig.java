@@ -1,77 +1,95 @@
 package com.okstatelibrary.oralhistoryworkflowcms.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import com.okstatelibrary.oralhistoryworkflowcms.service.Impl.UserSecurityService;
 
-import java.security.SecureRandom;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
-//    @Autowired
-//    private Environment env;
+	private static final String SALT = "salt";
 
-	private static final String SALT = "salt"; // Salt should be protected carefully
 	private static final String[] PUBLIC_MATCHERS = {
-			// "/webjars/**",
-			"/css/**", "/js/**", "/images/**", "/", "/index",
-            "/api/interviews", 
-            "/api/interview/*", 
-            
-//            "/error/**/*",
-//            "/console/**"
+			"/css/**",
+			"/js/**",
+			"/images/**",
+			"/",
+			"/index",
+			"/api/interviews",
+			"/api/interview/*"
 	};
 
-	@Autowired
-	private UserSecurityService userSecurityService;
+	private final UserSecurityService userSecurityService;
+
+	public SecurityConfig(UserSecurityService userSecurityService) {
+		this.userSecurityService = userSecurityService;
+	}
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
+		// return new BCryptPasswordEncoder(12);
+
+		return new BCryptPasswordEncoder(12) ; // , new SecureRandom(SALT.getBytes()));
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
-//    	http.authorizeRequests()
-//        .antMatchers("/").hasAnyAuthority("USER", "CREATOR", "EDITOR", "ADMIN")
-//        .antMatchers("/new").hasAnyAuthority("ADMIN", "CREATOR")
-//        .antMatchers("/edit/**").hasAnyAuthority("ADMIN", "EDITOR")
-//        .antMatchers("/delete/**").hasAuthority("ADMIN")
-//        .anyRequest().authenticated()
-//        .and()
-//        .formLogin().permitAll()
-//        .and()
-//        .logout().permitAll()
-//        .and()
-//        .exceptionHandling().accessDeniedPage("/403")
-//        ;
-		http.authorizeRequests().
-//                antMatchers("/**").
-				antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
+		provider.setUserDetailsService(userSecurityService);
+		provider.setPasswordEncoder(passwordEncoder());
 
-		http.csrf().disable().cors().disable().formLogin().failureUrl("/login?error").defaultSuccessUrl("/index")
-				.loginPage("/login").permitAll().and().logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/")
-				.deleteCookies("remember-me").permitAll().and().rememberMe();
-
+		return provider;
 	}
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder());
-	}
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http)
+			throws Exception {
 
+		http
+				.authenticationProvider(authenticationProvider())
+
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(PUBLIC_MATCHERS).permitAll()
+						.anyRequest().authenticated()
+				)
+
+				.csrf(csrf -> csrf.disable())
+
+				.cors(cors -> cors.disable())
+
+				.formLogin(form -> form
+						.loginPage("/login")
+						.failureUrl("/login?error")
+						.defaultSuccessUrl("/index")
+						.permitAll()
+				)
+
+				.logout(logout -> logout
+						.logoutRequestMatcher(
+								new AntPathRequestMatcher("/logout")
+						)
+						.logoutSuccessUrl("/")
+						.deleteCookies("remember-me")
+						.permitAll()
+				)
+
+				.rememberMe(remember -> remember
+						.userDetailsService(userSecurityService)
+				);
+
+		return http.build();
+	}
 }

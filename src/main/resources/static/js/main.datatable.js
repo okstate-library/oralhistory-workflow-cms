@@ -485,7 +485,6 @@ function callBrowseAjaxRequest() {
 			"subjects" : browseSubjectOptionTexts.toString(),
 			"onlineoffline" : browseOnlineOfflineOptionTexts,
 			"darkarchive" :browseDarkArchiveOptionTexts,
-			
 		},
 		
 		 beforeSend: function () { // Before we send the request
@@ -618,6 +617,8 @@ function callBrowseAjaxRequest() {
 			   
 			if(data.searchWord != null)
 			{
+				alert(data.searchWord);
+
 				table.search(data.searchWord).draw();
 			}
 			 

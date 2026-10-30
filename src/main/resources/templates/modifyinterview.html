@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
-<head th:replace="common/header :: common-header" />
+<head th:replace="~{common/header :: common-header}" />
 <body roleId="page-top" data-spy="scroll"
 	data-target=".navbar-fixed-top">
 
 
-	<head th:replace="common/header :: navbar" /><div class="container" th:if="${interviewdetails != null}">
+	<head th:replace="~{common/header :: navbar}" /><div class="container" th:if="${interviewdetails != null}">
 
 		<div class="row">
 
@@ -500,12 +500,9 @@
 						<div class="col-md-5 form-group"></div>
 
 						<div class="col-md-5 form-group">
-
 							<label class="control-label">Equipment number</label><input
 								type="text" class="form-control" name="EquipmentNumber"
 								th:value="*{interviewdetails?.EquipmentNumber}" maxlength="5" />
-
-
 						</div>
 					</div>
 
@@ -689,6 +686,7 @@
 							<div class="cols-sm-10">
 								<select class="form-control" id="digitalCameraDropDown"
 									th:name="DigitalCameraUsed">
+									<option th:value="0">Select Digital camera equipment</option>
 									<option
 										th:each="digitalCameraEquipment : ${digitalCameraEquipments}"
 										th:value="${digitalCameraEquipment.EquipmentUsedName}"
@@ -1116,7 +1114,7 @@
 
 						<div class="col-md-2 form-group">
 
-							<label for="password" class="control-label">In Rosetta</label>
+							<label for="password" class="control-label">In preservation system?</label>
 							<div class="form-control">
 								<span> <input type="radio"
 									th:checked="*{interviewdetails?.IsRosetta == 1 ? true : false}"
@@ -1242,7 +1240,22 @@
 						</div>
 					</div>
 
+					<div class="row row-striped">
+						<label class="control-label">Accession Date</label> <input
+							type="text" class="form-control date"
+							name="AccessionDate"
+							th:value="*{interviewdetails?.AccessionDate}" />
 
+					</div>
+
+					<div class="row row-striped">
+						<div class="col-md-12 form-group">
+							<label class="control-label">Accession notes</label>
+
+							<textarea class="form-control" name="AccessionNote" rows="5"
+							          th:inline="text">[[${interviewdetails?.AccessionNote}]]</textarea>
+						</div>
+					</div>
 
 					<div class="row row-striped">
 						<div class="col-md-12 form-group">
@@ -1409,9 +1422,9 @@
 	</div>
 </body>
 
-<div th:replace="common/footer :: footer"></div>
+<div th:replace="~{common/footer :: footer}"></div>
 
-<div th:replace="common/header :: body-bottom-scripts"></div>
+<div th:replace="~{common/header :: body-bottom-scripts}"></div>
 
 <script th:inline="javascript">
 	$(document).ready(function() {

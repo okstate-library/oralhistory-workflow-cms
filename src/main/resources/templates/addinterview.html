@@ -1,389 +1,411 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
-<head th:replace="common/header :: common-header" />
-
+<head th:replace="~{common/header :: common-header}"/>
 
 
 <body roleId="page-top" data-spy="scroll"
-	data-target=".navbar-fixed-top">
-<head th:replace="common/header :: navbar" />
+      data-target=".navbar-fixed-top">
+
+<head th:replace="~{common/header :: navbar}"/>
 
 <div class="container">
-	<div class="row">
-		<div class="col-lg-12">
-			<h1 class="page-header">Add Interview</h1>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Add Interview</h1>
+        </div>
+    </div>
 
 
-	<form class="form-horizontal" method="post"
-		onSubmit="return validate()" th:object="${transcription}"
-		th:action="@{/addinterview}">
+    <form class="form-horizontal" method="post"
+          onSubmit="return validate()" th:object="${transcription}"
+          th:action="@{/addinterview}">
 
-		<div class="row row-striped">
+        <div class="row row-striped">
 
-			<div class="col-md-5 form-group">
+            <div class="col-md-5 form-group">
 
-				<label class="control-label">Project Code</label> <input type="text"
-					class="form-control" id="ProjectCode" name="ProjectCode"
-					required="required" />
+                <label class="control-label">Project Code</label> <input type="text"
+                                                                         class="form-control" id="ProjectCode"
+                                                                         name="ProjectCode"
+                                                                         required="required"/>
 
-			</div>
+            </div>
 
-			<div class="col-md-2"></div>
+            <div class="col-md-2"></div>
 
-			<div class="col-md-5 form-group">
+            <div class="col-md-5 form-group">
 
-				<label class="control-label">Location of Interview</label> <input
-					type="text" class="form-control" name="TranscriptLocation" />
-			</div>
-		</div>
+                <label class="control-label">Location of Interview</label> <input
+                    type="text" class="form-control" name="TranscriptLocation"/>
+            </div>
+        </div>
 
-		<div class="row row-striped">
+        <div class="row row-striped">
 
-			<div class="col-md-5 form-group">
+            <div class="col-md-5 form-group">
 
-				<label class="control-label">Interviewee(s)</label> <input
-					type="text" class="form-control" name="Interviewee"
-					required="required" />
-
-
-			</div>
-
-			<div class="col-md-2"></div>
-
-			<div class="col-md-5 form-group">
-				<label class="control-label">Interviewer(s)</label> <br /> <select
-					class="form-control" id="interviewers-dropdown" multiple="multiple"
-					th:name="Interviewer" required>
-					<option th:each="interviewer : ${interviewers}"
-						th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
-				</select>
-
-			</div>
-
-		</div>
-
-		<div class="row row-striped">
+                <label class="control-label">Interviewee(s)</label> <input
+                    type="text" class="form-control" name="Interviewee"
+                    required="required"/>
 
 
-			<div class="col-md-11 form-group">
+            </div>
 
-				<label class="control-label">Date(s)</label> <input type="text"
-					class="form-control dates" id="dateAdd" name="InterviewDates"
-					required="required" />
+            <div class="col-md-2"></div>
 
-			</div>
+            <div class="col-md-5 form-group">
+                <label class="control-label">Interviewer(s)</label> <br/> <select
+                    class="form-control" id="interviewers-dropdown" multiple="multiple"
+                    th:name="Interviewer" required>
+                <option th:each="interviewer : ${interviewers}"
+                        th:value="${interviewer.Name}" th:text="${interviewer.Name}"></option>
+            </select>
 
-		</div>
+            </div>
 
-		<div class="row row-striped">
+        </div>
 
+        <div class="row row-striped">
+            <div class="col-md-5 form-group">
+                <label class="control-label">Date(s)</label> <input type="text"
+                                                                    class="form-control dates" id="dateAdd"
+                                                                    name="InterviewDates"
+                                                                    required="required"/>
+            </div>
 
-			<div class="col-md-5 form-group">
+            <div class="col-md-2"></div>
 
-				<label for="username" class="control-label">Collection</label>
+            <div class="col-md-5 form-group">
+                <label class="control-label">Accession Date</label> <input type="text"
+                                                                           class="form-control date"
+                                                                           id="AccessionDate"  name="AccessionDate"/>
+            </div>
 
+        </div>
 
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<select class="form-control" id="collectitonDropDown"
-							onchange="selectSeriesByCollection()" name="CollectionId"
-							required>
-							<option value="">Select Collection</option>
-
-							<option th:each="collection : ${collections}"
-								th:value="${collection.Id}"
-								th:text="${collection.CollectionName}"></option>
-						</select>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-2"></div>
-
-			<div class="col-md-5 form-group">
-				<label for="username" class="control-label">Series</label>
+        <div class="row row-striped">
 
 
-				<div class="input-group">
+            <div class="col-md-5 form-group">
+                <label for="username" class="control-label">Collection</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <select class="form-control" id="collectitonDropDown"
+                                onchange="selectSeriesByCollection()" name="CollectionId"
+                                required>
+                            <option value="">Select Collection</option>
 
-					<select class="form-control" id="seriesDropDown" th:name="SeriesId"
-						required>
-						<option value="">Select a Series</option>
+                            <option th:each="collection : ${collections}"
+                                    th:value="${collection.Id}"
+                                    th:text="${collection.CollectionName}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-						<option th:each="aseries : ${series}" th:value="${aseries.Id}"
-							th:text="${aseries.SeriesName}"></option>
-					</select>
-				</div>
+            <div class="col-md-2"></div>
 
-			</div>
-		</div>
+            <div class="col-md-5 form-group">
+                <label for="username" class="control-label">Series</label>
 
-		<div class="row row-striped">
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Audio
-					Equipment</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<select class="form-control" id="audioDropDown"
-							th:name="AudioEquipmentUsed">
-							<option th:value="0">Select Audio Equipment</option>
 
-							<option th:each="audioEquipment : ${audioEquipments}"
-								th:value="${audioEquipment.EquipmentUsedName}"
-								th:text="${audioEquipment.EquipmentUsedName}"></option>
-						</select>
-					</div>
+                <div class="input-group">
 
-				</div>
-			</div>
+                    <select class="form-control" id="seriesDropDown" th:name="SeriesId"
+                            required>
+                        <option value="">Select a Series</option>
 
-			<div class="col-md-2"></div>
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Video
-					Equipment</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<select class="form-control" id="audioDropDown"
-							th:name="VideoEquipmentUsed">
-							<option th:value="0">Select Video Equipment</option>
+                        <option th:each="aseries : ${series}" th:value="${aseries.Id}"
+                                th:text="${aseries.SeriesName}"></option>
+                    </select>
+                </div>
 
-							<option th:each="videoEquipment : ${videoEquipments}"
-								th:value="${videoEquipment.EquipmentUsedName}"
-								th:text="${videoEquipment.EquipmentUsedName}"></option>
-						</select>
-					</div>
+            </div>
+        </div>
 
-				</div>
-			</div>
-		</div>
+        <div class="row row-striped">
+            <div class="col-md-5 form-group">
+                <label for="password" class="cols-sm-2 control-label">Audio
+                    Equipment</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <select class="form-control" id="audioDropDown"
+                                th:name="AudioEquipmentUsed">
+                            <option th:value="0">Select Audio Equipment</option>
 
-		<div class="row row-striped">
-			<div class="col-md-5 form-group">
-				<label for="password" class="control-label">Original
-					Audio Duration</label>
-				<!-- <div class="cols-sm-12"> -->
-					<div class="input-group">
+                            <option th:each="audioEquipment : ${audioEquipments}"
+                                    th:value="${audioEquipment.EquipmentUsedName}"
+                                    th:text="${audioEquipment.EquipmentUsedName}"></option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
+            <div class="col-md-5 form-group">
+                <label for="password" class="cols-sm-2 control-label">Video
+                    Equipment</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <select class="form-control" id="audioDropDown"
+                                th:name="VideoEquipmentUsed">
+                            <option th:value="0">Select Video Equipment</option>
+
+                            <option th:each="videoEquipment : ${videoEquipments}"
+                                    th:value="${videoEquipment.EquipmentUsedName}"
+                                    th:text="${videoEquipment.EquipmentUsedName}"></option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-striped">
+            <div class="col-md-5 form-group">
+                <label for="password" class="control-label">Original
+                    Audio Duration</label>
+                <!-- <div class="cols-sm-12"> -->
+                <div class="input-group">
 						<textarea rows="2" class="form-control"
-							name="OriginalAudioDuration" maxlength="100" th:inline="text"></textarea>
-					</div>
+                                  name="OriginalAudioDuration" maxlength="100" th:inline="text"></textarea>
+                </div>
 
-				<!-- </div> -->
-			</div>
+                <!-- </div> -->
+            </div>
 
-			<div class="col-md-2"></div>
-			<div class="col-md-5 form-group">
-				<label for="password" class="control-label">Original
-					Video Duration</label>
-			<!-- 	<div class="cols-sm-12"> -->
-					<div class="input-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-5 form-group">
+                <label for="password" class="control-label">Original
+                    Video Duration</label>
+                <!-- 	<div class="cols-sm-12"> -->
+                <div class="input-group">
 						<textarea rows="2" class="form-control"
-							name="OriginalVideoDuration" maxlength="100" th:inline="text"></textarea>
+                                  name="OriginalVideoDuration" maxlength="100" th:inline="text"></textarea>
 
-					</div>
+                </div>
 
-				<!-- </div> -->
-			</div>
-		</div>
+                <!-- </div> -->
+            </div>
+        </div>
 
-		<div class="row row-striped">
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label">Digital
-					camera equipment</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<select class="form-control" id="digitalCameraDropDown"
-							th:name="DigitalCameraUsed">
-							<option th:value="0">Select Digital Camera Equipment</option>
-							<option
-								th:each="digitalCameraEquipment : ${digitalCameraEquipments}"
-								th:value="${digitalCameraEquipment.EquipmentUsedName}"
-								th:text="${digitalCameraEquipment.EquipmentUsedName}"></option>
-						</select>
-					</div>
+        <div class="row row-striped">
+            <div class="col-md-5 form-group">
+                <label for="password" class="cols-sm-2 control-label">Digital
+                    camera equipment</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <select class="form-control" id="digitalCameraDropDown"
+                                th:name="DigitalCameraUsed">
+                            <option th:value="0">Select Digital Camera Equipment</option>
+                            <option
+                                    th:each="digitalCameraEquipment : ${digitalCameraEquipments}"
+                                    th:value="${digitalCameraEquipment.EquipmentUsedName}"
+                                    th:text="${digitalCameraEquipment.EquipmentUsedName}"></option>
+                        </select>
+                    </div>
 
-				</div>
-			</div>
+                </div>
+            </div>
 
-			<div class="col-md-2"></div>
-			<div class="col-md-5 form-group">
-				<label for="password" class="cols-sm-2 control-label"># of
-					Images</label>
-				<div class="cols-sm-10">
-					<div class="input-group">
-						<input type="text" class="form-control" name="NumberOfImages"
-							maxlength="10" />
-					</div>
+            <div class="col-md-2"></div>
+            <div class="col-md-5 form-group">
+                <label for="password" class="cols-sm-2 control-label"># of
+                    Images</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="NumberOfImages"
+                               maxlength="10"/>
+                    </div>
 
-				</div>
-			</div>
-		</div>
+                </div>
+            </div>
+        </div>
 
-		<div class="row row-striped">
-			<div class="col-md-2 form-group">
-				<label for="password" class="control-label">Release form</label>
-				<div class="form-control">
+        <div class="row row-striped">
+            <div class="col-md-2 form-group">
+                <label for="password" class="control-label">Release form</label>
+                <div class="form-control">
 
-					<span> <input type="radio" name="ReleaseForm" value="1" />
+					<span> <input type="radio" name="ReleaseForm" value="1"/>
 						<label>Yes</label>
-					</span> <span> <input name="ReleaseForm" type="radio" value="0" />
+					</span> <span> <input name="ReleaseForm" type="radio" value="0"/>
 						<label>No</label>
 					</span>
 
 
-				</div>
-			</div>
-			<div class="col-md-5"></div>
-			<div class="col-md-2 form-group">
-				<label for="password" class="control-label">Record format</label>
-				<div class="form-control">
+                </div>
+            </div>
+            <div class="col-md-5"></div>
+            <div class="col-md-2 form-group">
+                <label for="password" class="control-label">Record format</label>
+                <div class="form-control">
 
-					<span> <input name="IsAudioFormat" type="checkbox" value="1" />
+					<span> <input name="IsAudioFormat" type="checkbox" value="1"/>
 						<label>Audio</label>
-					</span> <span> <input name="IsVideoFormat" type="checkbox" value="1" />
+					</span> <span> <input name="IsVideoFormat" type="checkbox" value="1"/>
 						<label>Video</label>
 					</span>
-				</div>
-			</div>
-		</div>
+                </div>
+            </div>
+        </div>
 
-		<div class="row row-striped">
-			<div class="col-md-2 form-group">
-				<label for="password" class="control-label">Born Digital</label>
+        <div class="row row-striped">
+            <div class="col-md-2 form-group">
+                <label for="password" class="control-label">Born Digital</label>
 
-				<div class="form-control">
+                <div class="form-control">
 
-					<span> <input type="radio" name="IsBornDigital" value="1" />
+					<span> <input type="radio" name="IsBornDigital" value="1"/>
 						<label>Yes</label>
-					</span> <span> <input name="IsBornDigital" type="radio" value="0" />
+					</span> <span> <input name="IsBornDigital" type="radio" value="0"/>
 						<label>No</label>
 					</span>
 
-				</div>
-			</div>
-			<div class="col-md-5"></div>
+                </div>
+            </div>
+            <div class="col-md-5"></div>
 
-			<div class="col-md-5 form-group">
+            <div class="col-md-5 form-group">
 
-				<label class="cols-sm-2 control-label">Transcriber assigned</label>s
-				<div class="input-group">
-					<select class="form-control" th:name="TranscriberAssigned">
-						<option th:value="0">Select Transcriber</option>
+                <label class="cols-sm-2 control-label">Transcriber assigned</label>
+                <div class="input-group">
+                    <select class="form-control" th:name="TranscriberAssigned">
+                        <option th:value="0">Select Transcriber</option>
 
-						<option th:each="transcriber : ${transcribers}"
-							th:value="${transcriber.Name}" th:text="${transcriber.Name}"></option>
-					</select>
-				</div>
+                        <option th:each="transcriber : ${transcribers}"
+                                th:value="${transcriber.Name}" th:text="${transcriber.Name}"></option>
+                    </select>
+                </div>
 
 
-			</div>
-		</div>
+            </div>
+        </div>
 
-		<div class="row row-striped">
-			<div class="col-md-2 form-group">
 
-				<label for="password" class="cols-sm-2 control-label">Restriction</label>
-				<div class="form-control">
+        <div class="row row-striped">
+            <div class="col-md-2 form-group">
+                <label class="control-label">Restriction</label>
 
-					<span> <input type="radio" name="IsRestriction" value="1" />
+                <div class="form-control">
+
+					<span> <input type="radio" name="IsRestriction" value="1"/>
 						<label>Yes</label>
-					</span> <span> <input name="IsRestriction" type="radio" value="0" />
+					</span> <span> <input name="IsRestriction" type="radio" value="0"/>
+						<label>No</label>
+					</span>
+
+                </div>
+            </div>
+            <div class="col-md-5"></div>
+
+            <div class="col-md-5 form-group">
+
+                <label class="cols-sm-2 control-label">Equipment number</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="EquipmentNumber"
+                           maxlength="5"/>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="row row-striped">
+            <div class="col-md-12 form-group">
+                <label class="control-label">Restriction note</label>
+                <textarea class="form-control" name="RestrictionNote" rows="5"
+                          th:inline="text"></textarea>
+            </div>
+        </div>
+
+        <div class="row row-striped">
+
+            <div class="col-md-2 form-group">
+
+                <label class="control-label">Priority</label>
+                <div class="form-control">
+					<span> <input type="radio" name="IsPriority" value="1"/> <label>Yes</label>
+					</span> <span> <input name="IsPriority" type="radio" value="0"/>
 						<label>No</label>
 					</span>
 
 
-				</div>
+                </div>
 
-			</div>
-		</div>
+            </div>
+        </div>
+        <div class="row row-striped">
 
-		<div class="row row-striped">
-			<div class="col-md-12 form-group">
-				<label class="control-label">Restriction note</label>
-				<textarea class="form-control" name="RestrictionNote" rows="5"
-					th:inline="text"></textarea>
-			</div>
-		</div>
+            <div class="col-md-12 form-group">
 
-		<div class="row row-striped">
+                <label class="control-label">Reason of priority</label>
 
-			<div class="col-md-2 form-group">
+                <textarea class="form-control" name="ReasonForPriority" rows="5"
+                          th:inline="text"></textarea>
 
-				<label class="control-label">Priority</label>
-				<div class="form-control">
-					<span> <input type="radio" name="IsPriority" value="1" /> <label>Yes</label>
-					</span> <span> <input name="IsPriority" type="radio" value="0" />
-						<label>No</label>
-					</span>
+            </div>
 
+        </div>
 
-				</div>
+        <div class="row row-striped">
+            <div class="col-md-12 form-group">
+                <label class="control-label">Accession notes</label>
+                <textarea class="form-control"  name="AccessionNote" rows="5"
+                          th:inline="text"></textarea>
+            </div>
+        </div>
 
-			</div>
-		</div>
-		<div class="row row-striped">
+        <div class="row row-striped">
+            <div class="col-md-12 form-group">
+                <label class="control-label">General notes</label>
 
-			<div class="col-md-12 form-group">
-
-				<label class="control-label">Reason of priority</label>
-
-				<textarea class="form-control" name="ReasonForPriority" rows="5"
-					th:inline="text"></textarea>
-
-			</div>
-
-		</div>
-
-		<div class="row row-striped">
-			<div class="col-md-12 form-group">
-				<label class="control-label">General notes</label>
-
-				<textarea class="form-control" name="GeneralNote" rows="5"
-					th:inline="text">[[${interviewdetails?.GeneralNote}]]</textarea>
-			</div>
-		</div>
+                <textarea class="form-control" name="GeneralNote" rows="5"
+                          th:inline="text">[[${interviewdetails?.GeneralNote}]]</textarea>
+            </div>
+        </div>
 
 
+        <div class="row row-striped">
+            <div class="col-md-12 form-group">
+                <label class="control-label">Media note</label>
 
-		<div class="row row-striped">
-			<div class="col-md-12 form-group">
-				<label class="control-label">Media note</label>
+                <textarea class="form-control" name="MediaNote" rows="5"
+                          th:inline="text">[[${interviewdetails?.MediaNote}]]</textarea>
+            </div>
 
-				<textarea class="form-control" name="MediaNote" rows="5"
-					th:inline="text">[[${interviewdetails?.MediaNote}]]</textarea>
-			</div>
+        </div>
 
-		</div>
+        <div class="row row-striped"></div>
+        <div class="form-group ">
+            <button type="submit"
+                    class="btn btn-primary btn-lg btn-block login-button">Submit
+            </button>
+        </div>
 
-		<div class="row row-striped"></div>
-		<div class="form-group ">
-			<button type="submit"
-				class="btn btn-primary btn-lg btn-block login-button">Submit</button>
-		</div>
-
-	</form>
+    </form>
 
 
 </div>
 
 
-<div th:replace="common/footer :: footer"></div>
+<div th:replace="~{common/footer :: footer}"></div>
 
-<div th:replace="common/header :: body-bottom-scripts"></div>
+<div th:replace="~{common/header :: body-bottom-scripts}"></div>
 
 
 </body>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#interviewers-dropdown').multiselect({
-			enableFiltering : true,
-			enableCaseInsensitiveFiltering : true,
-			delimiter : '; ',
-			delimiterText : '; ',
-			maxHeight : 450,
-			numberDisplayed : 10,
-		});
-	});
+    $(document).ready(function () {
+        $('#interviewers-dropdown').multiselect({
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            delimiter: '; ',
+            delimiterText: '; ',
+            maxHeight: 450,
+            numberDisplayed: 10,
+        });
+    });
 </script>
 </html>

@@ -1,6 +1,11 @@
 (function($) {
 
 	document.getElementById("year").innerHTML = new Date().getFullYear();
+
+	// const today = new Date();
+	// document.getElementById("AccessionNote").value = today.toLocaleDateString();
+
+
 	// $.toggleShowPassword = function(options) {
 	// var settings = $.extend({
 	// field : "#password",
@@ -24,6 +29,9 @@
 $(document)
 		.ready(
 				function() {
+
+					const today = new Date().toISOString().split('T')[0];
+					$("#AccessionDate").val(today);
 
 					$('.dates').datepicker({
 						multidate : true,

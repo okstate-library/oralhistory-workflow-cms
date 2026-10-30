@@ -1,19 +1,21 @@
 package com.okstatelibrary.oralhistoryworkflowcms.entity;
 
 import java.text.ParseException;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
+@Transactional
 @Table(name = "transcriptions")
 public class Transcription { // implements Serializable
 
@@ -24,7 +26,6 @@ public class Transcription { // implements Serializable
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private int Id;
 
 	public int getId() {
@@ -35,7 +36,7 @@ public class Transcription { // implements Serializable
 		this.Id = value;
 	}
 
-	@NotNull(message = "Please enter a project code")
+	//@NotNull(message = "Please enter a project code")
 	private String ProjectCode;
 
 	public String getProjectCode() {
@@ -535,6 +536,10 @@ public class Transcription { // implements Serializable
 	public void setInterviewerNote(String value) {
 		this.InterviewerNote = value;
 	}
+
+	private String AccessionDate;
+
+	private String AccessionNote;
 
 	private String GeneralNote;
 
@@ -1041,4 +1046,19 @@ public class Transcription { // implements Serializable
 		return "Person [id=" + Id + "CollectionId " + CollectionId + " collection name=" + CollectionName + "]";
 	}
 
+    public String getAccessionNote() {
+        return AccessionNote;
+    }
+
+    public void setAccessionNote(String accessionNote) {
+        AccessionNote = accessionNote;
+    }
+
+    public String getAccessionDate() {
+        return AccessionDate;
+    }
+
+    public void setAccessionDate(String accessionDate) {
+        AccessionDate = accessionDate;
+    }
 }
