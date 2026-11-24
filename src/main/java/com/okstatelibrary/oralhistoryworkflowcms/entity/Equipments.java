@@ -23,15 +23,15 @@ public class Equipments {
 		this.Id = value;
 	}
 
-	private byte EquipmentType;
+	private short EquipmentType;
 
-	public byte getEquipmentType() {
+	public short getEquipmentType() {
 
 		return this.EquipmentType;
 	}
 
-	public void setEquipmentType(byte value) {
-		this.EquipmentType = (byte)value;
+	public void setEquipmentType(short value) {
+		this.EquipmentType = (short)value;
 	}
 
 	private String EquipmentUsedName;

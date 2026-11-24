@@ -22,33 +22,11 @@ public class TranscriptSearchService {
     public TranscriptDocument saveTranscriptDocument(Transcription transcript) {
 
         try {
-
             TranscriptDocument document = getTranscriptDocument(transcript);
-
-            System.out.println("========== BEFORE ELASTICSEARCH SAVE ==========");
-            System.out.println("ID: " + document.getId());
-            System.out.println("Project Code: " + document.getProjectCode());
-            System.out.println("Title: " + document.getTitle());
-            System.out.println("Transcript Location: " + document.getTranscriptLocation());
-            System.out.println("Interviewer Description: " + document.getInterviewerDescription());
-            System.out.println("Interviewer Keywords: " + document.getInterviewerKeywords());
-            System.out.println("Interviewer Subjects: " + document.getInterviewerSubjects());
-            System.out.println("Interview Context: " + document.getInterviewContext());
-            System.out.println("Interviewer Note: " + document.getInterviewerNote());
-            System.out.println("Sensitive Content Description: " + document.getSensitiveContentDescription());
-
 
             TranscriptDocument savedDoc = transcriptSearchRepository.save(document);
 
-            System.out.println("========== AFTER ELASTICSEARCH SAVE ==========");
-            System.out.println("Saved ID: " + savedDoc.getId());
-            System.out.println("Saved Title: " + savedDoc.getTitle());
-            System.out.println("Added " + savedDoc.getTitle());
-
             return savedDoc;
-
-            //return null;
-
 
         } catch (Exception e) {
             System.out.println("Added " + e.fillInStackTrace());

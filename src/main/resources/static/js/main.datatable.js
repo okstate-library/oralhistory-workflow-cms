@@ -496,6 +496,7 @@ function callBrowseAjaxRequest() {
 
 			var table = $('#browseDataTable').DataTable(
 					{
+						"searching": false,
 						scrollX: false,
 						buttons : [ 'excel', 'pdf'],
 						dom: 'Blfrtip',
@@ -613,13 +614,13 @@ function callBrowseAjaxRequest() {
 
      			   
 			});
-			
+
 			   
 			if(data.searchWord != null)
 			{
-				alert(data.searchWord);
-
-				table.search(data.searchWord).draw();
+				const searchInput = document.getElementById('searchText');
+				searchInput.value = data.searchWord;
+				//table.search(data.searchWord).draw();
 			}
 			 
 // $('#browseDataTable').on(

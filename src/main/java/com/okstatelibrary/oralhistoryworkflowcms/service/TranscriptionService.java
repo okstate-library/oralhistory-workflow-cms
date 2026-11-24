@@ -5,12 +5,16 @@ import java.util.Optional;
 
 import com.okstatelibrary.oralhistoryworkflowcms.entity.Transcription;
 import com.okstatelibrary.oralhistoryworkflowcms.enums.FindReplaceOption;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface TranscriptionService {
 
 	List<Transcription> findRecentlyAdded(long userId);
 
 	List<Transcription> findAll();
+
+	List<Transcription> findAll(String ids);
 
 	List<Transcription> findPublic();
 	
@@ -44,6 +48,6 @@ public interface TranscriptionService {
 
 	void delete(int id);
 
-	int findreplace(FindReplaceOption option, String find, String replace);
+	int findReplace(FindReplaceOption option, String find, String replace);
 
 }

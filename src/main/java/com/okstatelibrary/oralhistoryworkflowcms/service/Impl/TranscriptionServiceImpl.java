@@ -319,7 +319,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 	@Override
 	public List<Transcription> findAll(String collectionIds, String seriesIds, String interviewes, String subjects,
-			String darkarchive, String onlineoffline) {
+			String darkArchive, String onlineOffline) {
 
 		List<Predicate<Transcription>> collectionPredicates = null;
 
@@ -381,13 +381,13 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 		List<Predicate<Transcription>> statusPredicates = null;
 
-		if (onlineoffline != null && !onlineoffline.trim().isEmpty()) {
+		if (onlineOffline != null && !onlineOffline.trim().isEmpty()) {
 
 			statusPredicates = new ArrayList<Predicate<Transcription>>();
 
-			if (onlineoffline.contains("online")) {
+			if (onlineOffline.contains("online")) {
 				statusPredicates.add(c -> c.getIsOnline() == (byte) 1);
-			} else if (onlineoffline.contains("offline")) {
+			} else if (onlineOffline.contains("offline")) {
 				statusPredicates.add(c -> c.getIsOnline() == (byte) 0);
 			}
 
@@ -395,11 +395,11 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 
 		List<Predicate<Transcription>> darkArchievePredicates = null;
 
-		if (darkarchive != null && !darkarchive.trim().isEmpty()) {
+		if (darkArchive != null && !darkArchive.trim().isEmpty()) {
 
 			darkArchievePredicates = new ArrayList<Predicate<Transcription>>();
 
-			if (darkarchive.equals("true")) {
+			if (darkArchive.equals("true")) {
 				darkArchievePredicates.add(c -> c.getIsDarkArchive() == (byte) 1);
 
 			}
@@ -429,7 +429,7 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 	}
 
 	@Override
-	public int findreplace(FindReplaceOption option, String find, String replace) {
+	public int findReplace(FindReplaceOption option, String find, String replace) {
 
 		int recordCount = 0;
 
@@ -528,4 +528,8 @@ public class TranscriptionServiceImpl implements TranscriptionService {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Transcription> findAll(String ids) {
+		return transcriptionRepository.getTranscriptsByIds(ids);
+	}
 }

@@ -1,172 +1,202 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
-<head th:replace="~{common/header :: common-header}" />
+<head th:replace="~{common/header :: common-header}"/>
 <body roleId="page-top" data-spy="scroll"
-	data-target=".navbar-fixed-top">
-<head th:replace="~{common/header :: navbar}" />
+      data-target=".navbar-fixed-top">
+<head th:replace="~{common/header :: navbar}"/>
 
 <div class="my-custom-container">
-	<!--  my-custom-container -->
+    <!--  my-custom-container -->
 
-	<div class="row">
-		<div class="col-lg-12">
-			<h1 class="page-header">All Interviews</h1>
-		</div>
-	</div>
-
-
-	<div class="row">
-		<div class="col-md-2">
-			<div style="background: blue;"></div>
-			<p>
-				<u><b>Selected Options</b></u> <input type="button" value="Reset"
-					id="reset_selection" style="display: none;" />
-
-			</p>
-			<p id="browseSelections"></p>
-			<br />
-
-			<div id="accordion">
-				<div class="card accordin-card">
-					<div class="accordion-header accordin-heading" id="headingOne">
-						<h5 class="mb-0">
-							<button class="btn btn-link accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseOne"
-								aria-expanded="true" aria-controls="collapseOne">Select
-								Collection</button>
-						</h5>
-					</div>
-
-					<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-						data-parent="#accordion">
-						<div class="card-body">
-
-							<div id="browseCollections" class="accordin-body"></div>
-
-						</div>
-					</div>
-				</div>
-				<div id="seriesCard" class="card">
-					<div class="card-header accordin-heading" id="headingTwo">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseTwo"
-								aria-expanded="false" aria-controls="collapseTwo">Select
-								Series</button>
-						</h5>
-					</div>
-					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-						data-parent="#accordion">
-						<div class="card-body">
-							<div id="browseSeries" class="accordin-body"></div>
-						</div>
-					</div>
-				</div>
-				<div class="card accordin-card">
-					<div class="card-header accordin-heading" id="headingThree">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseThree"
-								aria-expanded="false" aria-controls="collapseThree">Select
-								Interviewers</button>
-						</h5>
-					</div>
-					<div id="collapseThree" class="collapse"
-						aria-labelledby="headingThree" data-parent="#accordion">
-						<div class="card-body">
-
-							<div id="browseInterviewers" class="accordin-body"></div>
-
-						</div>
-					</div>
-				</div>
-				<div id="subjectCard" class="card">
-					<div class="card-header accordin-heading" id="headingThree">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseFour"
-								aria-expanded="false" aria-controls="collapseFour">Select
-								Subjects</button>
-						</h5>
-					</div>
-					<div id="collapseFour" class="collapse"
-						aria-labelledby="headingThree" data-parent="#accordion">
-						<div class="card-body">
-							<div id="browseSubjects" class="accordin-body"></div>
-						</div>
-					</div>
-				</div>
-				<div class="card accordin-card">
-					<div class="card-header accordin-heading" id="headingThree">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseFive"
-								aria-expanded="false" aria-controls="collapseFive">Select
-								Online Status</button>
-						</h5>
-					</div>
-					<div id="collapseFive" class="collapse"
-						aria-labelledby="headingThree" data-parent="#accordion">
-						<div class="card-body">
-
-							<div id="browseStatusOnline" class="accordin-body"></div>
-
-						</div>
-					</div>
-				</div>
-				<div id="darkArchieveCard" class="card"
-					th:if="${user != null && user.authorized.contains(8)}">
-					<div class="card-header accordin-heading" id="headingThree">
-						<h5 class="mb-0">
-							<button class="btn btn-link collapsed accordin-heading-button"
-								data-toggle="collapse" data-target="#collapseSix"
-								aria-expanded="false" aria-controls="collapseSix">Select
-								Dark Archive</button>
-						</h5>
-					</div>
-					<div id="collapseSix" class="collapse"
-						aria-labelledby="headingThree" data-parent="#accordion">
-						<div class="card-body">
-							<div id="browseDarkArchieve" class="accordin-body"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">All Interviews</h1>
+        </div>
+    </div>
 
 
-		<div class="col-md-10">
+    <div class="row">
+        <div class="col-md-2">
+            <div style="background: blue;"></div>
+            <p>
+                <u><b>Selected Options</b></u> <input type="button" value="Reset"
+                                                      id="reset_selection" style="display: none;"/>
 
-			<div class="table-responsive">
-				<button th:if="${user.authorized.contains(5)}" type="submit" id="browseSubmit" class="btn pull-right"
-				>Bulk edit</button>
-				
-				<table id="browseDataTable"
-					class="table table-bordered table-hover table-striped">
-					<thead>
-						<tr
-							style="word-wrap: break-word; font-size: 12px; align-content: center; background-color: gray;">
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-						</tr>
-					</thead>
+            </p>
+            <p id="browseSelections"></p>
+            <br/>
 
-				</table>
-			</div>
+            <div id="accordion">
+                <div class="card accordin-card">
+                    <div class="accordion-header accordin-heading" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">Select
+                                Collection
+                            </button>
+                        </h5>
+                    </div>
 
-		</div>
-	</div>
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                         data-parent="#accordion">
+                        <div class="card-body">
+
+                            <div id="browseCollections" class="accordin-body"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="seriesCard" class="card">
+                    <div class="card-header accordin-heading" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="false" aria-controls="collapseTwo">Select
+                                Series
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                         data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="browseSeries" class="accordin-body"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card accordin-card">
+                    <div class="card-header accordin-heading" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseThree"
+                                    aria-expanded="false" aria-controls="collapseThree">Select
+                                Interviewers
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="collapse"
+                         aria-labelledby="headingThree" data-parent="#accordion">
+                        <div class="card-body">
+
+                            <div id="browseInterviewers" class="accordin-body"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="subjectCard" class="card">
+                    <div class="card-header accordin-heading" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseFour"
+                                    aria-expanded="false" aria-controls="collapseFour">Select
+                                Subjects
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseFour" class="collapse"
+                         aria-labelledby="headingThree" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="browseSubjects" class="accordin-body"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card accordin-card">
+                    <div class="card-header accordin-heading" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseFive"
+                                    aria-expanded="false" aria-controls="collapseFive">Select
+                                Online Status
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseFive" class="collapse"
+                         aria-labelledby="headingThree" data-parent="#accordion">
+                        <div class="card-body">
+
+                            <div id="browseStatusOnline" class="accordin-body"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="darkArchieveCard" class="card"
+                     th:if="${user != null && user.authorized.contains(8)}">
+                    <div class="card-header accordin-heading" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed accordin-heading-button"
+                                    data-toggle="collapse" data-target="#collapseSix"
+                                    aria-expanded="false" aria-controls="collapseSix">Select
+                                Dark Archive
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseSix" class="collapse"
+                         aria-labelledby="headingThree" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="browseDarkArchieve" class="accordin-body"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-10">
+
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form action="/browse">
+                        <div class="form-group form-group-lg">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="searchText" name="search" type="search">
+                            </div>
+                            <button class="col-sm-2 btn btn-success  btn-lg" type="submit">Search</button>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2">
+                    <button th:if="${user.authorized.contains(5)}" type="submit" id="browseSubmit"
+                            class="btn pull-right">
+                        Bulk edit
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="table-responsive">
+                    <table id="browseDataTable"
+                           class="table table-bordered table-hover table-striped">
+                        <thead>
+                        <tr
+                                style="word-wrap: break-word; font-size: 12px; align-content: center; background-color: gray;">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
@@ -178,31 +208,31 @@
 <div th:replace="~{common/header :: body-bottom-datatable-scripts}"></div>
 
 <script>
-	$("#browseCollections").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseCollections").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	$("#browseSeries").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseSeries").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	$("#browseInterviewers").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseInterviewers").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	$("#browseSubjects").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseSubjects").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	$("#browseStatusOnline").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseStatusOnline").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	$("#browseDarkArchieve").on("click", function(event) {
-		callBrowseRequest();
-	});
+    $("#browseDarkArchieve").on("click", function (event) {
+        callBrowseRequest();
+    });
 
-	callBrowseAjaxRequest();
+    callBrowseAjaxRequest();
 </script>
 </body>
 </html>

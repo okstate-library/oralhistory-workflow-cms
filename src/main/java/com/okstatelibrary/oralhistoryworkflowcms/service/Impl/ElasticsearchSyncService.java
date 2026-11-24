@@ -44,10 +44,6 @@ public class ElasticsearchSyncService {
             List<Transcription> transcriptions =
                     transcriptionRepository.findAll();
 
-//                            ;.stream()
-//                            .limit(5)
-//                            .collect(Collectors.toList());
-
             int successCount = 0;
             int failureCount = 0;
 
